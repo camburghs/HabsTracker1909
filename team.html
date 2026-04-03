@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header style="background-image: url('HabsTracker1909Logo.png'); background-size: cover; background-position: center;">
+    <div class="header-overlay">
+        <h1>Montreal Canadiens</h1>
+        <p class="tagline">Player roster & stats</p>
+    </div>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="scores.html">Scores</a>
+    <a href="standings.html">Standings</a>
+    <a href="team.html" class="active">Team</a>
+    <a href="history.html">History</a>
+</nav>
+
+<main>
+    <section class="Team">
+        <h2>Players</h2>
+        <p>Montreal Canadiens roster and stats</p>
+
+        <div id="filters" style="margin-bottom:20px;">
+            <button onclick="filterPlayers('ALL')" class="filter-btn active">All</button>
+            <button onclick="filterPlayers('F')" class="filter-btn">Forwards</button>
+            <button onclick="filterPlayers('D')" class="filter-btn">Defense</button>
+            <button onclick="filterPlayers('G')" class="filter-btn">Goalies</button>
+        </div>
+        <!-- ✅ THIS WAS MISSING BEFORE -->
+        <div id="players-container">Loading players...</div>
+    </section>
+</main>
+
+<script>
+let allPlayers = [];
+
+async function fetchPlayers() {
+    try {
+        const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/10/roster');
+        const data = await response.json();
+
+        const athletes = data?.athletes || [];
+        allPlayers = [];
+
+        athletes.forEach(group => {
+            group.items.forEach(player => {
+                allPlayers.push(player);
+            });
+        });
+
+        displayPlayers(allPlayers);
+
+    } catch (error) {
+        console.error(error);
+        document.getElementById('players-container').innerHTML =
+            "<p>Error loading players</p>";
+    }
+}
+
+function displayPlayers(players) {
+    const container = document.getElementById('players-container');
+
+    if (!players.length) {
+        container.innerHTML = "<p>No players found</p>";
+        return;
+    }
+
+    let html = '';
+
+    players.forEach(player => {
+
+        // Stats
+        let goals = "-";
+        let assists = "-";
+        let points = "-";
+
+        if (player.statistics && player.statistics.length > 0) {
+            const statGroup = player.statistics[0];
+
+            if (statGroup.splits && statGroup.splits.length > 0) {
+                const stats = statGroup.splits[0].stats;
+
+                goals = stats.find(s => s.name === "goals")?.value ?? "-";
+                assists = stats.find(s => s.name === "assists")?.value ?? "-";
+                points = stats.find(s => s.name === "points")?.value ?? "-";
+            }
+        }
+
+        const height = player.displayHeight || "-";
+        const weight = player.displayWeight || "-";
+        const contract = player.contract?.summary || "—";
+        const headshot = player.headshot?.href || "";
+
+        html += `
+            <div class="player-card" data-pos="${player.position?.abbreviation}">
+                <img src="${headshot}">
+                <div class="player-name">${player.fullName}</div>
+                <div>#${player.jersey || ''} • ${player.position?.abbreviation || ''}</div>
+
+                <div class="player-stats">
+                    ${height} | ${weight}<br>
+                    G: ${goals} | A: ${assists} | PTS: ${points}<br>
+                    ${contract}
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+function filterPlayers(position) {
+    const buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    event.target.classList.add('active');
+
+    if (position === 'ALL') {
+        displayPlayers(allPlayers);
+        return;
+    }
+
+    const filtered = allPlayers.filter(p => {
+        if (!p.position) return false;
+
+        if (position === 'F') {
+            return ['C', 'LW', 'RW'].includes(p.position.abbreviation);
+        }
+
+        return p.position.abbreviation === position;
+    });
+
+    displayPlayers(filtered);
+}
+
+fetchPlayers();
+</script>
+
+<footer>
+        <p>&copy; 2026 HabsTracker1909. All rights reserved.</p>
+        <p>Follow us on : <a href="#">Instagram</a></p>
+    </footer>
+</body>
+</html>

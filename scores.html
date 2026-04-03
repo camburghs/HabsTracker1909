@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header style="background-image: url('HabsTracker1909Logo.png'); background-size: cover; background-position: center;">
+        <div class="header-overlay">
+            <h1>Habs Scores</h1>
+            <p class="tagline">Out Of Town Games</p>
+        </div>
+    </header>
+
+    <Nav>
+        <a href="index.html">Home</a>
+        <a href="scores.html" class="active">Scores</a>
+        <a href="standings.html">Standings</a>
+        <a href="team.html">Team</a>
+        <a href="history.html">History</a>
+
+    </Nav>
+
+    <main>
+        <section class="hero">
+            <div id="canadiens-card">
+        <h3>Montreal Canadiens</h3>
+        <div id="canadiens-score">Loading...</div>
+        <div id="canadiens-status"></div>
+
+        <!-- 🔥 GAME STATS DROPDOWN -->
+        <div class="game-stats">
+            <button class="stats-header"> Player Stats</button>
+
+            <div class="stats-content" id="game-stats-container">
+                <p>Click to load stats</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="live-scores">
+        <h3>Out of Town Scoreboard</h3>
+        <div id="scores-container">Loading scores...</div>
+    </div>
+</section>
+
+        
+
+    </main>
+
+ <div id="goal-overlay">
+            GOAL!
+</div>
+
+<script>
+let currentGameId = null;
+
+function formatGameStatus(type, detail) {
+    if (type === "STATUS_FINAL") return "Final";
+    return detail;
+}
+
+// 🔥 FETCH SCORES
+async function fetchNHLScores() {
+    try {
+        const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard');
+        const data = await response.json();
+
+        const events = data.events || [];
+        displayCanadiens(events);
+
+        const scoresContainer = document.getElementById('scores-container');
+
+        let html = `<table>
+            <tr>
+                <th>Away</th>
+                <th>Score</th>
+                <th>Home</th>
+                <th>Status</th>
+            </tr>`;
+
+        events.forEach(event => {
+            const away = event.competitions[0].competitors[1];
+            const home = event.competitions[0].competitors[0];
+
+            html += `
+                <tr>
+                    <td>${away.team.displayName}</td>
+                    <td>${away.score} - ${home.score}</td>
+                    <td>${home.team.displayName}</td>
+                    <td>${formatGameStatus(event.status.type.name, event.status.type.detail)}</td>
+                </tr>
+            `;
+        });
+
+        html += `</table>`;
+        scoresContainer.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// 🔥 DISPLAY HABS GAME
+function displayCanadiens(events) {
+    const game = events.find(e =>
+        e.competitions[0].competitors.some(c =>
+            c.team.displayName === 'Montreal Canadiens'
+        )
+    );
+
+    const scoreDiv = document.getElementById('canadiens-score');
+    const statusDiv = document.getElementById('canadiens-status');
+
+    if (!game) {
+        scoreDiv.textContent = "No game today";
+        currentGameId = null;
+        return;
+    }
+
+    currentGameId = game.id; // 🔥 IMPORTANT
+
+    const home = game.competitions[0].competitors[0];
+    const away = game.competitions[0].competitors[1];
+
+    scoreDiv.innerHTML = `
+        <div style="display:flex;justify-content:center;gap:15px;align-items:center;">
+            <img src="${away.team.logo}" class="score-logo">
+            <span>${away.score} - ${home.score}</span>
+            <img src="${home.team.logo}" class="score-logo">
+        </div>
+        
+    `;
+
+    statusDiv.textContent = formatGameStatus(
+        game.status.type.name,
+        game.status.type.detail
+    );
+}
+
+// 🔥 GAME STATS FETCH
+async function fetchGameStats() {
+    if (!currentGameId) {
+        document.getElementById('game-stats-container').innerHTML =
+            "<p>No live game stats available</p>";
+        return;
+    }
+
+    try {
+        const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/summary?event=${currentGameId}`);
+        const data = await res.json();
+
+        const players = data?.boxscore?.players || [];
+
+        let html = `<h3>Player Stats, will be available during the game</h3>`;
+
+        players.forEach(team => {
+            html += `<h4>${team.team.displayName}</h4>`;
+
+            team.statistics.forEach(statGroup => {
+                html += `<table>
+                    <tr>${statGroup.labels.map(l => `<th>${l}</th>`).join('')}</tr>`;
+
+                statGroup.athletes.forEach(player => {
+                    html += `<tr>
+                        ${player.stats.map(stat => `<td>${stat}</td>`).join('')}
+                    </tr>`;
+                });
+
+                html += `</table><br>`;
+            });
+        });
+
+        document.getElementById('game-stats-container').innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// 🔥 DROPDOWN CLICK
+document.querySelector('.stats-header').addEventListener('click', () => {
+    document.querySelector('.game-stats').classList.toggle('active');
+    fetchGameStats(); // load when opened
+});
+
+
+// 🔥 INIT
+fetchNHLScores();
+
+setInterval(fetchNHLScores, 3000);
+
+function triggerGoalAnimation() {
+    const overlay = document.getElementById('goal-overlay');
+
+    overlay.classList.add('active');
+
+    setTimeout(() => {
+        overlay.classList.remove('active');
+    }, 1500);
+}
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'g' || event.key === 'G') {
+        triggerGoalAnimation();
+    }
+});
+
+</script>
+    <footer>
+        <p>&copy; 2026 HabsTracker1909. All rights reserved.</p>
+        <p>Follow us on : <a href="#">Instagram</a></p>
+    </footer>
+
+</body>
+</html>
