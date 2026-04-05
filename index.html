@@ -31,7 +31,9 @@
 <section class="hero">
     
     <h2>Welcome to HabsTracker1909</h2>
-    <p>Get the latest scores, standings, and team information.</p>
+    <p>Get the latest scores, standings, and team information.
+        (Estimated Game Day Refresh at 10:30am EST)
+    </p>
 
     <div id="canadiens-card">
         <h3>Montreal Canadiens</h3>
@@ -192,11 +194,12 @@ let awayShots = null;
 let homeTeam = "";
 let awayTeam = "";
 
-// 2️⃣ 🔥 FALLBACK: use goalie SA if shots missing
+// 🔥 FALLBACK: use goalie shots against (SA)
 if (homeShots === null || awayShots === null) {
 
     players.forEach(team => {
-        const isHome = team.team.homeAway === "home";
+
+        const teamSide = team.team.homeAway; // "home" or "away"
 
         team.statistics.forEach(statGroup => {
 
@@ -206,6 +209,7 @@ if (homeShots === null || awayShots === null) {
                 const saIndex = labels.indexOf("SA");
 
                 if (saIndex !== -1) {
+
                     let totalSA = 0;
 
                     statGroup.athletes.forEach(player => {
@@ -213,11 +217,11 @@ if (homeShots === null || awayShots === null) {
                         if (!isNaN(val)) totalSA += val;
                     });
 
-                    if (isHome) {
-                        // opponent shots = home goalie SA
-                        awayShots = totalSA;
-                    } else {
-                        homeShots = totalSA;
+                    // 🔥 Assign OPPOSITE (this is key)
+                    if (teamSide === "home") {
+                        awayShots = totalSA; // home goalie SA = away shots
+                    } else if (teamSide === "away") {
+                        homeShots = totalSA; // away goalie SA = home shots
                     }
                 }
             }
