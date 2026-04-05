@@ -69,6 +69,11 @@
     <div id="standings-container">Loading standings...</div>
 </section>
 
+<section class="schedule">
+    <h2>Upcoming Schedule</h2>
+    <div id="schedule-container">Loading schedule...</div>
+</section>
+
 </main>
 
 <footer>
@@ -309,41 +314,140 @@ document.querySelector('.stats-header').addEventListener('click', () => {
 
 // 🔥 STANDINGS
 async function fetchNHLStandings() {
-    const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/standings');
-    const data = await res.json();
+    try {
+        const res = await fetch('https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/standings');
+    
+        const data = await res.json();
 
-    const standings = data?.children?.[0]?.standings?.entries || [];
-    const container = document.getElementById('standings-container');
+        const container = document.getElementById('standings-container');
 
-    let html = `<table>
-        <tr>
-            <th>Team</th><th>W</th><th>L</th><th>OT</th><th>PTS</th>
-        </tr>`;
+        const teams = data.standings || [];
 
-    standings.forEach(team => {
-        const stats = team.stats;
+        let html = `
+            <table>
+                <tr>
+                    <th>Team</th>
+                    <th>W</th>
+                    <th>L</th>
+                    <th>OT</th>
+                    <th>PTS</th>
+                </tr>
+        `;
 
-        html += `
+        teams.forEach(team => {
+            html += `
+                <tr>
+                    <td>${team.teamName.default}</td>
+                    <td>${team.wins}</td>
+                    <td>${team.losses}</td>
+                    <td>${team.otLosses}</td>
+                    <td><strong>${team.points}</strong></td>
+                </tr>
+            `;
+        });
+
+        html += `</table>`;
+
+        container.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById('standings-container').innerHTML =
+            "<p>Error loading standings</p>";
+    }
+}
+
+// 🔥 FETCH SCHEDULE
+async function fetchSchedule() {
+    try {
+        const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/10/schedule');
+        const data = await res.json();
+
+        const games = data?.events || [];
+        const container = document.getElementById('schedule-container');
+
+        if (!games.length) {
+            container.innerHTML = "<p>No upcoming games</p>";
+            return;
+        }
+
+        let html = `<table>
             <tr>
-                <td>${team.team.displayName}</td>
-                <td>${stats.find(s => s.name==='wins')?.value || 0}</td>
-                <td>${stats.find(s => s.name==='losses')?.value || 0}</td>
-                <td>${stats.find(s => s.name==='overtimeLosses')?.value || 0}</td>
-                <td><strong>${stats.find(s => s.name==='points')?.value || 0}</strong></td>
+                <th>Date</th>
+                <th>Opponent</th>
+                <th>Time</th>
             </tr>
         `;
-    });
 
-    html += `</table>`;
-    container.innerHTML = html;
+        const now = new Date();
+
+// ✅ Only future games
+const upcomingGames = games.filter(game => new Date(game.date) > now);
+
+// Optional: limit to next 10
+const nextGames = upcomingGames.slice(0, 10);
+
+html = ""; // reset html since we're doing custom cards
+nextGames.forEach(game => {
+    const comp = game.competitions[0];
+    const home = comp.competitors[0];
+    const away = comp.competitors[1];
+
+    const isHabsHome = home.team.displayName === "Montreal Canadiens";
+    const opponent = isHabsHome ? away : home;
+
+    const date = new Date(game.date);
+
+    html += `
+        <div class="schedule-card">
+
+            <div class="schedule-badge">
+                ${isHabsHome ? "HOME" : "AWAY"}
+            </div>
+
+            <div class="schedule-teams">
+                <img src="${away.team.logo}">
+                <span class="schedule-vs">VS</span>
+                <img src="${home.team.logo}">
+            </div>
+
+            <div class="schedule-date">
+                ${date.toLocaleDateString()}
+            </div>
+
+            <div class="schedule-time">
+                ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+            </div>
+
+            <div style="margin-top:10px;">
+                ${isHabsHome ? "vs" : "@"} ${opponent.team.displayName}
+            </div>
+
+        </div>
+    `;
+});
+container.innerHTML = html;
+
+        html += `</table>`;
+        container.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById('schedule-container').innerHTML =
+            "<p>Error loading schedule</p>";
+    }
 }
+    
+
 
 // 🔥 INIT
 fetchNHLScores();
 fetchNHLStandings();
+fetchSchedule();
 
 setInterval(fetchNHLScores, 3000);
 setInterval(fetchNHLStandings, 600000);
+setInterval(fetchSchedule, 3600000);
 
 function triggerGoalAnimation() {
     const overlay = document.getElementById('goal-overlay');
