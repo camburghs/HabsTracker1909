@@ -30,8 +30,8 @@
         <h2>Latest Standings</h2>
         <p>Stay updated with the latest standings and updates from the world of sports.</p>
         <div style="text-align:center; margin-bottom:20px;">
-            <button onclick="setView('league')" class="view-btn active">League</button>
-            <button onclick="setView('division')" class="view-btn">Division</button>
+            <button onclick="setView('league', event)" class="view-btn active">League</button>
+            <button onclick="setView('conferences', event)" class="view-btn">Conferences</button>
         </div>
         <div id="standings-container">Loading standings...</div>
     </section>
@@ -80,24 +80,31 @@
 
                 html += buildTable(allTeams, "NHL League Standings");
 
-            } else {
-
-                // 🔥 DIVISION VIEW
-                standingsData.children.forEach(conf => {
-
-                    conf.groups.forEach(division => {
-
-                        let teams = division.standings.entries;
-
-                        teams.sort((a, b) => {
-                            const aPts = a.stats.find(s => s.name === 'points')?.value || 0;
-                            const bPts = b.stats.find(s => s.name === 'points')?.value || 0;
-                            return bPts - aPts;
-                        });
-
-                        html += buildTable(teams, division.name);
-                    });
-                });
+            } else if (currentView === 'conferences') { 
+                // 🔥 CONFERENCES VIEW 
+                standingsData.children.forEach(conf => { 
+                    const conference = conf.standings?.entries || [];
+                     // Group teams by conference name const 
+                     conferenceMap = {}; 
+                     conference.forEach(team => { 
+                     const conferenceName = team.team?.conference?.name || "Unknown Conference"; 
+                     if (!conferenceMap[conferenceName]) { 
+                        conferenceMap[conferenceName] = []; 
+                    } 
+                    conferenceMap[conferenceName].push(team); 
+                }); 
+                // Build tables per conference 
+                Object.keys(conferenceMap).forEach(confName => { 
+                    let teams = conferenceMap[confName]; 
+                    teams.sort((a, b) => { 
+                        const aPts = a.stats.find(s => s.name === 'points')?.value || 0; 
+                        const bPts = b.stats.find(s => s.name === 'points')?.value || 0; 
+                        return bPts - aPts; 
+                    }); 
+                        
+                    html += buildTable(teams, confName); 
+                }); 
+            });
             }
 
             container.innerHTML = html;
@@ -113,6 +120,7 @@
                 <th>L</th>
                 <th>OT</th>
                 <th>PTS</th>
+                <th>DIFF</th>
             </tr>
     `;
 
@@ -123,18 +131,28 @@
                 const losses = stats.find(s => s.name === 'losses')?.value || 0;
                 const ot = stats.find(s => s.name === 'overtimeLosses')?.value || 0;
                 const pts = stats.find(s => s.name === 'points')?.value || 0;
+                //I DID IT!!!
+                const diff = stats.find(s => s.name === 'pointsDiff')?.value || 0;
+                const clincher = stats.find(s => s.type === 'clincher');
+                const clinchMark = clincher ? clincher.displayValue : '';
+
+
+
 
                 html += `
             <tr ${team.team.displayName === 'Montreal Canadiens' ? 'style="background:rgba(189,48,57,0.2); font-weight:bold;"' : ''}>
                 <td>${index + 1}</td>
                 <td style="display:flex; align-items:center; gap:8px;">
+                    ${clinchMark ? `<span style="color:#000000; font-weight:bold;">${clinchMark}</span>` : ''}
                     <img src="${team.team.logos?.[0]?.href}" width="25">
                     ${team.team.displayName}
                 </td>
+                
                 <td>${wins}</td>
                 <td>${losses}</td>
                 <td>${ot}</td>
                 <td><strong>${pts}</strong></td>
+                <td>${diff}</td>
             </tr>
         `;
             });
@@ -142,7 +160,7 @@
             html += `</table>`;
             return html;
         }
-        function setView(view) {
+        function setView(view, event) {
             currentView = view;
 
             document.querySelectorAll('.view-btn').forEach(btn => {
