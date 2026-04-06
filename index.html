@@ -32,7 +32,7 @@
     
     <h2>Welcome to HabsTracker1909</h2>
     <p>Get the latest scores, standings, and team information.
-        (Estimated Game Day Refresh at 10:30am EST)
+        (Estimated Game Day Refresh at 11:00am EST)
     </p>
 
     <div id="canadiens-card">
@@ -66,7 +66,10 @@
 
 <section class="standings">
     <h2>Latest Standings</h2>
-    <div id="standings-container">Loading standings...</div>
+    <p>Stay updated with the latest standings and updates from the NHL</p>
+    <div>
+        <button onclick="window.location.href='standings.html'" class="standings-btn">View Full Standings</button>
+    </div>
 </section>
 
 <section class="schedule">
@@ -313,57 +316,7 @@ document.querySelector('.stats-header').addEventListener('click', () => {
 });
 
 // 🔥 STANDINGS
-async function fetchNHLStandings() {
-    try {
-        const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/standings');
-        const data = await res.json();
 
-        const standings = data?.standings?.entries || [];
-        const container = document.getElementById('standings-container');
-
-        if (!standings.length) {
-            container.innerHTML = "<p>No standings data</p>";
-            return;
-        }
-
-        let html = `<table>
-            <tr>
-                <th>Team</th>
-                <th>W</th>
-                <th>L</th>
-                <th>OTL</th>
-                <th>PTS</th>
-            </tr>`;
-
-        standings.forEach(entry => {
-            const team = entry.team;
-            const stats = entry.stats;
-
-            const wins = stats.find(s => s.name === "wins")?.value ?? "-";
-            const losses = stats.find(s => s.name === "losses")?.value ?? "-";
-            const otl = stats.find(s => s.name === "otLosses")?.value ?? "-";
-            const points = stats.find(s => s.name === "points")?.value ?? "-";
-
-            html += `
-                <tr>
-                    <td><img src="${team.logo}" class="standings-logo"> ${team.displayName}</td>
-                    <td>${wins}</td>
-                    <td>${losses}</td>
-                    <td>${otl}</td>
-                    <td>${points}</td>
-                </tr>
-            `;
-        });
-
-        html += `</table>`;
-        container.innerHTML = html;
-
-    } catch (err) {
-        console.error(err);
-        document.getElementById('standings-container').innerHTML =
-            "<p>Error loading standings</p>";
-    }
-}
 
 // 🔥 FETCH SCHEDULE
 async function fetchSchedule() {
@@ -453,11 +406,9 @@ container.innerHTML = html;
 
 // 🔥 INIT
 fetchNHLScores();
-fetchNHLStandings();
 fetchSchedule();
 
 setInterval(fetchNHLScores, 3000);
-setInterval(fetchNHLStandings, 60000);
 setInterval(fetchSchedule, 3600000);
 
 function triggerGoalAnimation() {

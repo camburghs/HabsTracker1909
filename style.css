@@ -95,12 +95,12 @@ h2 {
 
 /* CARD */ 
 #canadiens-card { 
-  background: linear-gradient(135deg, #eb2c3fd8, #ffffff, #3c4de2e1); 
+  background: linear-gradient(135deg, #eb2c3f, #ffffff, #3c4ce2); 
   background-size: 300% 300%; color: rgb(0, 0, 0); 
   text-shadow: #ffffff91 1px 1px 1px; padding: 20px; 
   border-radius: 12px; margin: 20px 0; text-align: center; 
   box-shadow: 0 6px 10px rgba(0,0,0,0.3); 
-  transition: 0.3s; animation: gradientMove 50s ease infinite; 
+  transition: 0.3s; animation: gradientMove 45s ease infinite; 
 } 
 /*card animation*/ 
 @keyframes gradientMove { 
@@ -530,4 +530,22 @@ footer {
 .view-btn.active {
     background: #BD3039;
     color: white;
+}
+.standings-btn {
+    display: block;
+    margin: 20px auto 20px auto;
+    padding: 10px 20px;
+    background: #BD3039;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.standings-btn:hover {
+    transform: translateY(-2px) scale(1.0001);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.5);
+}
+.standings {
+  text-align: center;
 }
