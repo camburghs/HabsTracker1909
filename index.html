@@ -64,7 +64,7 @@
     </div>
 </section>
 
-<section class="Standings">
+<section class="standings">
     <h2>Latest Standings</h2>
     <div id="standings-container">Loading standings...</div>
 </section>
@@ -315,39 +315,47 @@ document.querySelector('.stats-header').addEventListener('click', () => {
 // 🔥 STANDINGS
 async function fetchNHLStandings() {
     try {
-        const res = await fetch('https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/standings');
-    
+        const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/standings');
         const data = await res.json();
 
+        const standings = data?.standings?.entries || [];
         const container = document.getElementById('standings-container');
 
-        const teams = data.standings || [];
+        if (!standings.length) {
+            container.innerHTML = "<p>No standings data</p>";
+            return;
+        }
 
-        let html = `
-            <table>
-                <tr>
-                    <th>Team</th>
-                    <th>W</th>
-                    <th>L</th>
-                    <th>OT</th>
-                    <th>PTS</th>
-                </tr>
-        `;
+        let html = `<table>
+            <tr>
+                <th>Team</th>
+                <th>W</th>
+                <th>L</th>
+                <th>OTL</th>
+                <th>PTS</th>
+            </tr>`;
 
-        teams.forEach(team => {
+        standings.forEach(entry => {
+            const team = entry.team;
+            const stats = entry.stats;
+
+            const wins = stats.find(s => s.name === "wins")?.value ?? "-";
+            const losses = stats.find(s => s.name === "losses")?.value ?? "-";
+            const otl = stats.find(s => s.name === "otLosses")?.value ?? "-";
+            const points = stats.find(s => s.name === "points")?.value ?? "-";
+
             html += `
                 <tr>
-                    <td>${team.teamName.default}</td>
-                    <td>${team.wins}</td>
-                    <td>${team.losses}</td>
-                    <td>${team.otLosses}</td>
-                    <td><strong>${team.points}</strong></td>
+                    <td><img src="${team.logo}" class="standings-logo"> ${team.displayName}</td>
+                    <td>${wins}</td>
+                    <td>${losses}</td>
+                    <td>${otl}</td>
+                    <td>${points}</td>
                 </tr>
             `;
         });
 
         html += `</table>`;
-
         container.innerHTML = html;
 
     } catch (err) {
@@ -393,6 +401,9 @@ nextGames.forEach(game => {
     const home = comp.competitors[0];
     const away = comp.competitors[1];
 
+    const homeLogo = home.team.logo || home.team.logos?.[0]?.href;
+    const awayLogo = away.team.logo || away.team.logos?.[0]?.href;
+
     const isHabsHome = home.team.displayName === "Montreal Canadiens";
     const opponent = isHabsHome ? away : home;
 
@@ -406,9 +417,9 @@ nextGames.forEach(game => {
             </div>
 
             <div class="schedule-teams">
-                <img src="${away.team.logo}">
+                <img src="${awayLogo}" class="schedule-logo">
                 <span class="schedule-vs">VS</span>
-                <img src="${home.team.logo}">
+                <img src="${homeLogo}" class="schedule-logo">
             </div>
 
             <div class="schedule-date">
@@ -446,7 +457,7 @@ fetchNHLStandings();
 fetchSchedule();
 
 setInterval(fetchNHLScores, 3000);
-setInterval(fetchNHLStandings, 600000);
+setInterval(fetchNHLStandings, 60000);
 setInterval(fetchSchedule, 3600000);
 
 function triggerGoalAnimation() {

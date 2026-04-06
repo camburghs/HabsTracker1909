@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <header style="background-image: url('HabsTracker1909Logo.png'); background-size: cover; background-position: center;">
+    <header
+        style="background-image: url('HabsTracker1909Logo.png'); background-size: cover; background-position: center;">
         <div class="header-overlay">
             <h1>Standings</h1>
             <p class="tagline">Latest Teams Standings</p>
@@ -24,71 +27,135 @@
     </Nav>
 
     <section class="Standings">
-            <h2>Latest Standings</h2>
-            <p>Stay updated with the latest standings and updates from the world of sports.</p>
-            <div id="standings-container">Loading standings...</div>
-        </section>
+        <h2>Latest Standings</h2>
+        <p>Stay updated with the latest standings and updates from the world of sports.</p>
+        <div style="text-align:center; margin-bottom:20px;">
+            <button onclick="setView('league')" class="view-btn active">League</button>
+            <button onclick="setView('division')" class="view-btn">Division</button>
+        </div>
+        <div id="standings-container">Loading standings...</div>
+    </section>
     <script>
-    /*Fetch standings when page loads and refresh every 10 minutes*/
-       async function fetchNHLStandings() {
-    try {
-        const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/standings');
-        const data = await response.json();
+        let standingsData = null;
+        let currentView = 'league';
+        async function fetchNHLStandings() {
+            try {
+                const response = await fetch(
+                    'https://site.web.api.espn.com/apis/v2/sports/hockey/nhl/standings'
+                );
+                const data = await response.json();
 
-        console.log(data); // 👈 keep this for debugging
+                standingsData = data;
 
-        const standingsContainer = document.getElementById('standings-container');
+                renderStandings();
 
-        const standings = data?.children?.[0]?.standings?.entries || [];
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        function renderStandings() {
+            const container = document.getElementById('standings-container');
 
-        if (!standings.length) {
-            standingsContainer.innerHTML = "<p>No standings data available</p>";
-            return;
+            if (!standingsData) return;
+
+            let html = '';
+
+            if (currentView === 'league') {
+
+                // 🔥 LEAGUE VIEW (ALL TEAMS SORTED)
+                let allTeams = [];
+
+                standingsData.children.forEach(conf => {
+                    conf.standings.entries.forEach(team => {
+                        allTeams.push(team);
+                    });
+                });
+
+                // Sort by points
+                allTeams.sort((a, b) => {
+                    const aPts = a.stats.find(s => s.name === 'points')?.value || 0;
+                    const bPts = b.stats.find(s => s.name === 'points')?.value || 0;
+                    return bPts - aPts;
+                });
+
+                html += buildTable(allTeams, "NHL League Standings");
+
+            } else {
+
+                // 🔥 DIVISION VIEW
+                standingsData.children.forEach(conf => {
+
+                    conf.groups.forEach(division => {
+
+                        let teams = division.standings.entries;
+
+                        teams.sort((a, b) => {
+                            const aPts = a.stats.find(s => s.name === 'points')?.value || 0;
+                            const bPts = b.stats.find(s => s.name === 'points')?.value || 0;
+                            return bPts - aPts;
+                        });
+
+                        html += buildTable(teams, division.name);
+                    });
+                });
+            }
+
+            container.innerHTML = html;
+        }
+        function buildTable(teams, title) {
+            let html = `
+        <h3 style="margin-top:20px;">${title}</h3>
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Team</th>
+                <th>W</th>
+                <th>L</th>
+                <th>OT</th>
+                <th>PTS</th>
+            </tr>
+    `;
+
+            teams.forEach((team, index) => {
+                const stats = team.stats;
+
+                const wins = stats.find(s => s.name === 'wins')?.value || 0;
+                const losses = stats.find(s => s.name === 'losses')?.value || 0;
+                const ot = stats.find(s => s.name === 'overtimeLosses')?.value || 0;
+                const pts = stats.find(s => s.name === 'points')?.value || 0;
+
+                html += `
+            <tr ${team.team.displayName === 'Montreal Canadiens' ? 'style="background:rgba(189,48,57,0.2); font-weight:bold;"' : ''}>
+                <td>${index + 1}</td>
+                <td style="display:flex; align-items:center; gap:8px;">
+                    <img src="${team.team.logos?.[0]?.href}" width="25">
+                    ${team.team.displayName}
+                </td>
+                <td>${wins}</td>
+                <td>${losses}</td>
+                <td>${ot}</td>
+                <td><strong>${pts}</strong></td>
+            </tr>
+        `;
+            });
+
+            html += `</table>`;
+            return html;
+        }
+        function setView(view) {
+            currentView = view;
+
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            event.target.classList.add('active');
+
+            renderStandings();
         }
 
-        let html = `
-            <table style="width:100%; border-collapse:collapse;">
-                <tr>
-                    <th>Team</th>
-                    <th>W</th>
-                    <th>L</th>
-                    <th>OT</th>
-                    <th>PTS</th>
-                </tr>
-        `;
-
-        standings.forEach(team => {
-            const stats = team.stats || [];
-
-            const wins = stats.find(s => s.name === 'wins')?.value || 0;
-            const losses = stats.find(s => s.name === 'losses')?.value || 0;
-            const ot = stats.find(s => s.name === 'overtimeLosses')?.value || 0;
-            const pts = stats.find(s => s.name === 'points')?.value || 0;
-
-            html += `
-                <tr>
-                    <td>${team.team.displayName}</td>
-                    <td>${wins}</td>
-                    <td>${losses}</td>
-                    <td>${ot}</td>
-                    <td><strong>${pts}</strong></td>
-                </tr>
-            `;
-        });
-
-        html += `</table>`;
-
-        standingsContainer.innerHTML = html;
-
-    } catch (error) {
-        console.error('Error fetching standings:', error);
-        document.getElementById('standings-container').innerHTML =
-            '<p>Unable to load standings.</p>';
-    }
-}
-
-    fetchNHLStandings();
-    setInterval(fetchNHLStandings, 600000); // Refresh every 10 minutes
+        fetchNHLStandings();
+        setInterval(fetchNHLStandings, 600000);
     </script>
 
     <footer>
@@ -97,4 +164,5 @@
     </footer>
 
 </body>
+
 </html>
