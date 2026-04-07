@@ -44,23 +44,37 @@
 
 <script>
 let allPlayers = [];
+//test api url
+//https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2026/athletes/5344178
 
 // ✅ Get stats for ONE player
 async function getPlayerStats(playerId) {
     try {
-        const playerRes = await fetch(`https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2026/athletes/${playerId}`);
+        const playerRes = await fetch(
+            `https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2026/athletes/${playerId}`
+        );
+
         const playerData = await playerRes.json();
 
-        const statsUrl = playerData.statistics.$ref.replace("http://", "https://");
+        // ✅ SAFELY check if statistics exists
+        const statsRef = playerData?.statistics?.$ref;
+
+        if (!statsRef) {
+            console.warn("No stats available for player:", playerId);
+            return { goals: "0", assists: "0", points: "0" };
+        }
+
+        const statsUrl = statsRef.replace("http://", "https://");
+
         const statsRes = await fetch(statsUrl);
         const statsData = await statsRes.json();
 
-        const categories = statsData.splits?.categories;
+        const categories = statsData.splits?.categories || [];
 
         const wantedStats = ["Goals", "Assists", "Points"];
         const statsResult = {};
 
-        categories?.forEach(category => {
+        categories.forEach(category => {
             category.stats?.forEach(stat => {
                 if (wantedStats.includes(stat.displayName) && !statsResult[stat.displayName]) {
                     statsResult[stat.displayName] = stat.displayValue;
@@ -69,9 +83,9 @@ async function getPlayerStats(playerId) {
         });
 
         return {
-            goals: statsResult["Goals"] || "-",
-            assists: statsResult["Assists"] || "-",
-            points: statsResult["Points"] || "-"
+            goals: statsResult["Goals"] || "0",
+            assists: statsResult["Assists"] || "0",
+            points: statsResult["Points"] || "0"
         };
 
     } catch (err) {
@@ -105,15 +119,15 @@ async function getGoalieStats(playerId) {
         });
 
         return {
-            gaa: goalieStats["Goals Against Average"] || "-",
-            savePct: goalieStats["Save Percentage"] || "-",
-            saves: goalieStats["Saves"] || "-",
-            wins: goalieStats["Wins"] || "-"
+            gaa: goalieStats["Goals Against Average"] || "0",
+            savePct: goalieStats["Save Percentage"] || "0",
+            saves: goalieStats["Saves"] || "0",
+            wins: goalieStats["Wins"] || "0"
         };
 
     } catch (err) {
         console.error("Goalie stats error:", err);
-        return { gaa: "-", savePct: "-", saves: "-", wins: "-" };
+        return { gaa: "0", savePct: "0", saves: "0", wins: "0" };
     }
 }
 // ✅ Fetch roster
