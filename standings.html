@@ -116,6 +116,7 @@
             <tr>
                 <th>#</th>
                 <th>Team</th>
+                <th>GP</th>
                 <th>W</th>
                 <th>L</th>
                 <th>OT</th>
@@ -133,6 +134,7 @@
             teams.forEach((team, index) => {
                 const stats = team.stats;
 
+                const gp = stats.find(s => s.name === 'gamesPlayed')?.value || 0;
                 const wins = stats.find(s => s.name === 'wins')?.value || 0;
                 const losses = stats.find(s => s.name === 'losses')?.value || 0;
                 const ot = stats.find(s => s.name === 'overtimeLosses')?.value || 0;
@@ -160,6 +162,7 @@
                     ${team.team.displayName}
                 </td>
                 
+                <td>${gp}</td>
                 <td>${wins}</td>
                 <td>${losses}</td>
                 <td>${ot}</td>
