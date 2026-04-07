@@ -33,6 +33,7 @@
         <div style="text-align:center; margin-bottom:20px;">
             <button onclick="setView('league', event)" class="view-btn active">League</button>
             <button onclick="setView('conferences', event)" class="view-btn">Conferences</button>
+            <button onclick="setView('divisions', event)" class="view-btn">Divisions</button>
         </div>
         <div id="standings-container">Loading standings...</div>
     </section>
@@ -47,8 +48,13 @@
                 const data = await response.json();
 
                 standingsData = data;
+                if (currentView === 'league') {
+                    renderStandings();
+                }
 
-                renderStandings();
+
+
+
 
             } catch (error) {
                 console.error(error);
@@ -81,32 +87,80 @@
 
                 html += buildTable(allTeams, "NHL League Standings");
 
-            } else if (currentView === 'conferences') { 
+            } else if (currentView === 'conferences') {
                 // 🔥 CONFERENCES VIEW 
-                standingsData.children.forEach(conf => { 
+                standingsData.children.forEach(conf => {
                     const conference = conf.standings?.entries || [];
-                     // Group teams by conference name const 
-                     conferenceMap = {}; 
-                     conference.forEach(team => { 
-                     const conferenceName = team.team?.conference?.name || "Unknown Conference"; 
-                     if (!conferenceMap[conferenceName]) { 
-                        conferenceMap[conferenceName] = []; 
-                    } 
-                    conferenceMap[conferenceName].push(team); 
-                }); 
-                // Build tables per conference 
-                Object.keys(conferenceMap).forEach(confName => { 
-                    let teams = conferenceMap[confName]; 
-                    teams.sort((a, b) => { 
-                        const aPts = a.stats.find(s => s.name === 'points')?.value || 0; 
-                        const bPts = b.stats.find(s => s.name === 'points')?.value || 0; 
-                        return bPts - aPts; 
-                    }); 
-                        
-                    html += buildTable(teams, confName); 
-                }); 
-            });
+                    // Group teams by conference name const 
+                    conferenceMap = {};
+                    conference.forEach(team => {
+                        const conferenceName = conf.name || "Unknown Conference";
+                        if (!conferenceMap[conferenceName]) {
+                            conferenceMap[conferenceName] = [];
+                        }
+                        conferenceMap[conferenceName].push(team);
+                    });
+                    // Build tables per conference 
+                    Object.keys(conferenceMap).forEach(confName => {
+                        let teams = conferenceMap[confName];
+                        teams.sort((a, b) => {
+                            const aPts = a.stats.find(s => s.name === 'points')?.value || 0;
+                            const bPts = b.stats.find(s => s.name === 'points')?.value || 0;
+                            return bPts - aPts;
+                        });
+
+                        html += buildTable(teams, confName);
+                    });
+                });
+            } else if (currentView === 'divisions') {
+
+    const divisionMap = {
+        "Atlantic": [],
+        "Metropolitan": [],
+        "Central": [],
+        "Pacific": []
+    };
+
+    standingsData.children.forEach(conf => {
+        const entries = conf.standings?.entries || [];
+
+        entries.forEach(team => {
+
+            const teamName = team.team.displayName;
+
+            // 🧠 Manual mapping (this is the key fix)
+            if (conf.name === "Eastern Conference") {
+
+                if (["Boston Bruins","Toronto Maple Leafs","Montreal Canadiens","Buffalo Sabres","Ottawa Senators","Detroit Red Wings","Florida Panthers","Tampa Bay Lightning"].includes(teamName)) {
+                    divisionMap["Atlantic"].push(team);
+                } else {
+                    divisionMap["Metropolitan"].push(team);
+                }
+
+            } else if (conf.name === "Western Conference") {
+
+                if (["Colorado Avalanche","Dallas Stars","Minnesota Wild","Winnipeg Jets","St. Louis Blues","Nashville Predators","Chicago Blackhawks","Arizona Coyotes"].includes(teamName)) {
+                    divisionMap["Central"].push(team);
+                } else {
+                    divisionMap["Pacific"].push(team);
+                }
             }
+        });
+    });
+
+    Object.keys(divisionMap).forEach(divName => {
+
+        let teams = divisionMap[divName];
+
+        teams.sort((a, b) => {
+            const aPts = a.stats.find(s => s.name === 'points')?.value || 0;
+            const bPts = b.stats.find(s => s.name === 'points')?.value || 0;
+            return bPts - aPts;
+        });
+
+        html += buildTable(teams, divName);
+    });
+}
 
             container.innerHTML = html;
         }
