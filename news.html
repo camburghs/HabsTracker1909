@@ -84,7 +84,7 @@
             },
             {
                 player: "Alexandre Carrier",
-                status: "Out",
+                status: "GTD",
                 issue: "Upper-body injury",
                 detail: "Expected to be out an expected 2-4 week.",
                 updated: "April 6, 2026"
@@ -98,7 +98,7 @@
             },
             {
                 player: "Kirby Dach",
-                status: "Out",
+                status: "GTD",
                 issue: "Upper-body injury",
                 detail: "Game Time Decision.",
                 updated: "April 7, 2026"
@@ -117,7 +117,9 @@
                     <p>${item.detail}</p>
                     <p class="injury-updated">Updated: ${item.updated}</p>
                 </article>
+                
             `).join('');
+            
         }
 
         renderInjuries(fallbackInjuries);

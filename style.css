@@ -725,6 +725,10 @@ footer {
     background: rgba(189, 48, 57, 0.16);
     color: #8b1621;
 }
+.injury-status.gtd{
+    background: rgba(11, 134, 28, 0.16);
+    color: #168b1c;
+}
 
 .injury-status.day-to-day {
     background: rgba(29, 66, 138, 0.16);
