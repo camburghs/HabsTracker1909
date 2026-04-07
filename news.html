@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habs Injury News</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header
+        style="background-image: url('HabsTracker1909Logo.png'); background-size: cover; background-position: center;">
+        <div class="header-overlay">
+            <h1>Habs Injury News</h1>
+            <p class="tagline">Montreal Canadiens availability, status updates, and injury notes.</p>
+        </div>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="news.html" class="active">News</a>
+        <a href="scores.html">Scores</a>
+        <a href="standings.html">Standings</a>
+        <a href="team.html">Team</a>
+        <a href="history.html">History</a>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Montreal Canadiens Injury Report</h2>
+            <p>Snapshot of the Canadiens injury situation as of April 7, 2026.</p>
+        </section>
+
+        <section class="news-highlight">
+            <div class="news-highlight-copy">
+                <span class="news-label">Latest Update</span>
+                <h2>Health watch heading into the stretch run</h2>
+                <p>
+                    Montreal is managing a shorter injury list than earlier in the season, but a few absences still
+                    matter for lineup depth, special teams, and blue line stability.
+                </p>
+            </div>
+            <div class="news-highlight-meta">
+                <div class="meta-card">
+                    <span class="meta-title">Team Focus</span>
+                    <strong>Staying healthy for the playoff push</strong>
+                </div>
+                <div class="meta-card">
+                    <span class="meta-title">Last Updated</span>
+                    <strong>April 7, 2026</strong>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Current Injuries</h2>
+            <p class="injury-source-note">Update these injuries directly in the fallbackInjuries list in news.html.</p>
+            <div id="injury-news-grid" class="injury-news-grid"></div>
+        </section>
+
+        <section class="injury-disclaimer">
+            <h2>Note</h2>
+            <p>
+                Injury statuses can change quickly around morning skates and game-time decisions. This page is designed
+                as a clean team tracker and may need manual refreshes when the club announces a new update.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 HabsTracker1909. All rights reserved.</p>
+        <p>Follow us on : <a href="https://www.instagram.com/camerone_7/" target="_blank">Instagram</a></p>
+    </footer>
+
+    <script>
+        const fallbackInjuries = [
+            {
+                player: "Patrik Laine",
+                status: "IR",
+                issue: "Abdomen",
+                detail: "January 10, 2026, Practiced non-contact.",
+                updated: "January 10, 2026"
+            },
+            {
+                player: "Alexandre Carrier",
+                status: "Out",
+                issue: "Upper-body injury",
+                detail: "Expected to be out an expected 2-4 week.",
+                updated: "April 6, 2026"
+            },
+            {
+                player: "Alexandre Texier",
+                status: "Out",
+                issue: "Lower-body injury",
+                detail: "Listed out day to day.",
+                updated: "March 31, 2026"
+            },
+            {
+                player: "Kirby Dach",
+                status: "Out",
+                issue: "Upper-body injury",
+                detail: "March 17, 2026 update: Expected to be out 2-4 weeks.",
+                updated: "March 17, 2026"
+            }
+        ];
+
+        function renderInjuries(injuries) {
+            const grid = document.getElementById('injury-news-grid');
+            grid.innerHTML = injuries.map(item => `
+                <article class="injury-card">
+                    <div class="injury-card-top">
+                        <h3>${item.player}</h3>
+                        <span class="injury-status ${item.status.toLowerCase().replace(/[^a-z]+/g, '-')}">${item.status}</span>
+                    </div>
+                    <p class="injury-issue">${item.issue}</p>
+                    <p>${item.detail}</p>
+                    <p class="injury-updated">Updated: ${item.updated}</p>
+                </article>
+            `).join('');
+        }
+        renderInjuries(fallbackInjuries);
+    </script>
+</body>
+
+</html>

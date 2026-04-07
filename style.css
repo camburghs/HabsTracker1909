@@ -621,3 +621,145 @@ footer {
     text-shadow: #000000 0.5px 0.5px 1px;
 }
 
+/* NEWS PAGE */
+.news-highlight {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    background: linear-gradient(135deg, #10182b, #bd3039 65%, #f3f4f7);
+    color: white;
+}
+
+.news-highlight h2 {
+    text-align: left;
+    margin-bottom: 12px;
+}
+
+.news-label {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    padding: 4px 12px;
+    margin-bottom: 14px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.news-highlight-meta {
+    display: grid;
+    gap: 14px;
+}
+
+.meta-card,
+.injury-card,
+.impact-card {
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.meta-card {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.meta-title {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.85;
+}
+
+.injury-news-grid,
+.injury-impact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.injury-source-note {
+    text-align: center;
+    margin-top: -6px;
+    margin-bottom: 18px;
+    color: #445;
+    font-size: 0.95rem;
+}
+
+.injury-source-note.error {
+    color: #8b1621;
+    font-weight: bold;
+}
+
+.injury-card {
+    background: linear-gradient(180deg, #ffffff, #eef2f8);
+    border-top: 5px solid #bd3039;
+}
+.injury-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.injury-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.injury-status {
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.injury-status.out {
+    background: rgba(189, 48, 57, 0.16);
+    color: #8b1621;
+}
+
+.injury-status.day-to-day {
+    background: rgba(29, 66, 138, 0.16);
+    color: #1d428a;
+}
+
+.injury-issue {
+    font-weight: bold;
+    color: #bd3039;
+    margin-bottom: 10px;
+}
+
+.injury-updated {
+    margin-top: 16px;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.impact-card {
+    background: linear-gradient(135deg, #bd3039, #1d428a);
+    color: white;
+}
+
+.injury-disclaimer {
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .news-highlight {
+        grid-template-columns: 1fr;
+    }
+
+    .injury-card-top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
