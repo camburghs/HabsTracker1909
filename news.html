@@ -142,7 +142,9 @@ async function fetchNews() {
 }
 
 fetchNews();
+setInterval(fetchNews, 21600000); // refresh every 6 hours
 </script>
+
 
 
     </main>
