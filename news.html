@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
+    //api test
+    //https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/news
 
 <head>
     <meta charset="UTF-8">
@@ -27,7 +29,13 @@
     </nav>
 
     <main class="container">
-        <section class="hero">
+
+        <div id="news-container">
+            <p>Loading News...</p>
+        </div>
+        
+
+        <section class="injury-top-title">
             <h2>Montreal Canadiens Injury Report</h2>
             <p>Snapshot of the Canadiens injury situation as of April 7, 2026.</p>
         </section>
@@ -61,11 +69,82 @@
 
         <section class="injury-disclaimer">
             <h2>Note</h2>
-            <p>
+            <p>Kirby Dach and Alexandre Texier both returned to the lineup on April 7,2026. </p>
+            <p>         
+                                            
                 Injury statuses can change quickly around morning skates and game-time decisions. This page is designed
                 as a clean team tracker and may need manual refreshes when the club announces a new update.
             </p>
         </section>
+
+        
+
+<script>
+async function fetchNews() {
+    try {
+        const res = await fetch("https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/news");
+        const data = await res.json();
+
+        const allArticles = data.articles || [];
+
+        // 🔥 SMART FILTER (category + text)
+        let habsArticles = allArticles.filter(article =>
+            // 1. Check categories (BEST method)
+            article.categories?.some(cat =>
+                cat.type === "team" &&
+                cat.description === "Montreal Canadiens"
+            )
+            // 2. Fallback to text search
+            || (article.headline + " " + (article.description || ""))
+                .toLowerCase()
+                .includes("canadiens")
+            || (article.headline + " " + (article.description || ""))
+                .toLowerCase()
+                .includes("montreal")
+        );
+
+        // 🔥 FALLBACK: if no Habs news, show general NHL news
+        const articlesToDisplay = habsArticles.length ? habsArticles : allArticles;
+
+        const container = document.getElementById("news-container");
+
+        if (!articlesToDisplay.length) {
+            container.innerHTML = "<p>No news available.</p>";
+            return;
+        }
+
+        let html = "";
+
+        articlesToDisplay.slice(0, 10).forEach(article => {
+            const title = article.headline;
+            const description = article.description || "";
+            const image = article.images?.[0]?.url || "";
+            const link = article.links?.web?.href || "#";
+
+            html += `
+                <a href="${link}" target="_blank" class="news-card">
+                    <img src="${image}" alt="">
+                    <div class="news-content">
+                        <h3>${title}</h3>
+                        <p>${description}</p>
+                    </div>
+                </a>
+            `;
+        });
+
+        container.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById("news-container").innerHTML =
+            "<p>Failed to load news.</p>";
+    }
+}
+
+fetchNews();
+</script>
+
+
     </main>
 
     <footer>
@@ -89,20 +168,7 @@
                 detail: "Expected to be out an expected 2-4 week.",
                 updated: "April 6, 2026"
             },
-            {
-                player: "Alexandre Texier",
-                status: "Out",
-                issue: "Lower-body injury",
-                detail: "Game Time Decision.",
-                updated: "April 7, 2026"
-            },
-            {
-                player: "Kirby Dach",
-                status: "GTD",
-                issue: "Upper-body injury",
-                detail: "Game Time Decision.",
-                updated: "April 7, 2026"
-            }
+            
         ];
 
         function renderInjuries(injuries) {

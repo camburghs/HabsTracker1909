@@ -199,53 +199,51 @@ async function fetchGameStats() {
         }
 
         // 🔥 GET TEAM SHOTS (with fallback)
-let homeShots = null;
-let awayShots = null;
+// 🔥 GET TEAM SHOTS (from scoreboard API)
+let homeShots = "-";
+let awayShots = "-";
 let homeTeam = "";
 let awayTeam = "";
 
-// 🔥 FALLBACK: use goalie shots against (SA)
-if (homeShots === null || awayShots === null) {
+try {
+    const scoreRes = await fetch("https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard");
+    const scoreData = await scoreRes.json();
 
-    players.forEach(team => {
+    const game = scoreData.events.find(e => e.id === currentGameId);
 
-        const teamSide = team.team.homeAway; // "home" or "away"
+    if (game) {
+        const competition = game.competitions[0];
 
-        team.statistics.forEach(statGroup => {
+        const home = competition.competitors.find(t => t.homeAway === "home");
+        const away = competition.competitors.find(t => t.homeAway === "away");
 
-            if (statGroup.name.toLowerCase().includes("goalie")) {
+        homeTeam = home.team.shortDisplayName;
+        awayTeam = away.team.shortDisplayName;
 
-                const labels = statGroup.labels;
-                const saIndex = labels.indexOf("SA");
+        function getStat(team, statName) {
+            return team.statistics.find(s => s.name === statName)?.displayValue || "-";
+        }
 
-                if (saIndex !== -1) {
+        // ✅ DIRECT shots (if available)
+        homeShots = getStat(home, "shots");
+        awayShots = getStat(away, "shots");
 
-                    let totalSA = 0;
+        // 🔥 fallback if shots missing
+        if (homeShots === "-" || awayShots === "-") {
+            homeShots = parseFloat(getStat(away, "saves")) + parseFloat(getStat(home, "goals")) || "-";
+            awayShots = parseFloat(getStat(home, "saves")) + parseFloat(getStat(away, "goals")) || "-";
+        }
+    }
 
-                    statGroup.athletes.forEach(player => {
-                        const val = parseInt(player.stats[saIndex]);
-                        if (!isNaN(val)) totalSA += val;
-                    });
-
-                    // 🔥 Assign OPPOSITE (this is key)
-                    if (teamSide === "home") {
-                        awayShots = totalSA; // home goalie SA = away shots
-                    } else if (teamSide === "away") {
-                        homeShots = totalSA; // away goalie SA = home shots
-                    }
-                }
-            }
-        });
-    });
+} catch (err) {
+    console.error("Scoreboard error:", err);
 }
 
 // Final fallback display
 // 🔥 UPDATE SHOTS UI (instead of putting it in html string)
-homeShots = homeShots ?? "-";
-awayShots = awayShots ?? "-";
 
-document.getElementById("home-shots").textContent = homeShots ?? "-";
-document.getElementById("away-shots").textContent = awayShots ?? "-";
+document.getElementById("home-shots").textContent = homeShots;
+document.getElementById("away-shots").textContent = awayShots;
 
         // 🔥 START HTML
         let html = `
