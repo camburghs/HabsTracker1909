@@ -145,6 +145,7 @@ function displayCanadiens(events) {
         e.competitions[0].competitors.some(c =>
             c.team.displayName === 'Montreal Canadiens'
         )
+
     );
 
     const scoreDiv = document.getElementById('canadiens-score');
@@ -174,6 +175,8 @@ function displayCanadiens(events) {
         game.status.type.name,
         game.status.type.detail
     );
+
+    fetchGameStats(); // 🔥 load shots immediately
 }
 
 // 🔥 GAME STATS FETCH
@@ -200,8 +203,8 @@ async function fetchGameStats() {
 
         // 🔥 GET TEAM SHOTS (with fallback)
 // 🔥 GET TEAM SHOTS (from scoreboard API)
-let homeShots = "-";
-let awayShots = "-";
+let homeShots = "0";
+let awayShots = "0";
 let homeTeam = "";
 let awayTeam = "";
 
