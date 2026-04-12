@@ -12,6 +12,7 @@
 
 <header style="background-image: url('HabsTracker1909Logo.png'); background-size: cover; background-position: center;">
     <div class="header-overlay">
+        <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
         <h1>Montreal Canadiens</h1>
         <p class="tagline">Player roster & stats</p>
     </div>
@@ -37,6 +38,11 @@
             <button onclick="filterPlayers('D')" class="filter-btn">Defense</button>
             <button onclick="filterPlayers('G')" class="filter-btn">Goalies</button>
         </div>
+        <div id="sort-buttons" style="margin-bottom: 15px;">
+            <button onclick="setSort('points', event)" class="sort-btn active">Points</button>
+            <button onclick="setSort('goals', event)" class="sort-btn">Goals</button>
+            <button onClick="setSort('assists', event)" class="sort-btn">Assists</button>
+        </div>
         <!-- ✅ THIS WAS MISSING BEFORE -->
         <div id="players-container">Loading players...</div>
     </section>
@@ -44,6 +50,7 @@
 
 <script>
 let allPlayers = [];
+let currentSort = "points";
 //test api url
 //https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2026/athletes/5344178
 
@@ -157,54 +164,99 @@ async function fetchPlayers() {
 // ✅ Display players WITH stats
 async function displayPlayers(players) {
     const container = document.getElementById('players-container');
-    
 
     if (!players.length) {
         container.innerHTML = "<p>No players found</p>";
         return;
     }
 
-    let html = '';
+    let playersWithStats = [];
 
+    // 🔥 STEP 1: Fetch + store stats
     for (const player of players) {
 
-    const isGoalie = player.position?.abbreviation === "G";
+        const isGoalie = player.position?.abbreviation === "G";
 
-    let statsHtml = "";
+        let statsData;
 
-    if (isGoalie) {
-        const goalieStats = await getGoalieStats(player.id);
+        if (isGoalie) {
+            const goalieStats = await getGoalieStats(player.id);
 
-        statsHtml = `
-            GAA: ${goalieStats.gaa} | SV%: ${goalieStats.savePct}<br>
-            Saves: ${goalieStats.saves} | Wins: ${goalieStats.wins}
-        `;
-    } else {
-        const stats = await getPlayerStats(player.id);
+            statsData = {
+                type: "G",
+                gaa: parseFloat(goalieStats.gaa) || 0,
+                savePct: parseFloat(goalieStats.savePct) || 0,
+                saves: parseInt(goalieStats.saves) || 0,
+                wins: parseInt(goalieStats.wins) || 0
+            };
 
-        statsHtml = `
-            G: ${stats.goals} | A: ${stats.assists} | PTS: ${stats.points}
-        `;
+        } else {
+            const stats = await getPlayerStats(player.id);
+
+            statsData = {
+                type: "S",
+                goals: parseInt(stats.goals) || 0,
+                assists: parseInt(stats.assists) || 0,
+                points: parseInt(stats.points) || 0
+            };
+        }
+
+        playersWithStats.push({
+            player,
+            stats: statsData
+        });
     }
 
-    const height = player.displayHeight || "-";
-    const weight = player.displayWeight || "-";
-    const headshot = player.headshot?.href || "";
+    // 🔥 STEP 2: SORT (default = points)
+    playersWithStats.sort((a, b) => {
+    // goalies always last
+    if (a.stats.type === "G") return 1;
+    if (b.stats.type === "G") return -1;
 
-    html += `
-        <div class="player-card" data-pos="${player.position?.abbreviation}">
-            <img src="${headshot}">
-            <div class="player-name">${player.fullName}</div>
-            <div>#${player.jersey || ''} • ${player.position?.abbreviation || ''}</div>
+    if (currentSort === "goals") {
+        return b.stats.goals - a.stats.goals;
+    } else if (currentSort === "assists") {
+        return b.stats.assists - a.stats.assists;
+    } else {
+        return b.stats.points - a.stats.points; // default
+    }
+});
 
-            <div class="player-stats">
-                ${height} | ${weight}<br>
-                ${statsHtml}<br>
-                
+    // 🔥 STEP 3: Build HTML AFTER sorting
+    let html = '';
+
+    playersWithStats.forEach(({ player, stats }) => {
+
+        const height = player.displayHeight || "-";
+        const weight = player.displayWeight || "-";
+        const headshot = player.headshot?.href || "";
+
+        let statsHtml = "";
+
+        if (stats.type === "G") {
+            statsHtml = `
+                GAA: ${stats.gaa} | SV%: ${stats.savePct}<br>
+                Saves: ${stats.saves} | Wins: ${stats.wins}
+            `;
+        } else {
+            statsHtml = `
+                G: ${stats.goals} | A: ${stats.assists} | PTS: ${stats.points}
+            `;
+        }
+
+        html += `
+            <div class="player-card" data-pos="${player.position?.abbreviation}">
+                <img src="${headshot}">
+                <div class="player-name">${player.fullName}</div>
+                <div>#${player.jersey || ''} • ${player.position?.abbreviation || ''}</div>
+
+                <div class="player-stats">
+                    ${height} | ${weight}<br>
+                    ${statsHtml}
+                </div>
             </div>
-        </div>
-    `;
-}
+        `;
+    });
 
     container.innerHTML = html;
 }
@@ -232,6 +284,17 @@ function filterPlayers(position) {
     });
 
     displayPlayers(filtered);
+}
+
+function setSort(type, event) {
+    currentSort = type;
+
+    const buttons = document.querySelectorAll('.sort-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    event.currentTarget.classList.add('active');
+
+    displayPlayers(allPlayers);
 }
 
 // 🚀 Start

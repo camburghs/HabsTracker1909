@@ -12,6 +12,7 @@
     <header
         style="background-image: url('HabsTracker1909Logo.png'); background-size: cover; background-position: center;">
         <div class="header-overlay">
+            <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
             <h1>Habs Scores</h1>
             <p class="tagline">Out Of Town Games</p>
         </div>
@@ -279,6 +280,33 @@
                         html += `</table><br>`;
                     });
                 });
+                if (data.scoringPlays && data.scoringPlays.length > 0) {
+
+            html += `<h3>Goal Summary</h3>`
+
+            data.scoringPlays.forEach(play => {
+
+                const period = play.period?.displayValue || "";
+                const time = play.period?.displayValue || "";
+
+                //scorer
+                const scorer = play.scorer?.displayName || "";
+
+                const assists = play.assists?.map(a => a.displayName).join(", ") || "Unassisted";
+
+                const team = play.team?.shortDisplayName || "";
+
+                html += `
+                    <div class="goal-play">
+                        <strong>${team}</strong>-${scorer}
+                        <br>
+                        <small>${assists} | ${period} ${time}</small>
+                    </div>
+                `;
+            });
+        } else {
+            html += `<p>No goals yet</p>`;
+        }
 
                 document.getElementById('game-stats-container').innerHTML = html;
 
