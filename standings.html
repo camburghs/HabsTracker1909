@@ -29,7 +29,7 @@
 
     <section class="Standings">
         <h2>Latest Standings</h2>
-        <p>Stay updated with the latest standings and updates from the world of sports.</p>
+        <p class="standings-subtitle">Stay updated with the latest standings and updates from the world of sports.</p>
         <div style="text-align:center; margin-bottom:20px;">
             <button onclick="setView('league', event)" class="view-btn active">League</button>
             <button onclick="setView('conferences', event)" class="view-btn">Conferences</button>
@@ -251,6 +251,20 @@
         fetchNHLStandings();
         setInterval(fetchNHLStandings, 600000);
     </script>
+    <!--find a way to show the categories, maybe drp down-->
+    <div class="standings-cat">
+        <p>GP = Games Played    
+            W = Wins    
+            L = Losses</p>
+        <p>OT + Overtime Losses    PTS = Points</p>
+        <p>DIFF = Goal Differential</p>
+        <p>RW = Regulation Wins</p>
+        <p>ROW = Regulation + Overtime Wins</p>
+        <p>GF = Goals For    GA = Goals Against</p>
+        <p>L10 = Last 10 Games Record    STRK = Streak</p>
+        
+
+    </div>
 
     <footer>
         <p>&copy; 2026 HabsTracker1909. All rights reserved.</p>
