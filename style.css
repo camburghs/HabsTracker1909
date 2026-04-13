@@ -952,4 +952,28 @@ footer {
     height: 40px;
     object-fit: contain;
 }
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* 🔥 Fix oversized image */
+.logo-container img {
+    max-width: 100%;     /* never overflow card */
+    height: auto;        /* keep proportions */
+    border-radius: 10px;
+}
+
+/* Optional: limit size so it doesn’t get TOO big */
+.logo-container img {
+    max-height: 200px;
+}
+
+.logo-container img {
+    max-width: 90%;
+    max-height: 200px;
+    object-fit: contain;
+}
 
