@@ -124,6 +124,7 @@
                 e.competitions[0].competitors.some(c =>
                     c.team.displayName === 'Montreal Canadiens'
                 )
+
             );
 
             const scoreDiv = document.getElementById('canadiens-score');
@@ -153,6 +154,8 @@
                 game.status.type.name,
                 game.status.type.detail
             );
+
+            fetchGameStats(); // 🔥 load shots immediately
         }
 
         // 🔥 GAME STATS FETCH
@@ -178,53 +181,51 @@
                 }
 
                 // 🔥 GET TEAM SHOTS (with fallback)
-                let homeShots = null;
-                let awayShots = null;
+                // 🔥 GET TEAM SHOTS (from scoreboard API)
+                let homeShots = "0";
+                let awayShots = "0";
                 let homeTeam = "";
                 let awayTeam = "";
 
-                // 🔥 FALLBACK: use goalie shots against (SA)
-                if (homeShots === null || awayShots === null) {
+                try {
+                    const scoreRes = await fetch("https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard");
+                    const scoreData = await scoreRes.json();
 
-                    players.forEach(team => {
+                    const game = scoreData.events.find(e => e.id === currentGameId);
 
-                        const teamSide = team.team.homeAway; // "home" or "away"
+                    if (game) {
+                        const competition = game.competitions[0];
 
-                        team.statistics.forEach(statGroup => {
+                        const home = competition.competitors.find(t => t.homeAway === "home");
+                        const away = competition.competitors.find(t => t.homeAway === "away");
 
-                            if (statGroup.name.toLowerCase().includes("goalie")) {
+                        homeTeam = home.team.shortDisplayName;
+                        awayTeam = away.team.shortDisplayName;
 
-                                const labels = statGroup.labels;
-                                const saIndex = labels.indexOf("SA");
+                        function getStat(team, statName) {
+                            return team.statistics.find(s => s.name === statName)?.displayValue || "-";
+                        }
 
-                                if (saIndex !== -1) {
+                        // ✅ DIRECT shots (if available)
+                        homeShots = getStat(home, "shots");
+                        awayShots = getStat(away, "shots");
 
-                                    let totalSA = 0;
+                        // 🔥 fallback if shots missing
+                        if (homeShots === "-" || awayShots === "-") {
+                            homeShots = parseFloat(getStat(away, "saves")) + parseFloat(getStat(home, "goals")) || "-";
+                            awayShots = parseFloat(getStat(home, "saves")) + parseFloat(getStat(away, "goals")) || "-";
+                        }
+                    }
 
-                                    statGroup.athletes.forEach(player => {
-                                        const val = parseInt(player.stats[saIndex]);
-                                        if (!isNaN(val)) totalSA += val;
-                                    });
-
-                                    // 🔥 Assign OPPOSITE (this is key)
-                                    if (teamSide === "home") {
-                                        awayShots = totalSA; // home goalie SA = away shots
-                                    } else if (teamSide === "away") {
-                                        homeShots = totalSA; // away goalie SA = home shots
-                                    }
-                                }
-                            }
-                        });
-                    });
+                } catch (err) {
+                    console.error("Scoreboard error:", err);
                 }
 
                 // Final fallback display
                 // 🔥 UPDATE SHOTS UI (instead of putting it in html string)
-                homeShots = homeShots ?? "-";
-                awayShots = awayShots ?? "-";
 
-                document.getElementById("home-shots").textContent = homeShots ?? "-";
-                document.getElementById("away-shots").textContent = awayShots ?? "-";
+                document.getElementById("home-shots").textContent = homeShots;
+                document.getElementById("away-shots").textContent = awayShots;
 
                 // 🔥 START HTML
                 let html = `
@@ -282,31 +283,31 @@
                 });
                 if (data.scoringPlays && data.scoringPlays.length > 0) {
 
-            html += `<h3>Goal Summary</h3>`
+                    html += `<h3>Goal Summary</h3>`
 
-            data.scoringPlays.forEach(play => {
+                    data.scoringPlays.forEach(play => {
 
-                const period = play.period?.displayValue || "";
-                const time = play.period?.displayValue || "";
+                        const period = play.period?.displayValue || "";
+                        const time = play.period?.displayValue || "";
 
-                //scorer
-                const scorer = play.scorer?.displayName || "";
+                        //scorer
+                        const scorer = play.scorer?.displayName || "";
 
-                const assists = play.assists?.map(a => a.displayName).join(", ") || "Unassisted";
+                        const assists = play.assists?.map(a => a.displayName).join(", ") || "Unassisted";
 
-                const team = play.team?.shortDisplayName || "";
+                        const team = play.team?.shortDisplayName || "";
 
-                html += `
+                        html += `
                     <div class="goal-play">
                         <strong>${team}</strong>-${scorer}
                         <br>
                         <small>${assists} | ${period} ${time}</small>
                     </div>
                 `;
-            });
-        } else {
-            html += `<p>No goals yet</p>`;
-        }
+                    });
+                } else {
+                    html += `<p>No goals yet</p>`;
+                }
 
                 document.getElementById('game-stats-container').innerHTML = html;
 
@@ -322,6 +323,13 @@
             document.querySelector('.game-stats').classList.toggle('active');
             fetchGameStats(); // load when opened
         });
+
+        
+
+
+        
+
+            
 
 
 
