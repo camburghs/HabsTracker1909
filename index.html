@@ -21,7 +21,6 @@
 </head>
 
 <body>
-
     <header
         style="background-image: url('HabsTracker1909Logo.png'); background-size: cover; background-position: center;">
         <div class="header-overlay">
@@ -40,6 +39,15 @@
         <a href="history.html">History</a>
     </nav>
 
+    <div class="playoff-banner top">
+
+        <img class="cup-icon left" src="Stanley-Cup-Emblem.png" alt="Cup logo">
+
+        <span id="series-text" class="series-text"></span>
+
+        <img class="cup-icon right" src="Stanley-Cup-Emblem.png" alt="Cup logo">
+
+    </div>
     <main class="container">
 
         <section class="hero">
@@ -72,11 +80,16 @@
                 </div>
             </div>
 
+
+
             <div id="live-scores">
                 <h3>Out of Town Scoreboard</h3>
                 <div id="scores-container">Loading scores...</div>
             </div>
         </section>
+
+
+
 
         <section class="standings">
             <h2>Latest Standings</h2>
@@ -86,6 +99,8 @@
                     Standings</button>
             </div>
         </section>
+
+
 
         <section class="schedule">
             <h2>Upcoming Schedule</h2>
@@ -138,30 +153,33 @@
                 <div class="info-card">
                     <h3>Logo History</h3>
 
-                    <div class="logo-container">
-                        <img src="HabsLogoHistory (1).png" alt="Logo History">
+                    <div class="logo-history-container">
+                        <img class="logo-history" src="HabsLogoHistory (1).png" alt="logo history">
                     </div>
                 </div>
 
                 <div class="info-card">
                     <h3>Info</h3>
-                    
+
                     <ul class="info-list">
                         <li class="founded"><strong>Founded:</strong> December 4,1909</li>
                         <li class="old-name"><strong>Original Name:</strong> Les Canadiens</li>
                         <li class="current-name"><strong>Offical Name:</strong> Le Club De Hockey Canadien</li>
                         <li class="record"><strong>Record (W-L-T-OTL):</strong> 3716-2563-838-229</li>
                     </ul>
-                    
+
                 </div>
                 <div class="info-card">
                     <h3>Leagues</h3>
-                    
+
                     <ul class="info-list">
-                        <li class="founded"><strong>Current League:</strong> NHL (National Hockey League) 1917-Current</li>
-                        <li class="old-name"><strong>Previous League:</strong> NHA (National Hockey Association) 1909-1917</li>
+                        <li class="founded"><strong>Current League:</strong> NHL (National Hockey League) 1917-Current
+                        </li>
+                        <li class="old-name"><strong>Previous League:</strong> NHA (National Hockey Association)
+                            1909-1917</li>
                     </ul>
                 </div>
+
 
             </div>
         </section>
@@ -238,14 +256,6 @@
 
             const scoreDiv = document.getElementById('canadiens-score');
             const statusDiv = document.getElementById('canadiens-status');
-
-            if (!game) {
-                scoreDiv.textContent = "No game today";
-                currentGameId = null;
-                return;
-            }
-
-            currentGameId = game.id; // 🔥 IMPORTANT
 
             const home = game.competitions[0].competitors[0];
             const away = game.competitions[0].competitors[1];
@@ -519,11 +529,49 @@
                     "<p>Error loading schedule</p>";
             }
         }
+        async function updateSeriesBanner() {
+            try {
+                const res = await fetch("https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard");
+                const data = await res.json();
+
+                const games = data.events || [];
+
+                const habsGame = games.find(g =>
+                    g.competitions[0].competitors.some(c =>
+                        c.team.displayName === "Montreal Canadiens"
+                    )
+                );
+
+                if (!habsGame) {
+                    document.getElementById("series-text").textContent = "";
+                    return;
+                }
+
+                const series = habsGame.competitions[0].series;
+
+                if (series?.summary) {
+                    document.getElementById("series-text").textContent = series.summary;
+                } else if (series) {
+                    const homeWins = series.homeWins ?? 0;
+                    const awayWins = series.awayWins ?? 0;
+
+                    document.getElementById("series-text").textContent =
+                        `Series tied ${homeWins}-${awayWins}`;
+                } else {
+                    document.getElementById("series-text").textContent =
+                        "The Quest For The Cup Starts Soon";
+                }
+
+            } catch (err) {
+                console.error("Series banner error:", err);
+            }
+        }
 
 
 
         // 🔥 INIT
         fetchNHLScores();
+        updateSeriesBanner();
         fetchSchedule();
 
         setInterval(fetchNHLScores, 3000);
