@@ -389,6 +389,34 @@ footer {
       font-family: 'Times New Roman', Times, serif;
 
 }
+/*game-stats*/
+.team-stats {
+    margin-top: 15px;
+}
+.team-stats-header {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #BD3039, #1d428a);
+    color: rgb(255, 255, 255);
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 10px;
+}
+.team-stats-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: 0.4s;
+    background: #e4e3e3;
+    border-radius: 10px;
+    margin-top: 10px;
+    padding: 0 10px;
+}
+.team-stats.active .team-stats-content {
+    max-height: 3000px;
+    padding: 15px;
+}
+
 /* players game stats */
 /* GAME STATS DROPDOWN */
 .game-stats {
@@ -1021,5 +1049,6 @@ footer {
         background-position: 200% 0;
     }
 }
+
 
 

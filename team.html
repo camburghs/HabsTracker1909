@@ -67,7 +67,6 @@ async function getPlayerStats(playerId) {
         const statsRef = playerData?.statistics?.$ref;
 
         if (!statsRef) {
-            console.warn("No stats available for player:", playerId);
             return { goals: "0", assists: "0", points: "0" };
         }
 
