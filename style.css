@@ -16,9 +16,10 @@ body {
 
 /* CONTAINER */
 .container {
+  width: 100%;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0 15px;
 }
 
 /* HEADER */
@@ -161,8 +162,12 @@ tr:hover {
 }
 
 /* HERO */
-.hero {
-  text-align: center;
+/* moblie */
+@media (max-width: 768px) {
+    #canadiens-card {
+        width: 100%;
+        padding: 10px;
+    }
 }
 
 /* FOOTER */
