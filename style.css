@@ -24,7 +24,7 @@ body {
 /* HEADER */
 .header-overlay {
   background: rgba(0,0,0,0.5);
-  padding: 60px 20px;
+  padding: 15px 20px;
   text-align: center;
   color: rgb(255, 255, 255);
   text-shadow: 2px 2px 4px rgba(0,0,0,1.5);
@@ -392,9 +392,10 @@ footer {
 /*game-stats*/
 .team-stats {
     margin-top: 15px;
+    
 }
 .team-stats-header {
-    width: 100%;
+    width: 25%;
     padding: 15px;
     background: linear-gradient(135deg, #BD3039, #1d428a);
     color: rgb(255, 255, 255);
@@ -420,11 +421,11 @@ footer {
 /* players game stats */
 /* GAME STATS DROPDOWN */
 .game-stats {
-    margin-top: 20px;
+    margin-top: 7px;
 }
 
 .stats-header {
-    width: 100%;
+    width: 25%;
     padding: 15px;
     background: linear-gradient(135deg, #BD3039, #1d428a);
     color: rgb(255, 255, 255);
@@ -708,6 +709,7 @@ footer {
 
 /* NEWS PAGE */
 .news-highlight {
+    margin-top: 20px;
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 20px;
