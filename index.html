@@ -7,7 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HabsTracker1909</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        (function () {
+            if (sessionStorage.getItem("theme") === "dark") {
+                document.documentElement.classList.add("dark-mode");
+            }
+        })();
+    </script>
+
 </head>
+<script src="theme.js"></script>
 
 <body>
     <header
@@ -16,6 +25,9 @@
             <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
             <h1>HabsTracker1909</h1>
             <p class="tagline">Your ultimate source for Montreal Canadiens news and information.</p>
+            <button type="button" onclick="toggleDarkMode()">
+                Toggle Dark Mode
+            </button>
         </div>
     </header>
 
@@ -55,6 +67,8 @@
                 <div id="shots-container">
                     <span id="away-shots">0</span> Shots - Shots <span id="home-shots">0</span>
                 </div>
+
+
                 <div class="team-stats">
                     <button class="team-stats-header">Team Stats</button>
 
@@ -70,6 +84,7 @@
                         <p>Click to load stats</p>
                     </div>
                 </div>
+
             </div>
 
 
@@ -698,6 +713,7 @@
                 overlay.classList.remove('active');
             }, 1500);
         }
+
 
 
     </script>

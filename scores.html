@@ -6,7 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        (function () {
+            if (sessionStorage.getItem("theme") === "dark") {
+                document.documentElement.classList.add("dark-mode");
+            }
+        })();
+    </script>
 </head>
+<script src="theme.js"></script>
 
 <body>
     <header
@@ -15,6 +23,9 @@
             <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
             <h1>Habs Scores</h1>
             <p class="tagline">Out Of Town Games</p>
+            <button type="button" onclick="toggleDarkMode()">
+                Toggle Dark Mode
+            </button>
         </div>
     </header>
 
@@ -456,6 +467,8 @@
                 overlay.classList.remove('active');
             }, 1500);
         }
+
+        
 
 
     </script>

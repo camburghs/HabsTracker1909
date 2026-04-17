@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>History</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        (function () {
+            if (sessionStorage.getItem("theme") === "dark") {
+                document.documentElement.classList.add("dark-mode");
+            }
+        })();
+    </script>
 </head>
+<script src="theme.js"></script>
 
 <body>
 
@@ -14,6 +22,9 @@
         <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
         <h1>Team History</h1>
         <p class="tagline">Discover the rich history of the Montreal Canadiens.</p>
+        <button type="button" onclick="toggleDarkMode()">
+                Toggle Dark Mode
+        </button>
     </div>
 </header>
 
@@ -343,6 +354,8 @@ headers.forEach(header => {
         current.classList.toggle('active');
     });
 });
+
+
 </script>
 
 <footer>

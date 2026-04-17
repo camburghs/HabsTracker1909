@@ -9,8 +9,8 @@
 /* GLOBAL */
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f5f7fb;
-  color: #1a1a1a;
+  background: var(--bg-color);
+  color: var(--text-color);
   line-height: 1.6;
 }
 
@@ -20,6 +20,29 @@ body {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 15px;
+}
+/* Dark mode */
+:root {
+    --bg-color: #f5f7fb;
+    --text-color: #1a1a1a;
+    --card-bg: #ffffff;
+    --accent: #BD3039; /* Canadiens red */
+    --secondary: #1d428a; /* Canadiens blue */
+    --border-color: #ddd;
+    --nav-bg: #c9c6c6;
+}
+.dark-mode {
+    --bg-color: #0b0f14;        /* deep dark */
+    --text-color: #e6edf3;      /* soft white */
+    --card-bg: #161b22;         /* dark cards */
+    --accent: #ff4d5a;          /* brighter red */
+    --secondary: #4ea1ff;       /* lighter blue */
+    --border-color: #2a2f36;
+    --nav-bg: #3f3f3f;
+}
+.dark-mode #canadiens-card {
+    background: linear-gradient(135deg, #BD3039, #111827, #1d428a);
+    color: white;
 }
 
 /* HEADER */
@@ -53,7 +76,7 @@ nav {
   display: flex;
   justify-content: center;
   gap: 25px;
-  background: #c5c5c5;
+  background: var(--nav-bg);
   padding: 15px;
   position: sticky;
   top: 0;
@@ -62,7 +85,7 @@ nav {
 }
 
 nav a {
-  color: #242424;
+  color: var(--text-color);
   text-decoration: none;
   font-weight: bold;
   padding: 6px 10px;
@@ -73,18 +96,18 @@ nav a {
 }
 
 nav a:hover {
-  background: #BD3039;
+  background: var(--accent);
   color: white;
 }
 
 nav .active {
-  color: #BD3039;
-  border-bottom: 2px solid #BD3039;
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
 }
 
 /* SECTIONS */
 section {
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 15px;
   padding: 25px;
   margin-bottom: 30px;
@@ -137,7 +160,7 @@ table {
   margin-top: 15px;
   border-radius: 10px;
   overflow: hidden;
-  background: #fff;
+  background: var(--card-bg);
 }
 
 th {
@@ -145,6 +168,7 @@ th {
   color: white;
   padding: 12px;
   text-transform: uppercase;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 td {
@@ -154,7 +178,7 @@ td {
 }
 
 tr:nth-child(even) {
-  background: #f9f9f9;
+  background: rgba(255,255,255,0.05);
 }
 
 tr:hover {
@@ -394,11 +418,14 @@ footer {
       font-family: 'Times New Roman', Times, serif;
 
 }
+
+
 /*game-stats*/
 .team-stats {
     margin-top: 15px;
     
 }
+
 .team-stats-header {
     width: 25%;
     padding: 15px;
@@ -410,6 +437,7 @@ footer {
     border-radius: 10px;
 }
 .team-stats-content {
+    
     max-height: 0;
     overflow: hidden;
     transition: 0.4s;
@@ -441,6 +469,7 @@ footer {
 }
 
 .stats-content {
+    
     max-height: 0;
     overflow: hidden;
     transition: 0.4s;
@@ -618,11 +647,12 @@ footer {
   text-align: center;
 }
 .standings-cat {
+    color: var(--text-color);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 8px;
     font-size: 14px;
-    background: #cac9c9;
+    background: #919191;
     padding: 10px;
     border-radius: 8px;
 }
@@ -647,7 +677,7 @@ footer {
 }
 
 .Fun-facts p {
-    color: #000000;
+    color: var(--text-color);
     margin-bottom: 25px;
       font-family: 'Times New Roman', Times, serif;
 
@@ -792,13 +822,14 @@ footer {
 }
 
 .injury-card {
-    background: linear-gradient(180deg, #ffffff, #eef2f8);
+    background: var(--nav-bg);
     border-top: 5px solid #bd3039;
 }
 .injury-card:hover {
     transform: translateY(-5px) scale(1.02);
     box-shadow: 0 10px 25px rgba(0,0,0,0.4);
 }
+
 
 .injury-card-top {
     display: flex;
@@ -932,7 +963,8 @@ footer {
 }
 
 .info-card {
-    background: rgb(207, 207, 207);
+    background: var(--card-bg);
+    color: var(--text-color);
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -955,7 +987,7 @@ footer {
 }
 .info-card li {
     margin-bottom: 8px;
-    color: #000000;
+    color: var(--text-color);
 }
 
 .arena-list {

@@ -6,7 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        (function () {
+            if (sessionStorage.getItem("theme") === "dark") {
+                document.documentElement.classList.add("dark-mode");
+            }
+        })();
+    </script>
 </head>
+<script src="theme.js"></script>
 
 <body>
     <header
@@ -15,6 +23,9 @@
             <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
             <h1>Standings</h1>
             <p class="tagline">Latest Teams Standings</p>
+            <button type="button" onclick="toggleDarkMode()">
+                Toggle Dark Mode
+            </button>
         </div>
     </header>
 
@@ -115,53 +126,53 @@
                 });
             } else if (currentView === 'divisions') {
 
-    const divisionMap = {
-        "Atlantic": [],
-        "Metropolitan": [],
-        "Central": [],
-        "Pacific": []
-    };
+                const divisionMap = {
+                    "Atlantic": [],
+                    "Metropolitan": [],
+                    "Central": [],
+                    "Pacific": []
+                };
 
-    standingsData.children.forEach(conf => {
-        const entries = conf.standings?.entries || [];
+                standingsData.children.forEach(conf => {
+                    const entries = conf.standings?.entries || [];
 
-        entries.forEach(team => {
+                    entries.forEach(team => {
 
-            const teamName = team.team.displayName;
+                        const teamName = team.team.displayName;
 
-            // 🧠 Manual mapping (this is the key fix)
-            if (conf.name === "Eastern Conference") {
+                        // 🧠 Manual mapping (this is the key fix)
+                        if (conf.name === "Eastern Conference") {
 
-                if (["Boston Bruins","Toronto Maple Leafs","Montreal Canadiens","Buffalo Sabres","Ottawa Senators","Detroit Red Wings","Florida Panthers","Tampa Bay Lightning"].includes(teamName)) {
-                    divisionMap["Atlantic"].push(team);
-                } else {
-                    divisionMap["Metropolitan"].push(team);
-                }
+                            if (["Boston Bruins", "Toronto Maple Leafs", "Montreal Canadiens", "Buffalo Sabres", "Ottawa Senators", "Detroit Red Wings", "Florida Panthers", "Tampa Bay Lightning"].includes(teamName)) {
+                                divisionMap["Atlantic"].push(team);
+                            } else {
+                                divisionMap["Metropolitan"].push(team);
+                            }
 
-            } else if (conf.name === "Western Conference") {
+                        } else if (conf.name === "Western Conference") {
 
-                if (["Colorado Avalanche","Dallas Stars","Minnesota Wild","Winnipeg Jets","St. Louis Blues","Nashville Predators","Chicago Blackhawks","Utah Mammoth"].includes(teamName)) {
-                    divisionMap["Central"].push(team);
-                } else {
-                    divisionMap["Pacific"].push(team);
-                }
+                            if (["Colorado Avalanche", "Dallas Stars", "Minnesota Wild", "Winnipeg Jets", "St. Louis Blues", "Nashville Predators", "Chicago Blackhawks", "Utah Mammoth"].includes(teamName)) {
+                                divisionMap["Central"].push(team);
+                            } else {
+                                divisionMap["Pacific"].push(team);
+                            }
+                        }
+                    });
+                });
+
+                Object.keys(divisionMap).forEach(divName => {
+
+                    let teams = divisionMap[divName];
+
+                    teams.sort((a, b) => {
+                        const aPts = a.stats.find(s => s.name === 'points')?.value || 0;
+                        const bPts = b.stats.find(s => s.name === 'points')?.value || 0;
+                        return bPts - aPts;
+                    });
+
+                    html += buildTable(teams, divName);
+                });
             }
-        });
-    });
-
-    Object.keys(divisionMap).forEach(divName => {
-
-        let teams = divisionMap[divName];
-
-        teams.sort((a, b) => {
-            const aPts = a.stats.find(s => s.name === 'points')?.value || 0;
-            const bPts = b.stats.find(s => s.name === 'points')?.value || 0;
-            return bPts - aPts;
-        });
-
-        html += buildTable(teams, divName);
-    });
-}
 
             container.innerHTML = html;
         }
@@ -249,29 +260,30 @@
             renderStandings();
         }
 
+        
         fetchNHLStandings();
         setInterval(fetchNHLStandings, 600000);
     </script>
     <!--find a way to show the categories, maybe drp down-->
     <div class="standings-cat">
-    <div><strong>GP</strong> Games Played</div>
-    <div><strong>W</strong> Wins</div>
-    <div><strong>L</strong> Losses</div>
-    <div><strong>OT</strong> Overtime Losses</div>
-    <div><strong>PTS</strong> Points</div>
-    <div><strong>DIFF</strong> Goal Differential</div>
-    <div><strong>RW</strong> Regulation Wins</div>
-    <div><strong>ROW</strong> Regulation + OT Wins</div>
-    <div><strong>GF</strong> Goals For</div>
-    <div><strong>GA</strong> Goals Against</div>
-    <div><strong>L10</strong> Last 10 Games</div>
-    <div><strong>STRK</strong> Streak</div>
-    <div><strong>X</strong> Cliched Playoffs</div>
-    <div><strong>Y</strong> Clinched Division</div>
-    <div><strong>Z</strong> Clinched Conference</div>
-    <div><strong>*</strong> Clinched Presidents Trophy(League)</div>
-    <div><strong>e</strong> Eliminated from Playoff contention</div>
-</div>
+        <div><strong>GP</strong> Games Played</div>
+        <div><strong>W</strong> Wins</div>
+        <div><strong>L</strong> Losses</div>
+        <div><strong>OT</strong> Overtime Losses</div>
+        <div><strong>PTS</strong> Points</div>
+        <div><strong>DIFF</strong> Goal Differential</div>
+        <div><strong>RW</strong> Regulation Wins</div>
+        <div><strong>ROW</strong> Regulation + OT Wins</div>
+        <div><strong>GF</strong> Goals For</div>
+        <div><strong>GA</strong> Goals Against</div>
+        <div><strong>L10</strong> Last 10 Games</div>
+        <div><strong>STRK</strong> Streak</div>
+        <div><strong>X</strong> Cliched Playoffs</div>
+        <div><strong>Y</strong> Clinched Division</div>
+        <div><strong>Z</strong> Clinched Conference</div>
+        <div><strong>*</strong> Clinched Presidents Trophy(League)</div>
+        <div><strong>e</strong> Eliminated from Playoff contention</div>
+    </div>
 
     <footer>
         <p>&copy; 2026 HabsTracker1909. All rights reserved.</p>

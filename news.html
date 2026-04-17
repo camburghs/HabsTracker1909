@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-    
+
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Habs Injury News</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        (function () {
+            if (sessionStorage.getItem("theme") === "dark") {
+                document.documentElement.classList.add("dark-mode");
+            }
+        })();
+    </script>
 </head>
+<script src="theme.js"></script>
 
 <body>
     <header
@@ -16,6 +24,9 @@
             <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
             <h1>Habs Injury News</h1>
             <p class="tagline">Montreal Canadiens availability, status updates, and injury notes.</p>
+            <button type="button" onclick="toggleDarkMode()">
+                Toggle Dark Mode
+            </button>
         </div>
     </header>
 
@@ -33,9 +44,9 @@
         <div id="news-container">
             <p>Loading News...</p>
         </div>
-        
 
-        
+
+
 
         <section class="news-highlight">
             <div class="news-highlight-copy">
@@ -65,59 +76,60 @@
 
         <section class="injury-disclaimer">
             <h2>Note</h2>
-            <p>         
-                                            
+            <p>
+
                 Injury statuses can change quickly around morning skates and game-time decisions. This page is designed
-                as a clean team tracker and may need manual refreshes when the club announces a new update. May not be accurate to 
+                as a clean team tracker and may need manual refreshes when the club announces a new update. May not be
+                accurate to
                 Day to Day injuries
             </p>
         </section>
 
-        
 
-<script>
-async function fetchNews() {
-    try {
-        const res = await fetch("https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/news");
-        const data = await res.json();
 
-        const allArticles = data.articles || [];
+        <script>
+            async function fetchNews() {
+                try {
+                    const res = await fetch("https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/news");
+                    const data = await res.json();
 
-        // 🔥 SMART FILTER (category + text)
-        let habsArticles = allArticles.filter(article =>
-            // 1. Check categories (BEST method)
-            article.categories?.some(cat =>
-                cat.type === "team" &&
-                cat.description === "Montreal Canadiens"
-            )
-            // 2. Fallback to text search
-            || (article.headline + " " + (article.description || ""))
-                .toLowerCase()
-                .includes("canadiens")
-            || (article.headline + " " + (article.description || ""))
-                .toLowerCase()
-                .includes("montreal")
-        );
+                    const allArticles = data.articles || [];
 
-        // 🔥 FALLBACK: if no Habs news, show general NHL news
-        const articlesToDisplay = habsArticles.length ? habsArticles : allArticles;
+                    // 🔥 SMART FILTER (category + text)
+                    let habsArticles = allArticles.filter(article =>
+                        // 1. Check categories (BEST method)
+                        article.categories?.some(cat =>
+                            cat.type === "team" &&
+                            cat.description === "Montreal Canadiens"
+                        )
+                        // 2. Fallback to text search
+                        || (article.headline + " " + (article.description || ""))
+                            .toLowerCase()
+                            .includes("canadiens")
+                        || (article.headline + " " + (article.description || ""))
+                            .toLowerCase()
+                            .includes("montreal")
+                    );
 
-        const container = document.getElementById("news-container");
+                    // 🔥 FALLBACK: if no Habs news, show general NHL news
+                    const articlesToDisplay = habsArticles.length ? habsArticles : allArticles;
 
-        if (!articlesToDisplay.length) {
-            container.innerHTML = "<p>No news available.</p>";
-            return;
-        }
+                    const container = document.getElementById("news-container");
 
-        let html = "";
+                    if (!articlesToDisplay.length) {
+                        container.innerHTML = "<p>No news available.</p>";
+                        return;
+                    }
 
-        articlesToDisplay.slice(0, 10).forEach(article => {
-            const title = article.headline;
-            const description = article.description || "";
-            const image = article.images?.[0]?.url || "";
-            const link = article.links?.web?.href || "#";
+                    let html = "";
 
-            html += `
+                    articlesToDisplay.slice(0, 10).forEach(article => {
+                        const title = article.headline;
+                        const description = article.description || "";
+                        const image = article.images?.[0]?.url || "";
+                        const link = article.links?.web?.href || "#";
+
+                        html += `
                 <a href="${link}" target="_blank" class="news-card">
                     <img src="${image}" alt="">
                     <div class="news-content">
@@ -126,20 +138,20 @@ async function fetchNews() {
                     </div>
                 </a>
             `;
-        });
+                    });
 
-        container.innerHTML = html;
+                    container.innerHTML = html;
 
-    } catch (err) {
-        console.error(err);
-        document.getElementById("news-container").innerHTML =
-            "<p>Failed to load news.</p>";
-    }
-}
+                } catch (err) {
+                    console.error(err);
+                    document.getElementById("news-container").innerHTML =
+                        "<p>Failed to load news.</p>";
+                }
+            }
 
-fetchNews();
-setInterval(fetchNews, 21600000); // refresh every 6 hours
-</script>
+            fetchNews();
+            setInterval(fetchNews, 21600000); // refresh every 6 hours
+        </script>
 
 
 
@@ -173,7 +185,7 @@ setInterval(fetchNews, 21600000); // refresh every 6 hours
                 detail: "Will be re-evalueated in 2 weeks",
                 updated: "April 12, 2026"
             },
-            
+
         ];
 
         function renderInjuries(injuries) {
@@ -190,10 +202,12 @@ setInterval(fetchNews, 21600000); // refresh every 6 hours
                 </article>
                 
             `).join('');
-            
+
         }
 
         renderInjuries(fallbackInjuries);
+
+        
     </script>
 </body>
 

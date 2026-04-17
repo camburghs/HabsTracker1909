@@ -22,7 +22,7 @@ Saves - Save % - GAA - Wins
 
 **Team Stats (Live Games)** - Hits - PIM (Penalty Minutes) - Goal Summary
 
-**Latest News** - Canadiens-focused NHL news feed
+**Latest News** - NHL news feed
 
 **Standings** - GP, W, L, OTL, PTS, DIFF, RW, ROW, GF, GA, L10, STRK
 
