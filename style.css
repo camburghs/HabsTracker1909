@@ -40,6 +40,45 @@ body {
     --border-color: #2a2f36;
     --nav-bg: #3f3f3f;
 }
+/* DARK MODE TOGGLE BUTTON */
+.theme-btn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+
+    padding: 10px 14px;
+    border: none;
+    border-radius: 999px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    background: linear-gradient(135deg, #BD3039, #1d428a);
+    color: white;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+
+    transition: all 0.25s ease;
+}
+
+/* hover effect */
+.theme-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+}
+
+/* active click effect */
+.theme-btn:active {
+    transform: scale(0.95);
+}
+
+/* DARK MODE override (optional extra pop) */
+html.dark-mode .theme-btn {
+    background: linear-gradient(135deg, #1f6feb, #0d1117);
+    box-shadow: 0 4px 12px rgba(255,255,255,0.1);
+}
 .dark-mode #canadiens-card {
     background: linear-gradient(135deg, #BD3039, #111827, #1d428a);
     color: white;
