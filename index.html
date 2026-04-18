@@ -481,14 +481,15 @@
                     container.innerHTML = "<p>No upcoming games</p>";
                     return;
                 }
+                
 
-                let html = `<table>
-            <tr>
-                <th>Date</th>
-                <th>Opponent</th>
-                <th>Time</th>
-            </tr>
-        `;
+               //  let html = `<table>
+            //<tr>
+              //  <th>Date</th>
+              //  <th>Opponent</th>
+               // <th>Time</th>
+           // </tr>
+       // `; 
 
                 const now = new Date();
 
@@ -501,6 +502,8 @@
                 html = ""; // reset html since we're doing custom cards
                 nextGames.forEach(game => {
                     const comp = game.competitions[0];
+                    const gameNote = comp.notes?.[0]?.headline || "";
+                    let displayGameNote = gameNote;
                     const home = comp.competitors[0];
                     const away = comp.competitors[1];
 
@@ -511,6 +514,25 @@
                     const opponent = isHabsHome ? away : home;
 
                     const date = new Date(game.date);
+
+                    const match = gameNote.match(/Game (\d+)/);
+
+                    if (match) {
+                        const gameNumber = parseInt(match[1]);
+
+                        if (gameNumber >= 5) {
+                            displayGameNote = `Game ${gameNumber} (If Necessary)`;
+                        }
+                    }
+
+                    let displayTime;
+                    const rawTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    if (rawTime === "12:00 AM") {
+                        displayTime = "TBD";
+                    } else {
+                        displayTime = rawTime;
+                    }
 
                     html += `
         <div class="schedule-card">
@@ -525,12 +547,14 @@
                 <img src="${homeLogo}" class="schedule-logo">
             </div>
 
+            ${gameNote ? `<div class="game-label">${displayGameNote}</div>` : ""}
+
             <div class="schedule-date">
                 ${date.toLocaleDateString()}
             </div>
 
             <div class="schedule-time">
-                ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                ${displayTime}
             </div>
 
             <div style="margin-top:10px;">
@@ -543,7 +567,7 @@
                 container.innerHTML = html;
 
                 html += `</table>`;
-                container.innerHTML = html;
+                
 
             } catch (err) {
                 console.error(err);
