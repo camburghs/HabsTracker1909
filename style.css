@@ -16,10 +16,14 @@ body {
 
 /* CONTAINER */
 .container {
+
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 15px;
+}
+.site-info {
+    text-align: center;
 }
 /* Dark mode */
 :root {
@@ -30,6 +34,10 @@ body {
     --secondary: #1d428a; /* Canadiens blue */
     --border-color: #ddd;
     --nav-bg: #c9c6c6;
+    --his-text: #1a1a1a;
+    --stand-hov: #c9c6c6;
+    --stand-cat: #c9c6c6;
+    --stand-cat-txt: #000000;
 }
 .dark-mode {
     --bg-color: #0b0f14;        /* deep dark */
@@ -39,6 +47,10 @@ body {
     --secondary: #4ea1ff;       /* lighter blue */
     --border-color: #2a2f36;
     --nav-bg: #3f3f3f;
+    --his-text: #1a1a1a;
+    --stand-hov: #646363b3;
+    --stand-cat: #c9c6c6;
+    --stand-cat-txt: #000000;
 }
 /* DARK MODE TOGGLE BUTTON */
 .theme-btn {
@@ -161,6 +173,9 @@ h2 {
   font-weight: bold;
   
 }
+.hero {
+    margin-top: 10px;
+}
 
 /* CARD */ 
 #canadiens-card { 
@@ -190,6 +205,9 @@ h2 {
 
 .score-logo {
   width: 40px;
+}
+.other-score-header {
+    text-align: center;
 }
 
 /* TABLE */
@@ -221,7 +239,7 @@ tr:nth-child(even) {
 }
 
 tr:hover {
-  background: #f1f1f1;
+  background: var(--stand-hov);
 }
 
 /* HERO */
@@ -354,6 +372,7 @@ footer {
 .era-content {
   max-height: 0;
   overflow: hidden;
+  color: var(--his-text);
   background: #e6e5e5;
   padding: 0 15px;
   transition: max-height 0.4s ease, padding 0.3s ease;
@@ -468,8 +487,9 @@ footer {
 .team-stats-header {
     width: 25%;
     padding: 15px;
-    background: linear-gradient(135deg, #BD3039, #1d428a);
+    background: linear-gradient(135deg, #a9a9a9, #a4a4a4);
     color: rgb(255, 255, 255);
+    text-shadow: #000000 1px 1px 2px;
     border: none;
     font-size: 1.2rem;
     cursor: pointer;
@@ -499,8 +519,9 @@ footer {
 .stats-header {
     width: 25%;
     padding: 15px;
-    background: linear-gradient(135deg, #BD3039, #1d428a);
+    background: linear-gradient(135deg, #a9a9a9, #a4a4a4);
     color: rgb(255, 255, 255);
+    text-shadow: #000000 1px 1px 2px;
     border: none;
     font-size: 1.2rem;
     cursor: pointer;
@@ -686,12 +707,12 @@ footer {
   text-align: center;
 }
 .standings-cat {
-    color: var(--text-color);
+    color: var(--stand-cat-txt);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 8px;
     font-size: 14px;
-    background: #919191;
+    background: var(--stand-cat);
     padding: 10px;
     border-radius: 8px;
 }

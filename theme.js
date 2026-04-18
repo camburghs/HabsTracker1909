@@ -8,7 +8,8 @@ function applyTheme() {
     }
 }
 
-
+// Run on every page load
+document.addEventListener("DOMContentLoaded", applyTheme);
 
 // Toggle function (call from button)
 function toggleDarkMode() {
@@ -20,5 +21,3 @@ function toggleDarkMode() {
         sessionStorage.setItem("theme", "light");
     }
 }
-// Run on every page load
-document.addEventListener("DOMContentLoaded", applyTheme);
