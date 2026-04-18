@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<script src="theme.js"></script>
 
 <head>
     <meta charset="UTF-8">
@@ -10,12 +10,12 @@
     <script>
         (function () {
             if (sessionStorage.getItem("theme") === "dark") {
-                document.documentElement.classList.add("dark-mode");
+                document.documentElement.classList.toggle("dark-mode");
             }
-        })();
+        });
     </script>
 </head>
-<script src="theme.js"></script>
+
 
 <body>
     <header
@@ -182,8 +182,8 @@
                 player: "Noah Dobson",
                 status: "OUT",
                 issue: "Upper-body injury",
-                detail: "Will be re-evalueated in 2 weeks",
-                updated: "April 12, 2026"
+                detail: "Thumb surgery, out first round",
+                updated: "April 18, 2026"
             },
 
         ];

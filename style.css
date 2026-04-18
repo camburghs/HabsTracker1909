@@ -74,7 +74,7 @@ body {
     transform: scale(0.95);
 }
 
-/* DARK MODE override (optional extra pop) */
+
 html.dark-mode .theme-btn {
     background: linear-gradient(135deg, #1f6feb, #0d1117);
     box-shadow: 0 4px 12px rgba(255,255,255,0.1);
