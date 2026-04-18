@@ -46,7 +46,7 @@ Saves - Save % - GAA - Wins
 **Project Structure**
 
 HabsTracker1909/ │── index.html │── news.html │── scores.html │──
-standings.html │── team.html │── history.html │── style.css │── assets/
+standings.html │── team.html │── history.html │── style.css │── theme.js |── assets/
 
 ------------------------------------------------------------------------
 
