@@ -38,6 +38,7 @@ body {
     --stand-hov: #c9c6c6;
     --stand-cat: #c9c6c6;
     --stand-cat-txt: #000000;
+    --team-stats-txt: #000000;
 }
 .dark-mode {
     --bg-color: #0b0f14;        /* deep dark */
@@ -51,6 +52,7 @@ body {
     --stand-hov: #646363b3;
     --stand-cat: #c9c6c6;
     --stand-cat-txt: #000000;
+    --team-stats-txt: #000000;
 }
 /* DARK MODE TOGGLE BUTTON */
 .theme-btn {
@@ -653,6 +655,36 @@ footer {
     font-weight: bold;
     margin-top: 5px;
 }
+.team-stats-text  {
+    color: var(--team-stats-txt);
+}
+.game-stats-text  {
+    color: var(--team-stats-txt);
+}
+
+.team-shots-text {
+    color: var(--team-stats-txt);
+}
+.player-stats-text {
+    color: var(--team-stats-txt);
+}
+.team-stats-name-txt {
+    color: var(--team-stats-txt);
+}
+.no-game-stats {
+    color: var(--team-stats-txt);
+}
+.score-logo {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-right: 8px;
+    display: inline-block;
+}
+
+
+
 
 /* HOME / AWAY BADGE */
 .schedule-badge {
@@ -911,6 +943,10 @@ footer {
     background: rgba(189, 48, 57, 0.16);
     color: #8b1621;
 }
+.injury-status.in {
+    background: rgba(6, 187, 30, 0.16);
+    color: green;
+}
 .injury-status.gtd{
     background: rgba(11, 134, 28, 0.16);
     color: #168b1c;
@@ -1150,4 +1186,16 @@ footer {
 }
 
 
+/*penalties*/
+.penalty-play {
+    margin-bottom: 10px;
+    padding: 8px;
+    border-left: 3px solid orange;
+    background: #111;
+    color: white;
+    border-radius: 6px;
+}
 
+#penalty-container {
+    margin-top: 10px;
+}
