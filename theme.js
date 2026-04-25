@@ -1,23 +1,15 @@
-function applyTheme() {
+function toggleDarkMode() {
+    const root = document.documentElement;
+
+    const isDark = root.classList.toggle("dark-mode");
+
+    sessionStorage.setItem("theme", isDark ? "dark" : "light");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
     const theme = sessionStorage.getItem("theme");
 
     if (theme === "dark") {
-        document.body.classList.add("dark-mode");
-    } else {
-        document.body.classList.remove("dark-mode");
+        document.documentElement.classList.add("dark-mode");
     }
-}
-
-// Run on every page load
-document.addEventListener("DOMContentLoaded", applyTheme);
-
-// Toggle function (call from button)
-function toggleDarkMode() {
-    document.body.classList.toggle("dark-mode");
-
-    if (document.body.classList.contains("dark-mode")) {
-        sessionStorage.setItem("theme", "dark");
-    } else {
-        sessionStorage.setItem("theme", "light");
-    }
-}
+});

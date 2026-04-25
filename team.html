@@ -4,7 +4,9 @@
 <head>
     <script>
         (function () {
-            if (sessionStorage.getItem("theme") === "dark") {
+            const theme = sessionStorage.getItem("theme");
+
+            if (theme === "dark") {
                 document.documentElement.classList.add("dark-mode");
             }
         })();

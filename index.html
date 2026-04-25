@@ -5,7 +5,9 @@
 <head>
     <script>
         (function () {
-            if (sessionStorage.getItem("theme") === "dark") {
+            const theme = sessionStorage.getItem("theme");
+
+            if (theme === "dark") {
                 document.documentElement.classList.add("dark-mode");
             }
         })();
@@ -24,7 +26,7 @@
         style="background-image: url('HabsTracker1909Logo.png'); background-size: cover; background-position: center;">
         <div class="header-overlay">
             <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
-            <h1>HabsTracker1909</h1>
+            <h1 class="title">HabsTracker1909</h1>
             <p class="tagline">Your ultimate source for Montreal Canadiens news and information.</p>
             <button class="theme-btn" type="button" onclick="toggleDarkMode()">
                 Toggle Dark Mode
@@ -294,7 +296,7 @@
                 return;
             }
 
-            currentGameId = game.id; 
+            currentGameId = game.id;
 
             const home = game.competitions[0].competitors[0];
             const away = game.competitions[0].competitors[1];
@@ -317,14 +319,14 @@
 
                 const pp = getPowerPlayInfo(game);
 
-                
+
                 let homeShots = stats?.homeShots ?? 0;
                 let awayShots = stats?.awayShots ?? 0;
 
                 document.getElementById("home-shots").textContent = homeShots;
                 document.getElementById("away-shots").textContent = awayShots;
 
-                
+
                 if (!pp || !pp.situationText.includes("Power Play")) {
                     penaltyContainer.innerHTML = `
             <div class="penalty-box">
@@ -387,7 +389,7 @@
 
                 if (!players.length) {
                     document.getElementById('game-stats-container').innerHTML =
-                        `<p>Stats will appear once the game starts</p>`;
+                        `<p class="no-stat-yet">Stats will appear once the game starts</p>`;
                     return;
                 }
 
@@ -435,13 +437,7 @@
                 // Final fallback display
                 // 🔥 UPDATE SHOTS UI (instead of putting it in html string)
 
-                updateGameCenterUI(
-                    { competitions: [{ situation: game?.competitions?.[0]?.situation }] },
-                    {
-                        homeShots,
-                        awayShots
-                    }
-                );
+                
 
                 // 🔥 START HTML
                 let html = `
@@ -595,7 +591,7 @@
                     if (match) {
                         const gameNumber = parseInt(match[1]);
 
-                        if (gameNumber >= 5) {
+                        if (gameNumber >= 6) {
                             displayGameNote = `Game ${gameNumber} (If Necessary)`;
                         }
                     }
@@ -664,7 +660,7 @@
                 );
 
                 if (!habsGame) {
-                    document.getElementById("series-text").textContent = "MTL Leads 1-0";
+                    document.getElementById("series-text").textContent = "Tied 1-1";
                     return;
                 }
 
@@ -712,7 +708,7 @@
 
                 // ❌ If game hasn't started → DON'T show stats
                 if (gameState === "pre") {
-                    container.innerHTML = "<p>Stats will appear once the game starts</p>";
+                    container.innerHTML = `<p class="no-stat-yet">Stats will appear once the game starts</p>`;
                     return;
                 }
 

@@ -109,8 +109,15 @@ html.dark-mode .theme-btn {
 }
 
 .header-overlay h1 {
-  font-size: 3rem;
+  font-size: 5rem;
 
+}
+.title {
+    color: white;
+    text-shadow:
+        0 0 12px rgb(0, 0, 0)
+        0 0 6px rgb(0, 0, 0);
+    
 }
 
 .tagline {
@@ -164,7 +171,7 @@ section {
   border-radius: 15px;
   padding: 25px;
   margin-bottom: 30px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
 }
 
 /* HEADINGS */
@@ -1199,3 +1206,7 @@ footer {
 #penalty-container {
     margin-top: 10px;
 }
+.no-stat-yet {
+    color: var(--team-stats-txt);
+}
+
