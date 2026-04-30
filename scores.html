@@ -3,17 +3,21 @@
 <script src="theme.js"></script>
 
 <head>
+    <script>
+        (function () {
+            const theme = sessionStorage.getItem("theme");
+
+            if (theme === "dark") {
+                document.documentElement.classList.add("dark-mode");
+            }
+        })();
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
-    <script>
-        (function () {
-            if (sessionStorage.getItem("theme") === "dark") {
-                document.documentElement.classList.add("dark-mode");
-            }
-        });
-    </script>
+
 </head>
 
 
@@ -54,6 +58,8 @@
                 <div id="canadiens-status">
 
                 </div>
+                <div id="penalty-container"></div>
+
                 <div id="shots-container">
                     <span id="away-shots">0</span> Shots - Shots <span id="home-shots">0</span>
                 </div>
@@ -89,6 +95,13 @@
     </div>
 
     <script>
+
+
+        function formatGameStatus(type, detail) {
+            if (type === "STATUS_FINAL") return "Final";
+            return detail;
+        }
+
         let currentGameId = null;
 
         function formatGameStatus(type, detail) {
@@ -96,7 +109,6 @@
             return detail;
         }
 
-        // 🔥 FETCH SCORES
         async function fetchNHLScores() {
             try {
                 const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard');
@@ -119,11 +131,25 @@
                     const away = event.competitions[0].competitors[1];
                     const home = event.competitions[0].competitors[0];
 
+                    // ✅ FIXED LOGO ACCESS
+                    const awayLogo = away.team.logos?.[0]?.href || away.team.logo || "";
+                    const homeLogo = home.team.logos?.[0]?.href || home.team.logo || "";
+
+                    const penalties = event.competitions[0].penalties || [];
+
+
+
                     html += `
                 <tr>
-                    <td>${away.team.displayName}</td>
+                    <td>
+                        <img src="${awayLogo}" class="score-logo">
+                        ${away.team.displayName}
+                    </td>
                     <td>${away.score} - ${home.score}</td>
-                    <td>${home.team.displayName}</td>
+                    <td>
+                        <img src="${homeLogo}" class="score-logo">
+                        ${home.team.displayName}
+                    </td>
                     <td>${formatGameStatus(event.status.type.name, event.status.type.detail)}</td>
                 </tr>
             `;
@@ -147,7 +173,9 @@
             );
 
             const scoreDiv = document.getElementById('canadiens-score');
+
             const statusDiv = document.getElementById('canadiens-status');
+
 
             if (!game) {
                 scoreDiv.textContent = "No game today";
@@ -155,24 +183,77 @@
                 return;
             }
 
-            currentGameId = game.id; // 🔥 IMPORTANT
+            currentGameId = game.id;
 
             const home = game.competitions[0].competitors[0];
             const away = game.competitions[0].competitors[1];
 
             scoreDiv.innerHTML = `
-        <div style="display:flex;justify-content:center;gap:15px;align-items:center;">
-            <img src="${away.team.logo}" class="score-logo">
-            <span>${away.score} - ${home.score}</span>
-            <img src="${home.team.logo}" class="score-logo">
-        </div>
+                <div style="display:flex;justify-content:center;gap:15px;align-items:center;">
+                    <img src="${away.team.logo}" class="score-logo">
+                    <span>${away.score} - ${home.score}</span>
+                    <img src="${home.team.logo}" class="score-logo">
+                </div>
         
+            `;
+
+            const penaltyContainer = document.getElementById("penalty-container");
+            const pp = getPowerPlayInfo(game);
+
+            function updateGameCenterUI(game, stats) {
+                const penaltyContainer = document.getElementById("penalty-container");
+                const shotsContainer = document.getElementById("shots-container");
+
+                const pp = getPowerPlayInfo(game);
+
+
+                let homeShots = stats?.homeShots ?? 0;
+                let awayShots = stats?.awayShots ?? 0;
+
+                document.getElementById("home-shots").textContent = homeShots;
+                document.getElementById("away-shots").textContent = awayShots;
+
+
+                if (!pp || !pp.situationText.includes("Power Play")) {
+                    penaltyContainer.innerHTML = `
+            <div class="penalty-box">
+                 Even Strength
+            </div>
+        `;
+                    return;
+                }
+
+                let isMTL = pp.situationText.includes("Montreal") || pp.situationText.includes("MTL");
+
+                let strength = "";
+                if (pp.situationText.includes("5 on 3")) strength = " 5-on-3";
+                else if (pp.situationText.includes("4 on 4")) strength = " 4-on-4";
+                else if (pp.situationText.includes("5 on 4")) strength = " 5-on-4";
+
+                penaltyContainer.innerHTML = `
+        <div class="penalty-box">
+            <div class="pp-status">
+                ${isMTL ? "⚡ MTL Power Play" : "⚡ Opponent Power Play"}
+            </div>
+
+            ${strength ? `<div class="pp-strength">${strength}</div>` : ""}
+
+            ${pp.clock ? `<div class="pp-clock"> ${pp.clock}</div>` : ""}
+        </div>
     `;
+            }
+
+
 
             statusDiv.textContent = formatGameStatus(
                 game.status.type.name,
                 game.status.type.detail
             );
+
+            updateGameCenterUI(game, {
+                homeShots: 0,
+                awayShots: 0
+            });
 
             fetchGameStats(); // 🔥 load shots immediately
         }
@@ -182,7 +263,7 @@
         async function fetchGameStats() {
             if (!currentGameId) {
                 document.getElementById('game-stats-container').innerHTML =
-                    "<p>No live game stats available</p>";
+                    `<p class="no-game-stats">No live game stats available</p>`;
                 return;
             }
 
@@ -195,7 +276,7 @@
 
                 if (!players.length) {
                     document.getElementById('game-stats-container').innerHTML =
-                        "<p>Stats will appear once the game starts</p>";
+                        `<p class="no-stat-yet">Stats will appear once the game starts</p>`;
                     return;
                 }
 
@@ -243,20 +324,25 @@
                 // Final fallback display
                 // 🔥 UPDATE SHOTS UI (instead of putting it in html string)
 
-                document.getElementById("home-shots").textContent = homeShots;
-                document.getElementById("away-shots").textContent = awayShots;
+                updateGameCenterUI(
+                    { competitions: [{ situation: game?.competitions?.[0]?.situation }] },
+                    {
+                        homeShots,
+                        awayShots
+                    }
+                );
 
                 // 🔥 START HTML
                 let html = `
-            <h3>Game Stats</h3>
-            <div style="margin-bottom:10px; font-size:18px;">
+            <h3 class="game-stats-text">Game Stats</h3>
+            <div class="team-shots-text" style="margin-bottom:10px; font-size:18px;">
                 ${awayTeam} ${awayShots} - ${homeShots} ${homeTeam} (Shots)
             </div>
-            <h3>Player Stats</h3>
+            <h3 class="player-stats-text">Player Stats</h3>
         `;
 
                 players.forEach(team => {
-                    html += `<h4>${team.team.displayName}</h4>`;
+                    html += `<h4 class="team-stats-name-txt">${team.team.displayName}</h4>`;
 
                     team.statistics.forEach(statGroup => {
 
@@ -343,6 +429,10 @@
             fetchGameStats(); // load when opened
         });
 
+        // 🔥 STANDINGS
+
+
+
         //team stats click
         document.querySelector('.team-stats-header').addEventListener('click', () => {
             document.querySelector('.team-stats').classList.toggle('active');
@@ -353,7 +443,7 @@
         async function fetchTeamStats() {
             if (!currentGameId) {
                 document.getElementById('team-stats-container').innerHTML =
-                    "<p>No Games Stats Available</p>";
+                    `<p class="no-game-stats">No Games Stats Available</p>`;
                 return;
             }
 
@@ -361,19 +451,29 @@
                 const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/summary?event=${currentGameId}`);
                 const data = await res.json();
 
+                const container = document.getElementById('team-stats-container');
+
+                // ✅ NEW: Check game status FIRST
+                const gameState = data?.header?.competitions?.[0]?.status?.type?.state;
+
+                // ❌ If game hasn't started → DON'T show stats
+                if (gameState === "pre") {
+                    container.innerHTML = `<p class="no-stat-yet">Stats will appear once the game starts</p>`;
+                    return;
+                }
+
                 const teams = data?.boxscore?.teams || [];
                 const scoringPlays = data?.scoringPlays || [];
 
-                if (!teams.length) {
-                    document.getElementById('team-stats-container').innerHTML =
-                        "<p>Stats will appear once the game starts</p>";
-                    return;
 
+                if (!teams.length) {
+                    container.innerHTML = "<p>No stats available</p>";
+                    return;
                 }
 
                 //team stats
                 function getStat(team, name) {
-                    return team.statistics.find(s => s.name === name)?.displayValue || "-"
+                    return team.statistics.find(s => s.name === name)?.displayValue || "0";
                 }
 
                 const home = teams.find(t => t.homeAway === "home");
@@ -382,16 +482,17 @@
                 const homeStats = {
                     hits: getStat(home, "hits"),
                     pim: getStat(home, "penaltyMinutes"),
-                    pp: getStat(home, "powerPlayGoals") + "/" + getStat(home, "powerPlayOppertunities")
+                    // ✅ FIXED typo here
+                    pp: getStat(home, "powerPlayGoals") + "/" + getStat(home, "powerPlayOpportunities")
                 };
 
                 const awayStats = {
                     hits: getStat(away, "hits"),
                     pim: getStat(away, "penaltyMinutes"),
-                    pp: getStat(away, "powerPlayGoals") + "/" + getStat(away, "powerPlayOppertunities")
+                    // ✅ FIXED typo here
+                    pp: getStat(away, "powerPlayGoals") + "/" + getStat(away, "powerPlayOpportunities")
                 };
 
-                //goal summary
                 // 🔥 GOAL SUMMARY
                 let goalsHtml = "<h4>Goals</h4>";
 
@@ -408,9 +509,12 @@
                     goalsHtml += "<p>No goals yet</p>";
                 }
 
+
+
+
                 // 🔥 FINAL HTML
                 const html = `
-            <h3>Team Stats</h3>
+            <h3 class="team-stats-text">Team Stats</h3>
 
             <table>
                 <tr>
@@ -438,7 +542,7 @@
             ${goalsHtml}
         `;
 
-                document.getElementById('team-stats-container').innerHTML = html;
+                container.innerHTML = html;
 
             } catch (err) {
                 console.error(err);
@@ -446,9 +550,54 @@
                     "<p>Error loading team stats</p>";
             }
         }
+        async function fetchPenalties() {
+            if (!currentGameId) return;
 
+            const container = document.getElementById('penalty-container');
+            if (!container) return; // safety check
 
+            try {
+                const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/summary?event=${currentGameId}`);
+                const data = await res.json();
 
+                const plays = data?.plays || [];
+
+                // 🔥 filter only penalties
+                const penalties = plays.filter(p => p.type?.text === "Penalty");
+
+                let html = "<h4>Penalties</h4>";
+
+                if (penalties.length) {
+                    penalties.slice(-3).forEach(p => {
+                        html += `
+                    <div class="power-play">
+                        <strong>${p.period.displayValue} ${p.clock.displayValue}</strong><br>
+                        ${p.text}
+                    </div>
+                `;
+                    });
+                } else {
+                    html += "<p>No active penalties</p>";
+                }
+
+                container.innerHTML = html;
+
+            } catch (err) {
+                console.error("Penalty error:", err);
+            }
+        }
+        function getPowerPlayInfo(game) {
+            const situation = game?.competitions?.[0]?.situation;
+
+            if (!situation) return null;
+
+            return {
+                situationText: situation?.displayValue || "",
+                homeAdvantage: situation?.home?.situation?.description || "",
+                awayAdvantage: situation?.away?.situation?.description || "",
+                clock: situation?.clock || ""
+            };
+        }
 
 
 
@@ -457,7 +606,9 @@
         // 🔥 INIT
         fetchNHLScores();
 
+
         setInterval(fetchNHLScores, 3000);
+
 
         function triggerGoalAnimation() {
             const overlay = document.getElementById('goal-overlay');
@@ -469,7 +620,6 @@
             }, 1500);
         }
 
-        
 
 
     </script>

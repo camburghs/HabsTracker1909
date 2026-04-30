@@ -3,17 +3,20 @@
 <script src="theme.js"></script>
 
 <head>
+    <script>
+        (function () {
+            const theme = sessionStorage.getItem("theme");
+
+            if (theme === "dark") {
+                document.documentElement.classList.add("dark-mode");
+            }
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Habs Injury News</title>
     <link rel="stylesheet" href="style.css">
-    <script>
-        (function () {
-            if (sessionStorage.getItem("theme") === "dark") {
-                document.documentElement.classList.toggle("dark-mode");
-            }
-        });
-    </script>
+    
 </head>
 
 
@@ -64,7 +67,7 @@
                 </div>
                 <div class="meta-card">
                     <span class="meta-title">Last Updated</span>
-                    <strong>April 18, 2026</strong>
+                    <strong>April 19, 2026</strong>
                 </div>
             </div>
         </section>
@@ -173,10 +176,10 @@
             },
             {
                 player: "Alexandre Carrier",
-                status: "OUT",
-                issue: "Upper-body injury",
-                detail: "Expected to be out an expected 2-4 weeks.",
-                updated: "April 6, 2026"
+                status: "IN",
+                issue: "None",
+                detail: "HEEEEEEEESSSSSS BAAAAAAAAAAAACK!!!!!!!!!",
+                updated: "April 19, 2026"
             },
             {
                 player: "Noah Dobson",
@@ -207,7 +210,7 @@
 
         renderInjuries(fallbackInjuries);
 
-        
+
     </script>
 </body>
 
