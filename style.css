@@ -1148,6 +1148,39 @@ footer {
         background-position: 200% 0;
     }
 }
+/* PROSPECTS GRID */
+.prospect-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+}
+
+.prospect-card {
+    background: #111;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.prospect-card:hover {
+    transform: scale(1.05);
+}
+
+.prospect-img {
+    width: 80px;
+    border-radius: 50%;
+}
+
+.prospect-name {
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.prospect-pos {
+    font-size: 12px;
+    opacity: 0.7;
+}
 
 
 

@@ -44,6 +44,8 @@
         <h2>Players</h2>
         <p>Montreal Canadiens roster and stats</p>
 
+        
+
         <div id="filters" style="margin-bottom:20px;">
             <button onclick="filterPlayers('ALL')" class="filter-btn active">All</button>
             <button onclick="filterPlayers('F')" class="filter-btn">Forwards</button>
@@ -55,8 +57,11 @@
             <button onclick="setSort('goals', event)" class="sort-btn">Goals</button>
             <button onClick="setSort('assists', event)" class="sort-btn">Assists</button>
         </div>
-        <!-- ✅ THIS WAS MISSING BEFORE -->
+
+                
         <div id="players-container">Loading players...</div>
+
+        <div id="prospects">Loading prospects...</div>
     </section>
 </main>
 
@@ -65,8 +70,13 @@ let allPlayers = [];
 let currentSort = "points";
 //test api url
 //https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2026/athletes/5344178
+//prospect api url
+//https://api-web.nhle.com/v1/prospects/MTL
 
 // ✅ Get stats for ONE player
+
+
+
 async function getPlayerStats(playerId) {
     try {
         const playerRes = await fetch(
@@ -269,7 +279,7 @@ async function displayPlayers(players) {
         `;
     });
 
-    container.innerHTML = html;
+    document.getElementById('players-container').innerHTML = html;
 }
 
 // ✅ Filter buttons
@@ -308,8 +318,58 @@ function setSort(type, event) {
     displayPlayers(allPlayers);
 }
 
+//prospects
+async function fetchProspects() {
+    try {
+        const res = await fetch("https://api-web.nhle.com/v1/prospects/MTL");
+        const data = await res.json();
+
+        // ✅ combine ALL groups into one array
+        const prospects = [
+            ...(data.forwards || []),
+            ...(data.defensemen || []),
+            ...(data.goalies || [])
+        ];
+
+        displayProspects(prospects);
+
+    } catch (err) {
+        console.error("Prospects error:", err);
+    }
+}
+function displayProspects(prospects) {
+    const container = document.getElementById('prospects');
+
+    if (!container) return;
+
+    if (!prospects.length) {
+        container.innerHTML = "<p>No prospects found</p>";
+        return;
+    }
+
+    let html = `<h3>Top Prospects</h3><div class="prospect-grid">`;
+
+    prospects.forEach(pro => {
+        const headshot = pro.headshot || "";
+        const name = `${pro.firstName?.default || ""} ${pro.lastName?.default || ""}`;
+        const position = pro.positionCode || "";
+
+        html += `
+            <div class="prospect-card">
+                <img src="${headshot}" class="prospect-img">
+                <div class="prospect-name">${name}</div>
+                <div class="prospect-pos">${position}</div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
 // 🚀 Start
 fetchPlayers();
+fetchProspects();
 
 
 </script>
