@@ -1317,13 +1317,13 @@ footer {
 ========================= */
 
 .dark-mode .prospect-card {
-    background: #fefefe;
-    color: #fff;
+    background: #9a9a9a;
+    color: #969696;
     box-shadow: 0 6px 18px rgba(0,0,0,0.5);
 }
 
 .dark-mode .prospect-name {
-    color: #fff;
+    color: #000000;
 }
 
 .dark-mode .prospect-pos,
@@ -1331,7 +1331,7 @@ footer {
 .dark-mode .prospect-league,
 .dark-mode .prospect-physical,
 .dark-mode .prospect-draft {
-    color: #ccc;
+    color: #000000;
 }
 
 /* =========================

@@ -9,9 +9,9 @@
                 "age": 22,
                 "league": "AHL",
                 "team": "Laval Rocket",
-                "height": "6'2\"",
-                "weight": "190 lbs",
-                "draft": "2023, 2nd round (33th overall)"
+                "height": "6'0\"",
+                "weight": "198 lbs",
+                "draft": "2022, 2nd round (33th overall)"
 
             },
             {
@@ -22,9 +22,9 @@
                 "age": 22,
                 "league": "AHL",
                 "team": "Laval Rocket",
-                "height": "6'2\"",
-                "weight": "190 lbs",
-                "draft": "2023, 1st round (26th overall)"
+                "height": "6'0\"",
+                "weight": "183 lbs",
+                "draft": "2022, 5th round (130th overall)"
             },
             {
                 "id": 3,
@@ -34,9 +34,9 @@
                 "age": 21,
                 "league": "AHL",
                 "team": "Laval Rocket",
-                "height": "6'2\"",
-                "weight": "190 lbs",
-                "draft": "2023, 1st round (26th overall)"
+                "height": "6'4\"",
+                "weight": "205 lbs",
+                "draft": "2023, 4th round (101st overall)"
             },
             {
                 "id": 4,
@@ -46,9 +46,9 @@
                 "age": 22,
                 "league": "AHL",
                 "team": "Laval Rocket",
-                "height": "6'2\"",
-                "weight": "190 lbs",
-                "draft": "2023, 1st round (26th overall)"
+                "height": "6'0\"",
+                "weight": "192 lbs",
+                "draft": "2021, 5th round (150th overall)"
             },
             {
                 "id": 5,
@@ -58,9 +58,9 @@
                 "age": 22,
                 "league": "AHL",
                 "team": "Laval Rocket",
-                "height": "6'2\"",
-                "weight": "190 lbs",
-                "draft": "2023, 1st round (26th overall)"
+                "height": "5'10\"",
+                "weight": "185 lbs",
+                "draft": "2022, 1st round (26th overall)"
             },
             {
                 "id": 6,
@@ -70,9 +70,9 @@
                 "age": 20,
                 "league": "AHL",
                 "team": "Laval Rocket",
-                "height": "6'2\"",
-                "weight": "190 lbs",
-                "draft": "2023, 1st round (26th overall)"
+                "height": "6'5\"",
+                "weight": "220 lbs",
+                "draft": "2024, 5th round (130th overall)"
             },
             {
                 "id": 8,
@@ -82,9 +82,9 @@
                 "age": 21,
                 "league": "AHL",
                 "team": "Laval Rocket",
-                "height": "6'2\"",
-                "weight": "190 lbs",
-                "draft": "2023, 1st round (26th overall)"
+                "height": "5'10\"",
+                "weight": "161 lbs",
+                "draft": "2022, 3rd round (75th overall)"
             },
             {
                 "id": 9,
@@ -94,9 +94,9 @@
                 "age": 20,
                 "league": "NCAA",
                 "team": "Michigan Wolverines",
-                "height": "6'2\"",
-                "weight": "190 lbs",
-                "draft": "2023, 1st round (26th overall)"
+                "height": "6'1\"",
+                "weight": "198 lbs",
+                "draft": "2024, 1st round (21st overall)"
             },
             {
                 "id": 10,
@@ -107,8 +107,8 @@
                 "league": "KHL",
                 "team": "Salavat Yulaev Ufa",
                 "height": "6'2\"",
-                "weight": "190 lbs",
-                "draft": "2023, 1st round (26th overall)"
+                "weight": "176 lbs",
+                "draft": "2025, 2cd round (34th overall)"
             },
             {
                 "id": 11,
@@ -118,9 +118,9 @@
                 "age": 19,
                 "league": "WHL",
                 "team": "Kelowna Rockets",
-                "height": "6'2\"",
-                "weight": "190 lbs",
-                "draft": "2023, 1st round (26th overall)"
+                "height": "6'5\"",
+                "weight": "203 lbs",
+                "draft": "2025, 3rd round (69th overall)"
             },
             {
                 "id": 12,
@@ -145,6 +145,18 @@
                 "height": "6'1\"",
                 "weight": "174 lbs",
                 "draft": "2024, 3rd round (78th overall)"
+            },
+            {
+                "id": 14,
+                "name": "L.J. Mooney",
+                "position": "RW",
+                "shoots": "Right",
+                "age": 19,
+                "league": "NCAA",
+                "team": "Univ. of Minnesota",
+                "height": "5'8\"",
+                "weight": "165 lbs",
+                "draft": "2025, 4th round (113th overall)"
             }
 
         ],
