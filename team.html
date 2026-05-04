@@ -47,7 +47,13 @@
         <h2>Players</h2>
         <p>Montreal Canadiens roster and stats</p>
 
+        <div class="dropdown">
+            <button class="dropdown-btn" onclick="toggleDropdown('players-dropdown')">
+                Select Player
+            </button>
         
+
+        <div id="players-dropdown" class="dropdown-content">
 
         <div id="filters" style="margin-bottom:20px;">
             <button onclick="filterPlayers('ALL')" class="filter-btn active">All</button>
@@ -64,11 +70,31 @@
                 
         <div id="players-container">Loading players...</div>
 
-        <div id="prospects">Loading prospects...</div>
+        </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropdown-btn" onclick="toggleDropdown('prospects-section')">
+                Prospects
+            </button>
+
+            <div id="prospects-section" class="dropdown-content">
+                <div id="prospects">Loading prospects...</div>
+            </div>
+        </div>
     </section>
 </main>
 
 <script>
+
+function toggleDropdown(id) {
+    const section = document.getElementById(id);
+
+    if (!section) return;
+
+    section.classList.toggle("open");
+}
+
 let allPlayers = [];
 let currentSort = "points";
 //test api url
@@ -320,27 +346,30 @@ function setSort(type, event) {
 
     displayPlayers(allPlayers);
 }
-
 //prospects
 async function fetchProspects() {
     try {
-        const res = await fetch("https://api-web.nhle.com/v1/prospects/MTL");
+        const res = await fetch("prospects.json");
         const data = await res.json();
 
-        // ✅ combine ALL groups into one array
+        const mtl = data.MTL;
+
         const prospects = [
-            ...(data.forwards || []),
-            ...(data.defensemen || []),
-            ...(data.goalies || [])
+            ...(mtl.forwards || []),
+            ...(mtl.defensemen || []),
+            ...(mtl.goalies || [])
         ];
 
         displayProspects(prospects);
 
     } catch (err) {
         console.error("Prospects error:", err);
+        document.getElementById("prospects").innerHTML =
+            "<p>Failed to load prospects</p>";
     }
 }
-function displayProspects(prospects) {
+
+ function displayProspects(prospects) {
     const container = document.getElementById('prospects');
 
     if (!container) return;
@@ -350,18 +379,43 @@ function displayProspects(prospects) {
         return;
     }
 
-    let html = `<h3>Top Prospects</h3><div class="prospect-grid">`;
+    let html = `
+        <h3>Top Prospects</h3>
+        <div class="prospect-grid">
+    `;
 
     prospects.forEach(pro => {
-        const headshot = pro.headshot || "";
-        const name = `${pro.firstName?.default || ""} ${pro.lastName?.default || ""}`;
-        const position = pro.positionCode || "";
 
         html += `
             <div class="prospect-card">
-                <img src="${headshot}" class="prospect-img">
-                <div class="prospect-name">${name}</div>
-                <div class="prospect-pos">${position}</div>
+
+                <div class="prospect-name">
+                    ${pro.name}
+                </div>
+
+                <div class="prospect-pos">
+                    ${pro.position} • Age ${pro.age}
+                </div>
+
+                <div class="prospect-hand">
+                    Shoots/Catches: ${pro.shoots || pro.catches || '-'}
+                </div>
+                <div class="prospect-team">
+                    ${pro.team}
+                </div>
+
+                <div class="prospect-league">
+                    ${pro.league}
+                </div>
+
+                <div class="prospect-physical">
+                    ${pro.height} | ${pro.weight}
+                </div>
+
+                <div class="prospect-draft">
+                    ${pro.draft}
+                </div>
+
             </div>
         `;
     });

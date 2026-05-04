@@ -1,0 +1,264 @@
+{
+    "MTL": {
+        "forwards": [
+            {
+                "id": 1,
+                "name": "Owen Beck",
+                "position": "C",
+                "shoots": "Right",
+                "age": 22,
+                "league": "AHL",
+                "team": "Laval Rocket",
+                "height": "6'2\"",
+                "weight": "190 lbs",
+                "draft": "2023, 2nd round (33th overall)"
+
+            },
+            {
+                "id": 2,
+                "name": "Jared Davidson",
+                "position": "C",
+                "shoots": "Left",
+                "age": 22,
+                "league": "AHL",
+                "team": "Laval Rocket",
+                "height": "6'2\"",
+                "weight": "190 lbs",
+                "draft": "2023, 1st round (26th overall)"
+            },
+            {
+                "id": 3,
+                "name": "Florian Xhekaj",
+                "position": "LW",
+                "shoots": "Left",
+                "age": 21,
+                "league": "AHL",
+                "team": "Laval Rocket",
+                "height": "6'2\"",
+                "weight": "190 lbs",
+                "draft": "2023, 1st round (26th overall)"
+            },
+            {
+                "id": 4,
+                "name": "Joshua Roy",
+                "position": "LW",
+                "shoots": "Left",
+                "age": 22,
+                "league": "AHL",
+                "team": "Laval Rocket",
+                "height": "6'2\"",
+                "weight": "190 lbs",
+                "draft": "2023, 1st round (26th overall)"
+            },
+            {
+                "id": 5,
+                "name": "Filip Mesar",
+                "position": "RW",
+                "shoots": "Right",
+                "age": 22,
+                "league": "AHL",
+                "team": "Laval Rocket",
+                "height": "6'2\"",
+                "weight": "190 lbs",
+                "draft": "2023, 1st round (26th overall)"
+            },
+            {
+                "id": 6,
+                "name": "Tyler Thorpe",
+                "position": "RW",
+                "shoots": "Right",
+                "age": 20,
+                "league": "AHL",
+                "team": "Laval Rocket",
+                "height": "6'2\"",
+                "weight": "190 lbs",
+                "draft": "2023, 1st round (26th overall)"
+            },
+            {
+                "id": 8,
+                "name": "Vinzenz Rohrer",
+                "position": "C|RW",
+                "shoots": "Right",
+                "age": 21,
+                "league": "AHL",
+                "team": "Laval Rocket",
+                "height": "6'2\"",
+                "weight": "190 lbs",
+                "draft": "2023, 1st round (26th overall)"
+            },
+            {
+                "id": 9,
+                "name": "Michael Hage",
+                "position": "C",
+                "shoots": "Right",
+                "age": 20,
+                "league": "NCAA",
+                "team": "Michigan Wolverines",
+                "height": "6'2\"",
+                "weight": "190 lbs",
+                "draft": "2023, 1st round (26th overall)"
+            },
+            {
+                "id": 10,
+                "name": "Alexander Zharovsky",
+                "position": "RW|C",
+                "shoots": "Left",
+                "age": 19,
+                "league": "KHL",
+                "team": "Salavat Yulaev Ufa",
+                "height": "6'2\"",
+                "weight": "190 lbs",
+                "draft": "2023, 1st round (26th overall)"
+            },
+            {
+                "id": 11,
+                "name": "Hayden Paupanekis",
+                "position": "C",
+                "shoots": "Right",
+                "age": 19,
+                "league": "WHL",
+                "team": "Kelowna Rockets",
+                "height": "6'2\"",
+                "weight": "190 lbs",
+                "draft": "2023, 1st round (26th overall)"
+            },
+            {
+                "id": 12,
+                "name": "Aatos Koivu",
+                "position": "C",
+                "shoots": "Right",
+                "age": 19,
+                "league": "Liiga",
+                "team": "TPS",
+                "height": "6'0\"",
+                "weight": "170 lbs",
+                "draft": "2024, 3rd round (70th overall)"
+            },
+            {
+                "id": 13,
+                "name": "Logan Sawyer",
+                "position": "LW",
+                "shoots": "Left",
+                "age": 19,
+                "league": "NCAA",
+                "team": "Providence College",
+                "height": "6'1\"",
+                "weight": "174 lbs",
+                "draft": "2024, 3rd round (78th overall)"
+            }
+
+        ],
+        "defensemen": [
+            {
+                "id": 1,
+                "name": "David Reinbacher",
+                "position": "D",
+                "shoots": "Right",
+                "age": 21,
+                "league": "AHL",
+                "team": "Laval Rocket",
+                "height": "6'2\"",
+                "weight": "194 lbs",
+                "draft": "2023, 1st round (5th overall)"
+            },
+            {
+                "id": 2,
+                "name": "Adam Engström",
+                "position": "D",
+                "shoots": "Left",
+                "age": 22,
+                "league": "AHL",
+                "team": "Laval Rocket",
+                "height": "6'2\"",
+                "weight": "190 lbs",
+                "draft": "2022, 3rd round (92nd overall)"
+            },
+            {
+                "id": 3,
+                "name": "William Trudeau",
+                "position": "D",
+                "shoots": "Left",
+                "age": 23,
+                "league": "AHL",
+                "team": "Laval Rocket",
+                "height": "6'1\"",
+                "weight": "205 lbs",
+                "draft": "2021, 4th round (113th overall)"
+            },
+            {
+                "id": 4,
+                "name": "Luke Mittelstadt",
+                "position": "D",
+                "shoots": "Left",
+                "age": 23,
+                "league": "AHL",
+                "team": "Laval Rocket",
+                "height": "5'11\"",
+                "weight": "185 lbs",
+                "draft": "2023, 7th round (197th overall)"
+            },
+            {
+                "id": 5,
+                "name": "Bryce Pickford",
+                "position": "D",
+                "shoots": "Right",
+                "age": 20,
+                "league": "WHL",
+                "team": "Medicine Hat Tigers",
+                "height": "6'1\"",
+                "weight": "185 lbs",
+                "draft": "2025, 3rd round (81st overall)"
+            },
+            {
+                "id": 6,
+                "name": "Owen Protz",
+                "position": "D",
+                "shoots": "Left",
+                "age": 20,
+                "league": "AHL",
+                "team": "Laval Rocket",
+                "height": "6'2\"",
+                "weight": "207 lbs",
+                "draft": "2024, 4th round (102nd overall)"
+            }
+        ],
+        "goalies": [
+            {
+                "id": 1,
+                "name": "Arseni Radkov",
+                "position": "G",
+                "catches": "Left",
+                "age": 18,
+                "league": "GMJHL",
+                "team": "Saint John Sea Dogs",
+                "height": "6'4\"",
+                "weight": "203 lbs",
+                "draft": "2025, 3rd round (82nd overall)"
+            },
+            {
+                "id": 2,
+                "name": "Quentin Miller",
+                "position": "G",
+                "catches": "Left",
+                "age": 21,
+                "league": "NCAA",
+                "team": "Univ. of Denver",
+                "height": "6'3\"",
+                "weight": "190 lbs",
+                "draft": "2023, 4th round (128th overall)"
+            },
+            {
+                "id": 3,
+                "name": "Alexis Cournoyer",
+                "position": "G",
+                "catches": "Left",
+                "age": 20,
+                "league": "NCAA",
+                "team": "Cornell Univ.",
+                "height": "6'1\"",
+                "weight": "205 lbs",
+                "draft": "2025, 5th round (205th overall)"
+            }
+        ]
+    }
+}

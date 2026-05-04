@@ -1242,4 +1242,143 @@ footer {
 .no-stat-yet {
     color: var(--team-stats-txt);
 }
+/* =========================
+   PROSPECTS SECTION
+========================= */
+
+#prospects {
+    margin-top: 20px;
+}
+
+.prospect-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 15px;
+}
+
+/* =========================
+   PROSPECT CARD
+========================= */
+
+.prospect-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 15px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-left: 4px solid #c41230; /* Canadiens red accent */
+}
+
+.prospect-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+}
+
+/* =========================
+   TEXT STYLING
+========================= */
+
+.prospect-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #111;
+}
+
+.prospect-pos,
+.prospect-hand {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 6px;
+}
+
+.prospect-team,
+.prospect-league,
+.prospect-physical,
+.prospect-draft {
+    font-size: 13px;
+    color: #666;
+    margin-top: 2px;
+}
+
+/* =========================
+   OPTIONAL BADGE STYLE (if you add rating later)
+========================= */
+
+.prospect-rating {
+    margin-top: 8px;
+    font-weight: bold;
+    color: #c41230;
+}
+
+/* =========================
+   DARK MODE SUPPORT
+========================= */
+
+.dark-mode .prospect-card {
+    background: #fefefe;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+
+.dark-mode .prospect-name {
+    color: #fff;
+}
+
+.dark-mode .prospect-pos,
+.dark-mode .prospect-team,
+.dark-mode .prospect-league,
+.dark-mode .prospect-physical,
+.dark-mode .prospect-draft {
+    color: #ccc;
+}
+
+/* =========================
+   DROPDOWN SYSTEM
+========================= */
+
+.dropdown {
+    margin-bottom: 15px;
+}
+
+.dropdown-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    background: #c41230; /* Canadiens red */
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    text-align: center;
+    
+}
+
+.dropdown-btn:hover {
+    background: #a30f27;
+}
+
+/* hidden by default */
+.dropdown-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: #f4f4f4;
+    border-radius: 0 0 10px 10px;
+    padding: 0 15px;
+}
+
+/* open state */
+.dropdown-content.open {
+    max-height: 1000px; /* big enough for content */
+    padding: 15px;
+}
+
+/* dark mode */
+.dark-mode .dropdown-content {
+    background: #1e1e1e;
+    color: white;
+}
 
