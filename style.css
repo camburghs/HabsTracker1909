@@ -1372,7 +1372,7 @@ footer {
 
 /* open state */
 .dropdown-content.open {
-    max-height: 1000px; /* big enough for content */
+    max-height: 1700px; /* big enough for content */
     padding: 15px;
 }
 
@@ -1381,4 +1381,202 @@ footer {
     background: #1e1e1e;
     color: white;
 }
+.contracts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
 
+.contract-card {
+    background: #fff;
+    padding: 12px;
+    border-radius: 10px;
+    border-left: 4px solid #c41230;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.contract-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+.contracts-table {
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* HEADER */
+.contracts-header {
+    display: grid;
+    grid-template-columns: 2fr 0.5fr 0.5fr 1fr 1fr 1fr;
+    background: #c41230; /* 🔴 Habs red */
+    color: white;
+    padding: 12px;
+    font-weight: bold;
+}
+
+/* ROWS */
+.contract-row {
+    display: grid;
+    grid-template-columns: 2fr 0.5fr 0.5fr 1fr 1fr 1fr;
+    padding: 12px;
+    border-bottom: 1px solid #e5e5e5;
+    border-left: 4px solid transparent;
+    background: #ffffff;
+    transition: background 0.2s ease;
+}
+
+.contract-row:hover {
+    background: #f9f9f9;
+    border-left: 4px solid #c41230;
+}
+
+/* ALT ROW STRIPE */
+.contract-row:nth-child(even) {
+    background: #f4f4f4;
+}
+
+.contract-row .name {
+    font-weight: bold;
+    color: #222;
+}
+
+.contract-row .salary {
+    color: #00be20; /* 🔴 red instead of green */
+    font-weight: bold;
+}
+
+/* EXPIRY TAG STYLE */
+.contract-row .expiry {
+    color: #ff6b6b;
+}
+
+/* ALT ROW STRIPING */
+.contract-row:nth-child(even) {
+    background: rgba(255,255,255,0.02);
+}
+.contract-row div {
+    color: #000000; /* base text */
+}
+
+.contract-row .position {
+    color: #0077cc;
+}
+
+.contract-row .age {
+    color: #ffffff;
+}
+
+.contract-row .term {
+    color: #ffffff;
+}
+.dark-mode .contracts-table {
+    background: #1a1a1a;
+}
+
+.dark-mode .contracts-header {
+    background: #001f5b; /* 🔵 Habs blue */
+    color: white;
+}
+
+.dark-mode .contract-row {
+    background: #222;
+    border-bottom: 1px solid #333;
+}
+
+.dark-mode .contract-row:nth-child(even) {
+    background: #1c1c1c;
+}
+
+.dark-mode .contract-row:hover {
+    background: #2a2a2a;
+}
+
+.dark-mode .contract-row .salary {
+    color: #16ba00; 
+}
+.dark-mode .contract-row div {
+    color: #ffffff; /* lighter text for dark mode */
+}
+.draft-table {
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+/* HEADER */
+.draft-header {
+    display: grid;
+    grid-template-columns: 1fr repeat(7, 1fr);
+    background: #c41230; /* Habs red */
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* ROWS */
+.draft-row {
+    display: grid;
+    grid-template-columns: 1fr repeat(7, 1fr);
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s ease;
+}
+
+.draft-row:nth-child(even) {
+    background: #f4f4f4;
+}
+
+.draft-row:hover {
+    background: #f9f9f9;
+}
+
+/* YEAR COLUMN */
+.draft-row .year {
+    font-weight: bold;
+    text-align: left;
+    padding-left: 8px;
+}
+.dark-mode .draft-table {
+    background: #1a1a1a;
+}
+
+.dark-mode .draft-header {
+    background: #001f5b;
+}
+
+.dark-mode .draft-row {
+    border-bottom: 1px solid #333;
+}
+
+.dark-mode .draft-row:nth-child(even) {
+    background: #1c1c1c;
+}
+
+.dark-mode .draft-row:hover {
+    background: #2a2a2a;
+}
+.draft-row div:empty,
+.draft-row div {
+    opacity: 0.9;
+}
+.draft-row div:contains("0") {
+    opacity: 0.4;
+}
+.roster-cap-card ul {
+    text-align: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.roster-info h3 {
+    text-align: center;
+    
+}

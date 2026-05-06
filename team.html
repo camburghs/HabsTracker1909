@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <script src="theme.js"></script>
+
 <head>
     <script>
         (function () {
@@ -15,286 +16,323 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team</title>
     <link rel="stylesheet" href="style.css">
-    
+
 </head>
 
 <body>
 
 
 
-<header style="background-image: url('HabsTracker1909Logo.png'); background-size: cover; background-position: center;">
-    <div class="header-overlay">
-        <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
-        <h1>Montreal Canadiens</h1>
-        <p class="tagline">Player roster & stats</p>
-        <button class="theme-btn" type="button" onclick="toggleDarkMode()">
+    <header
+        style="background-image: url('HabsTracker1909Logo.png'); background-size: cover; background-position: center;">
+        <div class="header-overlay">
+            <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
+            <h1>Montreal Canadiens</h1>
+            <p class="tagline">Player roster & stats</p>
+            <button class="theme-btn" type="button" onclick="toggleDarkMode()">
                 Toggle Dark Mode
-        </button>
-    </div>
-</header>
-
-<nav>
-    <a href="index.html">Home</a>
-    <a href="news.html">News</a>
-    <a href="scores.html">Scores</a>
-    <a href="standings.html">Standings</a>
-    <a href="team.html" class="active">Team</a>
-    <a href="history.html">History</a>
-</nav>
-
-<main>
-    <section class="Team">
-        <h2>Players</h2>
-        <p>Montreal Canadiens roster and stats</p>
-
-        <div class="dropdown">
-            <button class="dropdown-btn" onclick="toggleDropdown('players-dropdown')">
-                Select Player
             </button>
-        
-
-        <div id="players-dropdown" class="dropdown-content">
-
-        <div id="filters" style="margin-bottom:20px;">
-            <button onclick="filterPlayers('ALL')" class="filter-btn active">All</button>
-            <button onclick="filterPlayers('F')" class="filter-btn">Forwards</button>
-            <button onclick="filterPlayers('D')" class="filter-btn">Defense</button>
-            <button onclick="filterPlayers('G')" class="filter-btn">Goalies</button>
         </div>
-        <div id="sort-buttons" style="margin-bottom: 15px;">
-            <button onclick="setSort('points', event)" class="sort-btn active">Points</button>
-            <button onclick="setSort('goals', event)" class="sort-btn">Goals</button>
-            <button onClick="setSort('assists', event)" class="sort-btn">Assists</button>
-        </div>
+    </header>
 
-                
-        <div id="players-container">Loading players...</div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="news.html">News</a>
+        <a href="scores.html">Scores</a>
+        <a href="standings.html">Standings</a>
+        <a href="team.html" class="active">Team</a>
+        <a href="history.html">History</a>
+    </nav>
 
-        </div>
-        </div>
+    <main>
+        <section class="Team">
+            <h2>Players</h2>
+            <p>Montreal Canadiens roster and stats</p>
 
-        <div class="dropdown">
-            <button class="dropdown-btn" onclick="toggleDropdown('prospects-section')">
-                Prospects
-            </button>
+            <div class="dropdown">
+                <button class="dropdown-btn" onclick="toggleDropdown('players-dropdown')">
+                    Players
+                </button>
 
-            <div id="prospects-section" class="dropdown-content">
-                <div id="prospects">Loading prospects...</div>
+
+                <div id="players-dropdown" class="dropdown-content">
+
+                    <div id="filters" style="margin-bottom:20px;">
+                        <button onclick="filterPlayers('ALL')" class="filter-btn active">All</button>
+                        <button onclick="filterPlayers('F')" class="filter-btn">Forwards</button>
+                        <button onclick="filterPlayers('D')" class="filter-btn">Defense</button>
+                        <button onclick="filterPlayers('G')" class="filter-btn">Goalies</button>
+                    </div>
+                    <div id="sort-buttons" style="margin-bottom: 15px;">
+                        <button onclick="setSort('points', event)" class="sort-btn active">Points</button>
+                        <button onclick="setSort('goals', event)" class="sort-btn">Goals</button>
+                        <button onClick="setSort('assists', event)" class="sort-btn">Assists</button>
+                    </div>
+
+
+                    <div id="players-container">Loading players...</div>
+
+                </div>
             </div>
-        </div>
-    </section>
-</main>
 
-<script>
+            <div class="dropdown">
+                <button class="dropdown-btn" onclick="toggleDropdown('prospects-section')">
+                    Prospects
+                </button>
 
-function toggleDropdown(id) {
-    const section = document.getElementById(id);
+                <div id="prospects-section" class="dropdown-content">
+                    <div id="prospects">Loading prospects...</div>
+                </div>
+            </div>
+        </section>
 
-    if (!section) return;
+        <section class="roster-info">
+            <h2>Roster Info</h2>
 
-    section.classList.toggle("open");
-}
+            <div class="roster-info-grid">
 
-let allPlayers = [];
-let currentSort = "points";
-//test api url
-//https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2026/athletes/5344178
-//prospect api url
-//https://api-web.nhle.com/v1/prospects/MTL
+                <div class="roster-cap-card">
+                    <h3>Roster Costs, Cap Space</h3>
+                    <ul>
+                        <li><strong>Active Rosster:</strong> 26/23</li>
+                        <li><strong>Contracts</strong> 46/50</li>
+                        <li><strong>2026:</strong> $95.45M</li>
+                        <li><strong>Cap Limit NHL:</strong> $95.50M</li>
+                        <li><strong>Projected Cap Space:</strong> $46K</li>
+                        <li><strong>Cap Hit:</strong> $99.18M</li>
+                        <li>**Cap Hit includes bonuses**</li>
+                    </ul>
+                </div>
 
-// ✅ Get stats for ONE player
+
+
+                <div id="draft-picks">Loading draft picks...</div>
+
+
+            </div>
+
+
+            <div id="contracts-section">
+                <div id="contracts">Loading contracts...</div>
+            </div>
 
 
 
-async function getPlayerStats(playerId) {
-    try {
-        const playerRes = await fetch(
-            `https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2026/athletes/${playerId}`
-        );
 
-        const playerData = await playerRes.json();
+            </div>
+        </section>
+    </main>
 
-        // ✅ SAFELY check if statistics exists
-        const statsRef = playerData?.statistics?.$ref;
+    <script>
 
-        if (!statsRef) {
-            return { goals: "0", assists: "0", points: "0" };
+        function toggleDropdown(id) {
+            const section = document.getElementById(id);
+
+            if (!section) return;
+
+            section.classList.toggle("open");
         }
 
-        const statsUrl = statsRef.replace("http://", "https://");
+        let allPlayers = [];
+        let currentSort = "points";
+        //test api url
+        //https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2026/athletes/5344178
+        //prospect api url
+        //https://api-web.nhle.com/v1/prospects/MTL
 
-        const statsRes = await fetch(statsUrl);
-        const statsData = await statsRes.json();
+        // ✅ Get stats for ONE player
 
-        const categories = statsData.splits?.categories || [];
 
-        const wantedStats = ["Goals", "Assists", "Points"];
-        const statsResult = {};
 
-        categories.forEach(category => {
-            category.stats?.forEach(stat => {
-                if (wantedStats.includes(stat.displayName) && !statsResult[stat.displayName]) {
-                    statsResult[stat.displayName] = stat.displayValue;
+        async function getPlayerStats(playerId) {
+            try {
+                const playerRes = await fetch(
+                    `https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2026/athletes/${playerId}`
+                );
+
+                const playerData = await playerRes.json();
+
+                // ✅ SAFELY check if statistics exists
+                const statsRef = playerData?.statistics?.$ref;
+
+                if (!statsRef) {
+                    return { goals: "0", assists: "0", points: "0" };
+                }
+
+                const statsUrl = statsRef.replace("http://", "https://");
+
+                const statsRes = await fetch(statsUrl);
+                const statsData = await statsRes.json();
+
+                const categories = statsData.splits?.categories || [];
+
+                const wantedStats = ["Goals", "Assists", "Points"];
+                const statsResult = {};
+
+                categories.forEach(category => {
+                    category.stats?.forEach(stat => {
+                        if (wantedStats.includes(stat.displayName) && !statsResult[stat.displayName]) {
+                            statsResult[stat.displayName] = stat.displayValue;
+                        }
+                    });
+                });
+
+                return {
+                    goals: statsResult["Goals"] || "0",
+                    assists: statsResult["Assists"] || "0",
+                    points: statsResult["Points"] || "0"
+                };
+
+            } catch (err) {
+                console.error("Stats error:", err);
+                return { goals: "-", assists: "-", points: "-" };
+            }
+        }
+        async function getGoalieStats(playerId) {
+            try {
+                const playerRes = await fetch(`https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2026/athletes/${playerId}`);
+                const playerData = await playerRes.json();
+
+                if (!playerData.statistics || !playerData.statistics.$ref) {
+                    return { gaa: "-", savePct: "-", saves: "-", wins: "-" };
+                }
+
+                const statsUrl = playerData.statistics.$ref.replace("http://", "https://");
+                const statsRes = await fetch(statsUrl);
+                const statsData = await statsRes.json();
+
+                const categories = statsData.splits?.categories;
+
+                const goalieStats = {};
+
+                categories?.forEach(category => {
+                    category.stats?.forEach(stat => {
+                        if (!goalieStats[stat.displayName]) {
+                            goalieStats[stat.displayName] = stat.displayValue;
+                        }
+                    });
+                });
+
+                return {
+                    gaa: goalieStats["Goals Against Average"] || "0",
+                    savePct: goalieStats["Save Percentage"] || "0",
+                    saves: goalieStats["Saves"] || "0",
+                    wins: goalieStats["Wins"] || "0"
+                };
+
+            } catch (err) {
+                console.error("Goalie stats error:", err);
+                return { gaa: "0", savePct: "0", saves: "0", wins: "0" };
+            }
+        }
+        // ✅ Fetch roster
+        async function fetchPlayers() {
+            try {
+                const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/10/roster');
+                const data = await response.json();
+
+                const athletes = data?.athletes || [];
+                allPlayers = [];
+
+                athletes.forEach(group => {
+                    group.items.forEach(player => {
+                        allPlayers.push(player);
+                    });
+                });
+
+                displayPlayers(allPlayers);
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('players-container').innerHTML =
+                    "<p>Error loading players</p>";
+            }
+        }
+
+        // ✅ Display players WITH stats
+        async function displayPlayers(players) {
+            const container = document.getElementById('players-container');
+
+            if (!players.length) {
+                container.innerHTML = "<p>No players found</p>";
+                return;
+            }
+
+            let playersWithStats = [];
+
+            // 🔥 STEP 1: Fetch + store stats
+            for (const player of players) {
+
+                const isGoalie = player.position?.abbreviation === "G";
+
+                let statsData;
+
+                if (isGoalie) {
+                    const goalieStats = await getGoalieStats(player.id);
+
+                    statsData = {
+                        type: "G",
+                        gaa: parseFloat(goalieStats.gaa) || 0,
+                        savePct: parseFloat(goalieStats.savePct) || 0,
+                        saves: parseInt(goalieStats.saves) || 0,
+                        wins: parseInt(goalieStats.wins) || 0
+                    };
+
+                } else {
+                    const stats = await getPlayerStats(player.id);
+
+                    statsData = {
+                        type: "S",
+                        goals: parseInt(stats.goals) || 0,
+                        assists: parseInt(stats.assists) || 0,
+                        points: parseInt(stats.points) || 0
+                    };
+                }
+
+                playersWithStats.push({
+                    player,
+                    stats: statsData
+                });
+            }
+
+            // 🔥 STEP 2: SORT (default = points)
+            playersWithStats.sort((a, b) => {
+                // goalies always last
+                if (a.stats.type === "G") return 1;
+                if (b.stats.type === "G") return -1;
+
+                if (currentSort === "goals") {
+                    return b.stats.goals - a.stats.goals;
+                } else if (currentSort === "assists") {
+                    return b.stats.assists - a.stats.assists;
+                } else {
+                    return b.stats.points - a.stats.points; // default
                 }
             });
-        });
 
-        return {
-            goals: statsResult["Goals"] || "0",
-            assists: statsResult["Assists"] || "0",
-            points: statsResult["Points"] || "0"
-        };
+            // 🔥 STEP 3: Build HTML AFTER sorting
+            let html = '';
 
-    } catch (err) {
-        console.error("Stats error:", err);
-        return { goals: "-", assists: "-", points: "-" };
-    }
-}
-async function getGoalieStats(playerId) {
-    try {
-        const playerRes = await fetch(`https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2026/athletes/${playerId}`);
-        const playerData = await playerRes.json();
+            playersWithStats.forEach(({ player, stats }) => {
 
-        if (!playerData.statistics || !playerData.statistics.$ref) {
-            return { gaa: "-", savePct: "-", saves: "-", wins: "-" };
-        }
+                const height = player.displayHeight || "-";
+                const weight = player.displayWeight || "-";
+                const headshot = player.headshot?.href || "";
 
-        const statsUrl = playerData.statistics.$ref.replace("http://", "https://");
-        const statsRes = await fetch(statsUrl);
-        const statsData = await statsRes.json();
+                let statsHtml = "";
 
-        const categories = statsData.splits?.categories;
-
-        const goalieStats = {};
-
-        categories?.forEach(category => {
-            category.stats?.forEach(stat => {
-                if (!goalieStats[stat.displayName]) {
-                    goalieStats[stat.displayName] = stat.displayValue;
-                }
-            });
-        });
-
-        return {
-            gaa: goalieStats["Goals Against Average"] || "0",
-            savePct: goalieStats["Save Percentage"] || "0",
-            saves: goalieStats["Saves"] || "0",
-            wins: goalieStats["Wins"] || "0"
-        };
-
-    } catch (err) {
-        console.error("Goalie stats error:", err);
-        return { gaa: "0", savePct: "0", saves: "0", wins: "0" };
-    }
-}
-// ✅ Fetch roster
-async function fetchPlayers() {
-    try {
-        const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/10/roster');
-        const data = await response.json();
-
-        const athletes = data?.athletes || [];
-        allPlayers = [];
-
-        athletes.forEach(group => {
-            group.items.forEach(player => {
-                allPlayers.push(player);
-            });
-        });
-
-        displayPlayers(allPlayers);
-
-    } catch (error) {
-        console.error(error);
-        document.getElementById('players-container').innerHTML =
-            "<p>Error loading players</p>";
-    }
-}
-
-// ✅ Display players WITH stats
-async function displayPlayers(players) {
-    const container = document.getElementById('players-container');
-
-    if (!players.length) {
-        container.innerHTML = "<p>No players found</p>";
-        return;
-    }
-
-    let playersWithStats = [];
-
-    // 🔥 STEP 1: Fetch + store stats
-    for (const player of players) {
-
-        const isGoalie = player.position?.abbreviation === "G";
-
-        let statsData;
-
-        if (isGoalie) {
-            const goalieStats = await getGoalieStats(player.id);
-
-            statsData = {
-                type: "G",
-                gaa: parseFloat(goalieStats.gaa) || 0,
-                savePct: parseFloat(goalieStats.savePct) || 0,
-                saves: parseInt(goalieStats.saves) || 0,
-                wins: parseInt(goalieStats.wins) || 0
-            };
-
-        } else {
-            const stats = await getPlayerStats(player.id);
-
-            statsData = {
-                type: "S",
-                goals: parseInt(stats.goals) || 0,
-                assists: parseInt(stats.assists) || 0,
-                points: parseInt(stats.points) || 0
-            };
-        }
-
-        playersWithStats.push({
-            player,
-            stats: statsData
-        });
-    }
-
-    // 🔥 STEP 2: SORT (default = points)
-    playersWithStats.sort((a, b) => {
-    // goalies always last
-    if (a.stats.type === "G") return 1;
-    if (b.stats.type === "G") return -1;
-
-    if (currentSort === "goals") {
-        return b.stats.goals - a.stats.goals;
-    } else if (currentSort === "assists") {
-        return b.stats.assists - a.stats.assists;
-    } else {
-        return b.stats.points - a.stats.points; // default
-    }
-});
-
-    // 🔥 STEP 3: Build HTML AFTER sorting
-    let html = '';
-
-    playersWithStats.forEach(({ player, stats }) => {
-
-        const height = player.displayHeight || "-";
-        const weight = player.displayWeight || "-";
-        const headshot = player.headshot?.href || "";
-
-        let statsHtml = "";
-
-        if (stats.type === "G") {
-            statsHtml = `
+                if (stats.type === "G") {
+                    statsHtml = `
                 GAA: ${stats.gaa} | SV%: ${stats.savePct}<br>
                 Saves: ${stats.saves} | Wins: ${stats.wins}
             `;
-        } else {
-            statsHtml = `
+                } else {
+                    statsHtml = `
                 G: ${stats.goals} | A: ${stats.assists} | PTS: ${stats.points}
             `;
-        }
+                }
 
-        html += `
+                html += `
             <div class="player-card" data-pos="${player.position?.abbreviation}">
                 <img src="${headshot}">
                 <div class="player-name">${player.fullName}</div>
@@ -306,87 +344,87 @@ async function displayPlayers(players) {
                 </div>
             </div>
         `;
-    });
+            });
 
-    document.getElementById('players-container').innerHTML = html;
-}
-
-// ✅ Filter buttons
-function filterPlayers(position) {
-    const buttons = document.querySelectorAll('.filter-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-
-    event.target.classList.add('active');
-
-    if (position === 'ALL') {
-        displayPlayers(allPlayers);
-        return;
-    }
-
-    const filtered = allPlayers.filter(p => {
-        if (!p.position) return false;
-
-        if (position === 'F') {
-            return ['C', 'LW', 'RW'].includes(p.position.abbreviation);
+            document.getElementById('players-container').innerHTML = html;
         }
 
-        return p.position.abbreviation === position;
-    });
+        // ✅ Filter buttons
+        function filterPlayers(position) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
 
-    displayPlayers(filtered);
-}
+            event.target.classList.add('active');
 
-function setSort(type, event) {
-    currentSort = type;
+            if (position === 'ALL') {
+                displayPlayers(allPlayers);
+                return;
+            }
 
-    const buttons = document.querySelectorAll('.sort-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
+            const filtered = allPlayers.filter(p => {
+                if (!p.position) return false;
 
-    event.currentTarget.classList.add('active');
+                if (position === 'F') {
+                    return ['C', 'LW', 'RW'].includes(p.position.abbreviation);
+                }
 
-    displayPlayers(allPlayers);
-}
-//prospects
-async function fetchProspects() {
-    try {
-        const res = await fetch("prospects.json");
-        const data = await res.json();
+                return p.position.abbreviation === position;
+            });
 
-        const mtl = data.MTL;
+            displayPlayers(filtered);
+        }
 
-        const prospects = [
-            ...(mtl.forwards || []),
-            ...(mtl.defensemen || []),
-            ...(mtl.goalies || [])
-        ];
+        function setSort(type, event) {
+            currentSort = type;
 
-        displayProspects(prospects);
+            const buttons = document.querySelectorAll('.sort-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
 
-    } catch (err) {
-        console.error("Prospects error:", err);
-        document.getElementById("prospects").innerHTML =
-            "<p>Failed to load prospects</p>";
-    }
-}
+            event.currentTarget.classList.add('active');
 
- function displayProspects(prospects) {
-    const container = document.getElementById('prospects');
+            displayPlayers(allPlayers);
+        }
+        //prospects
+        async function fetchProspects() {
+            try {
+                const res = await fetch("prospects.json");
+                const data = await res.json();
 
-    if (!container) return;
+                const mtl = data.MTL;
 
-    if (!prospects.length) {
-        container.innerHTML = "<p>No prospects found</p>";
-        return;
-    }
+                const prospects = [
+                    ...(mtl.forwards || []),
+                    ...(mtl.defensemen || []),
+                    ...(mtl.goalies || [])
+                ];
 
-    let html = `
+                displayProspects(prospects);
+
+            } catch (err) {
+                console.error("Prospects error:", err);
+                document.getElementById("prospects").innerHTML =
+                    "<p>Failed to load prospects</p>";
+            }
+        }
+
+        function displayProspects(prospects) {
+            const container = document.getElementById('prospects');
+
+            if (!container) return;
+
+            if (!prospects.length) {
+                container.innerHTML = "<p>No prospects found</p>";
+                return;
+            }
+
+            let html = `
         <h3>Top Prospects</h3>
         <div class="prospect-grid">
     `;
 
-    prospects.forEach(pro => {
+            prospects.forEach(pro => {
 
-        html += `
+                html += `
             <div class="prospect-card">
 
                 <div class="prospect-name">
@@ -418,75 +456,150 @@ async function fetchProspects() {
 
             </div>
         `;
-    });
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        //contracts
+        async function fetchContracts() {
+            try {
+                const res = await fetch("contracts.json");
+                const data = await res.json();
+
+                const mtl = data.MTL;
+
+                const contracts = [
+                    ...(mtl.forwards || []),
+                    ...(mtl.defensemen || []),
+                    ...(mtl.goalies || [])
+                ];
+
+                displayContracts(contracts);
+            } catch (err) {
+                console.error("Contracts error:", err);
+                document.getElementById("contracts").innerHTML =
+                    "<p>Failed to load contracts</p>";
+            }
+        }
+
+        function displayContracts(contracts) {
+            const container = document.getElementById('contracts');
+
+            if (!container) return;
+
+            if (!contracts.length) {
+                container.innerHTML = "<p>No contracts found</p>";
+                return;
+            }
+
+            let html = `
+        
+            
+        <h3>Contracts</h3>
+        <div class="contracts-table">
+        <div class="contracts-header">
+            <div>Player</div>
+            <div>Pos</div>
+            <div>Age</div>
+            <div>Term</div>
+            <div>Salary</div>
+            <div>Expiry</div>
+        </div>
+`;
+
+
+            contracts.forEach(contract => {
+
+                html += `
+        <div class="contract-row">
+        <div class="name">${contract.name}</div>
+        <div>${contract.position}</div>
+        <div>${contract.age}</div>
+        <div>${contract.term}</div>
+        <div class="salary">${contract.AAV}</div>
+        <div class="expiry">${contract.expiring}</div>
+    </div>
+`;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        async function fetchDraftPicks() {
+    try {
+        const res = await fetch("draftPicks.json");
+        const data = await res.json();
+
+        const picks = data.MTL;
+
+        displayDraftPicks(picks);
+
+    } catch (err) {
+        console.error("Draft picks error:", err);
+        document.getElementById("draft-picks").innerHTML =
+            "<p>Failed to load draft picks</p>";
+    }
+}
+function displayDraftPicks(picksData) {
+    const container = document.getElementById("draft-picks");
+
+    if (!container) return;
+
+    let html = `
+<h3>Draft Picks</h3>
+<div class="draft-table">
+
+    <div class="draft-header">
+        <div>Year</div>
+        <div>R1</div>
+        <div>R2</div>
+        <div>R3</div>
+        <div>R4</div>
+        <div>R5</div>
+        <div>R6</div>
+        <div>R7</div>
+    </div>
+`;
+
+    Object.keys(picksData).forEach(year => {
+    const rounds = picksData[year];
+
+    html += `
+        <div class="draft-row">
+            <div class="year">${year}</div>
+            <div>${rounds["1st"] || 0}</div>
+            <div>${rounds["2nd"] || 0}</div>
+            <div>${rounds["3rd"] || 0}</div>
+            <div>${rounds["4th"] || 0}</div>
+            <div>${rounds["5th"] || 0}</div>
+            <div>${rounds["6th"] || 0}</div>
+            <div>${rounds["7th"] || 0}</div>
+        </div>
+    `;
+});
 
     html += `</div>`;
     container.innerHTML = html;
 }
 
-// 🚀 Start
-fetchPlayers();
-fetchProspects();
+        // 🚀 Start
+        fetchPlayers();
+        fetchProspects();
+        fetchContracts();
+        fetchDraftPicks();
 
 
-</script>
-
-<section class="roster-info">
-            <h2>Roster Info</h2>
-
-            <div class="roster-info-grid">
-
-                <div class="roster-info-card">
-                    <h3>Roster Costs, Cap Space</h3>
-                    <ul>
-                        <li><strong>Active Rosster:</strong> 26/23</li>
-                        <li><strong>Contracts</strong> 46/50</li>
-                        <li><strong>2026:</strong> $95.45M</li>
-                        <li><strong>Cap Limit NHL:</strong> $95.50M</li>
-                        <li><strong>Projected Cap Space:</strong> $46K</li>
-                        <li><strong>Cap Hit:</strong> $99.18M</li>
-                    </ul>
-                </div>
-
-                <div class="roster-info-card">
-                    <h3>Draft Picks</h3>
-
-                    <div class="draft-picks">
-                        <div>
-                            <strong>2026:</strong>
-                            <ul>
-                                <li>1st Round: 1</li>
-                                <li>2nd Round: 1</li>
-                                <li>3rd Round: 1</li>
-                                <li>4th Round: 2</li>
-                                <li>5th Round: 0</li>
-                                <li>6th Round: 1</li>
-                                <li>7th Round: 2</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    
-                </div>
-
-                <div class="roster-info-card">
-                    <h3>Expiring Contracts</h3>
-                    <ul class="expiring-contracts">
-                        <li><strong>2026:</strong> Patrik Laine(UFA), Kirby Dach(RFA), Joseph Veleno(RFA), Zack Bolduc(RFA), Arber Xhekaj(RFA) </li>
-                        <li><strong>2027:</strong> Brendan Gallagher(UFA), Philip Danault(UFA), Josh Anderson(UFA), Alex Newhook(RFA), Ivan Demidov(RFA), Oliver Kapanen(RFA), Alexandre Carrier(UFA), Jayden Struble(RFA), Adam Engstrom(RFA), Samuel Montembault(UFA), Jakub Dobes(RFA) </li>
-                        <li><strong>2028:</strong> None</li>
-                    </ul>
-                </div>
-
-                
+    </script>
 
 
-            </div>
-        </section>
 
-<footer>
+    <footer>
         <p>&copy; 2026 HabsTracker1909. All rights reserved.</p>
         <p>Follow us on : <a href="https://www.instagram.com/camerone_7/" target="_blank">Instagram</a></p>
     </footer>
 </body>
+
 </html>

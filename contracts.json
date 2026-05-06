@@ -1,0 +1,219 @@
+{
+    "MTL": {
+        "forwards": [
+            {
+                "name": "Cole Caufield",
+                "position": "RW",
+                "age": 25,
+                "term": "6 years",
+                "AAV": "$7.85M",
+                "expiring": "2031"
+                
+            },
+            {
+                "name": "Nick Suzuki",
+                "position": "C",
+                "age": 26,
+                "term": "5 years",
+                "AAV": "$7.88",
+                "expiring": "2030"
+            },
+            {
+                "name": "Brendan Gallagher",
+                "position": "RW",
+                "age": 33,
+                "term": "2 years",
+                "AAV": "$6.5M",
+                "expiring": "2027"
+            },
+            {
+                "name": "Juraj Slafkovsky",
+                "position": "RW",
+                "age": 22,
+                "term": "7 years",
+                "AAV": "$7.6M",
+                "expiring": "2033"
+            },
+            {
+                "name": "Philip Danault",
+                "position": "c",
+                "age": 33,
+                "term": "2 years",
+                "AAV": "$5.5M",
+                "expiring": "2027"
+            },
+            {
+                    "name": "Josh Anderson",
+                    "position": "LW, RW",
+                    "age": 31,
+                    "term": "2 years",
+                    "AAV": "$5.5M",
+                    "expiring": "2027"
+                },
+                {
+                    "name": "Kirby Dach",
+                    "position": "C",
+                    "age": 25,
+                    "term": "1 year",
+                    "AAV": "$3.36M",
+                    "expiring": "2026"
+                },
+                {
+                    "name": "Alex Newhook",
+                    "position": "LW",
+                    "age": 25,
+                    "term": "2 years",
+                    "AAV": "$2.9M",
+                    "expiring": "2027"
+                },
+                {
+                    "name": "Jake Evans",
+                    "position": "C",
+                    "age": 29,
+                    "term": "4 years",
+                    "AAV": "$2.85M",
+                    "expiring": "2029"
+                },
+                {
+                    "name": "Alexandre Texier",
+                    "position": "LW, RW",
+                    "age": 26,
+                    "term": "2 year",
+                    "AAV": "$2.5M",
+                    "expiring": "2028"
+                },
+                {
+                    "name": "Ivan Demidov",
+                    "position": "LW, RW",
+                    "age": 20,
+                    "term": "2 year",
+                    "AAV": "$941k",
+                    "expiring": "2027"
+                },
+                {
+                    "name": "Joseph Veleno",
+                    "position": "C",
+                    "age": 26,
+                    "term": "1 year",
+                    "AAV": "$900k",
+                    "expiring": "2026"
+                },
+                {
+                    "name": "Oliver Kapanen",
+                    "position": "C",
+                    "age": 22,
+                    "term": "2 years",
+                    "AAV": "$925k",
+                    "expiring": "2027"
+                },
+                {
+                    "name": "Zack Bolduc",
+                    "position": "LW",
+                    "age": 23,
+                    "term": "1 year",
+                    "AAV": "$863k",
+                    "expiring": "2026"
+                }
+        ],
+        "defensemen": [
+            {
+                "name": "Kaiden Guhle",
+                "position": "D",
+                "age": 24,
+                "term": "5 years",
+                "AAV": "$5.55M",
+                "expiring": "2031"
+            },
+            {
+                "name": "Noah Dobson",
+                "position": "D",
+                "age": 26,
+                "term": "8 years",
+                "AAV": "$9.5M",
+                "expiring": "2033"
+            },
+            {
+                "name": "Mike Matheson",
+                "position": "D",
+                "age": 32,
+                "term": "5 years",
+                "AAV": "$4.88M",
+                "expiring": "2031"
+            },
+            {
+                "name": "Alexendre Carrier",
+                "position": "D",
+                "age": 29,
+                "term": "2 years",
+                "AAV": "$3.75M",
+                "expiring": "2027"
+            },
+            {
+                "name": "Jayden Struble",
+                "position": "D",
+                "age": 24,
+                "term": "2 years",
+                "AAV": "$1.41M",
+                "expiring": "2027"
+            },
+            {
+                    "name": "Arber Xhekaj",
+                    "position": "D",
+                    "age": 25,
+                    "term": "1 year",
+                    "AAV": "$1.3M",
+                    "expiring": "2026"
+    },
+                    {
+                        "name": "Lane Hutson",
+                        "position": "D",
+                        "age": 22,
+                        "term": "8 years",
+                        "AAV": "$8.85M",
+                        "expiring": "2034"
+                    },
+                    {
+                        "name": "Adam Engström",
+                        "position": "D",    
+                        "age": 22,
+                        "term": "2 years",
+                        "AAV": "$897K",
+                        "expiring": "2027"  
+                    },
+                    {
+                        "name": "David Reinbacher",
+                        "position": "D",
+                        "age": 21,
+                        "term": "3 years",
+                        "AAV": "$887K",
+                        "expiring": "2028"
+                    }
+        ],
+        "goalies": [
+            {
+                "name": "Samuel Montembeault",
+                "position": "G",
+                "age": 29,
+                "term": "2 years",
+                "AAV": "$3.15M",
+                "expiring": "2027"
+    },
+            {
+                "name": "Jakub Dobes",
+                "position": "G",
+                "age": 24,
+                "term": "2 years",
+                "AAV": "$965K",
+                "expiring": "2027"
+            },
+            {
+                "name": "Jacob Fowler",
+                "position": "G",
+                "age": 21,
+                "term": "3 years",
+                "AAV": "$923K",
+                "expiring": "2028"
+            }
+        ]
+}
+}
