@@ -22,9 +22,15 @@ Saves - Save % - GAA - Wins
 
 **Team Stats (Live Games)** - Hits - PIM (Penalty Minutes) - Goal Summary
 
-**Latest News** - NHL news feed
+**Latest News** - NHL news feed, Injuries
 
 **Standings** - GP, W, L, OTL, PTS, DIFF, RW, ROW, GF, GA, L10, STRK
+
+**Player Stats** - Goals, Assists, Points, Height, Contracts
+
+**Prospects** - Team, Height, Draft Year and Position
+
+**Team Facts** - History and Facts
 
 ------------------------------------------------------------------------
 
@@ -46,7 +52,7 @@ Saves - Save % - GAA - Wins
 **Project Structure**
 
 HabsTracker1909/ │── index.html │── news.html │── scores.html │──
-standings.html │── team.html │── history.html │── style.css │── theme.js |── assets/
+standings.html │── team.html │── history.html │── style.css │── theme.js |── Contracts.json |── draftPicks.json |── Prospects.json |── assets/
 
 ------------------------------------------------------------------------
 
