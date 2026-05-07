@@ -195,6 +195,28 @@
             </div>
         </section>
 
+        <section class="guess-game">
+            <h2>Guess the Player</h2>
+
+            <div class="game-card">
+                <img id="mystery-img" src="" alt="Player" />
+
+                <div class="autocomplete-wrapper">
+                    <input type="text" id="guess-input" placeholder="Enter player name..." autocomplete="off" />
+                    <div id="autocomplete-list" class="autocomplete-items"></div>
+                </div>
+
+                <button onclick="submitGuess()">Guess</button>
+
+                <div id="feedback"></div>
+                <div id="hints"></div>
+
+                <button onclick="startGame()" class="new-game-btn">
+                    New Player
+                </button>
+            </div>
+        </section>
+
     </main>
 
     <footer>
@@ -437,7 +459,7 @@
                 // Final fallback display
                 // 🔥 UPDATE SHOTS UI (instead of putting it in html string)
 
-                
+
 
                 // 🔥 START HTML
                 let html = `
@@ -660,7 +682,7 @@
                 );
 
                 if (!habsGame) {
-                    document.getElementById("series-text").textContent = "Round 2 Starts Wednesday!"; // default text when no game
+                    document.getElementById("series-text").textContent = "Buf Leads 1-0"; // default text when no game
                     return;
                 }
 
@@ -848,6 +870,131 @@
                 clock: situation?.clock || ""
             };
         }
+
+        let gamePlayers = [];
+        let currentPlayer = null;
+        let attempts = 0;
+
+
+
+
+        function startGame() {
+            if (!gamePlayers.length) return;
+
+            attempts = 0;
+            currentPlayer = gamePlayers[Math.floor(Math.random() * gamePlayers.length)];
+
+            document.getElementById("mystery-img").src = currentPlayer.headshot.href;
+            document.getElementById("mystery-img").classList.remove("revealed");
+
+            document.getElementById("feedback").innerText = "";
+            document.getElementById("hints").innerText = "";
+            document.getElementById("guess-input").value = "";
+        }
+
+        // 🧠 Handle guess
+        function submitGuess() {
+            const input = document.getElementById("guess-input").value.toLowerCase();
+            const realName = currentPlayer.fullName.toLowerCase();
+
+            attempts++;
+
+            if (input === realName) {
+                document.getElementById("feedback").innerText = "✅ Correct!";
+                document.getElementById("mystery-img").classList.add("revealed");
+                return;
+            }
+
+            // ❌ wrong guess
+            document.getElementById("feedback").innerText = "❌ Try again";
+
+            giveHint();
+        }
+
+        // 💡 Hints system
+        function giveHint() {
+            let hintText = "";
+
+            if (attempts === 1) {
+                hintText = `Position: ${currentPlayer.position?.abbreviation || "?"}`;
+            }
+            else if (attempts === 2) {
+                hintText = `Jersey #: ${currentPlayer.jersey || "?"}`;
+            }
+            else if (attempts === 3) {
+                hintText = `First letter: ${currentPlayer.fullName.charAt(0)}`;
+            }
+            else {
+                hintText = "Revealed!";
+                document.getElementById("mystery-img").classList.add("revealed");
+            }
+
+            document.getElementById("hints").innerText = hintText;
+        }
+
+        function setupAutocomplete() {
+            const input = document.getElementById("guess-input");
+            const list = document.getElementById("autocomplete-list");
+
+            if (!input || !list) return;
+
+            input.addEventListener("input", function () {
+                const value = this.value.toLowerCase().trim();
+                list.innerHTML = "";
+
+                if (!value) return;
+
+                const matches = gamePlayers.filter(player =>
+                    player.fullName.toLowerCase().includes(value)
+                );
+
+                matches.slice(0, 5).forEach(player => {
+                    const item = document.createElement("div");
+                    item.classList.add("autocomplete-item");
+                    item.textContent = player.fullName;
+
+                    item.onclick = () => {
+                        input.value = player.fullName;
+                        list.innerHTML = "";
+                    };
+
+                    list.appendChild(item);
+                });
+            });
+
+            // click outside = close
+            document.addEventListener("click", function (e) {
+                document.addEventListener("click", function (e) {
+                    if (!input.contains(e.target) && !list.contains(e.target)) {
+                        list.innerHTML = "";
+                    }
+                });
+            });
+        }
+        async function loadGamePlayers() {
+            const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/10/roster');
+            const data = await res.json();
+
+            const athletes = data.athletes || [];
+            gamePlayers = [];
+
+            athletes.forEach(group => {
+                group.items.forEach(player => {
+                    if (player.headshot?.href) {
+                        gamePlayers.push(player);
+                    }
+                });
+            });
+
+            setupAutocomplete(); // 👈 THIS IS CRITICAL
+            startGame();
+        }
+
+        // 🚀 Start when page loads
+        document.addEventListener("DOMContentLoaded", () => {
+            loadGamePlayers();
+        });
+
 
 
 
