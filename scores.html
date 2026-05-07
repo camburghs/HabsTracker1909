@@ -324,13 +324,7 @@
                 // Final fallback display
                 // 🔥 UPDATE SHOTS UI (instead of putting it in html string)
 
-                updateGameCenterUI(
-                    { competitions: [{ situation: game?.competitions?.[0]?.situation }] },
-                    {
-                        homeShots,
-                        awayShots
-                    }
-                );
+                
 
                 // 🔥 START HTML
                 let html = `
@@ -429,10 +423,9 @@
             fetchGameStats(); // load when opened
         });
 
-        // 🔥 STANDINGS
-
-
-
+        
+        
+        
         //team stats click
         document.querySelector('.team-stats-header').addEventListener('click', () => {
             document.querySelector('.team-stats').classList.toggle('active');
@@ -605,10 +598,9 @@
 
         // 🔥 INIT
         fetchNHLScores();
-
+        
 
         setInterval(fetchNHLScores, 3000);
-
 
         function triggerGoalAnimation() {
             const overlay = document.getElementById('goal-overlay');
