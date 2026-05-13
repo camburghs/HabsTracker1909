@@ -140,7 +140,6 @@
         //prospect api url
         //https://api-web.nhle.com/v1/prospects/MTL
 
-        // ✅ Get stats for ONE player
 
 
 
@@ -152,7 +151,6 @@
 
                 const playerData = await playerRes.json();
 
-                // ✅ SAFELY check if statistics exists
                 const statsRef = playerData?.statistics?.$ref;
 
                 if (!statsRef) {
@@ -225,7 +223,6 @@
                 return { gaa: "0", savePct: "0", saves: "0", wins: "0" };
             }
         }
-        // ✅ Fetch roster
         async function fetchPlayers() {
             try {
                 const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/10/roster');
@@ -249,7 +246,6 @@
             }
         }
 
-        // ✅ Display players WITH stats
         async function displayPlayers(players) {
             const container = document.getElementById('players-container');
 
@@ -260,7 +256,6 @@
 
             let playersWithStats = [];
 
-            // 🔥 STEP 1: Fetch + store stats
             for (const player of players) {
 
                 const isGoalie = player.position?.abbreviation === "G";
@@ -295,9 +290,7 @@
                 });
             }
 
-            // 🔥 STEP 2: SORT (default = points)
             playersWithStats.sort((a, b) => {
-                // goalies always last
                 if (a.stats.type === "G") return 1;
                 if (b.stats.type === "G") return -1;
 
@@ -306,11 +299,10 @@
                 } else if (currentSort === "assists") {
                     return b.stats.assists - a.stats.assists;
                 } else {
-                    return b.stats.points - a.stats.points; // default
+                    return b.stats.points - a.stats.points; 
                 }
             });
 
-            // 🔥 STEP 3: Build HTML AFTER sorting
             let html = '';
 
             playersWithStats.forEach(({ player, stats }) => {
@@ -349,7 +341,6 @@
             document.getElementById('players-container').innerHTML = html;
         }
 
-        // ✅ Filter buttons
         function filterPlayers(position) {
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
@@ -585,7 +576,6 @@ function displayDraftPicks(picksData) {
     container.innerHTML = html;
 }
 
-        // 🚀 Start
         fetchPlayers();
         fetchProspects();
         fetchContracts();

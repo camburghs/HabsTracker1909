@@ -98,14 +98,11 @@
 
                     const allArticles = data.articles || [];
 
-                    // 🔥 SMART FILTER (category + text)
                     let habsArticles = allArticles.filter(article =>
-                        // 1. Check categories (BEST method)
                         article.categories?.some(cat =>
                             cat.type === "team" &&
                             cat.description === "Montreal Canadiens"
                         )
-                        // 2. Fallback to text search
                         || (article.headline + " " + (article.description || ""))
                             .toLowerCase()
                             .includes("canadiens")
@@ -114,7 +111,6 @@
                             .includes("montreal")
                     );
 
-                    // 🔥 FALLBACK: if no Habs news, show general NHL news
                     const articlesToDisplay = habsArticles.length ? habsArticles : allArticles;
 
                     const container = document.getElementById("news-container");
