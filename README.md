@@ -58,4 +58,4 @@ standings.html │── team.html │── history.html │── style.css �
 
 **Author**
 
-Cameron Emburgh
+Camburghs
