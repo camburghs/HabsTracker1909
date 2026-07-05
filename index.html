@@ -82,6 +82,7 @@
                         <p>Team Stats</p>
                     </div>
                 </div>
+                <!-- 🔥 GAME STATS DROPDOWN -->
                 <div class="game-stats">
                     <button class="stats-header"> Player Stats</button>
 
@@ -267,7 +268,7 @@
                     const away = event.competitions[0].competitors[1];
                     const home = event.competitions[0].competitors[0];
 
-                    // ✅ FIXED LOGO ACCESS
+                    
                     const awayLogo = away.team.logos?.[0]?.href || away.team.logo || "";
                     const homeLogo = home.team.logos?.[0]?.href || home.team.logo || "";
 
@@ -299,7 +300,7 @@
             }
         }
 
-        // 🔥 DISPLAY HABS GAME
+        // DISPLAY HABS GAME
         function displayCanadiens(events) {
             const game = events.find(e =>
                 e.competitions[0].competitors.some(c =>
@@ -369,7 +370,7 @@
                 penaltyContainer.innerHTML = `
         <div class="penalty-box">
             <div class="pp-status">
-                ${isMTL ? "⚡ MTL Power Play" : "⚡ Opponent Power Play"}
+                ${isMTL ? " MTL Power Play" : " Opponent Power Play"}
             </div>
 
             ${strength ? `<div class="pp-strength">${strength}</div>` : ""}
@@ -391,11 +392,11 @@
                 awayShots: 0
             });
 
-            fetchGameStats(); // 🔥 load shots immediately
+            fetchGameStats(); // load shots immediately
         }
 
-        // 🔥 GAME STATS FETCH
-        // 🔥 GAME STATS FETCH
+        //  GAME STATS FETCH
+        
         async function fetchGameStats() {
             if (!currentGameId) {
                 document.getElementById('game-stats-container').innerHTML =
@@ -416,8 +417,7 @@
                     return;
                 }
 
-                // 🔥 GET TEAM SHOTS (with fallback)
-                // 🔥 GET TEAM SHOTS (from scoreboard API)
+                
                 let homeShots = "0";
                 let awayShots = "0";
                 let homeTeam = "";
@@ -442,11 +442,10 @@
                             return team.statistics.find(s => s.name === statName)?.displayValue || "-";
                         }
 
-                        // ✅ DIRECT shots (if available)
+                        
                         homeShots = getStat(home, "shots");
                         awayShots = getStat(away, "shots");
 
-                        // 🔥 fallback if shots missing
                         if (homeShots === "-" || awayShots === "-") {
                             homeShots = parseFloat(getStat(away, "saves")) + parseFloat(getStat(home, "goals")) || "-";
                             awayShots = parseFloat(getStat(home, "saves")) + parseFloat(getStat(away, "goals")) || "-";
@@ -457,12 +456,7 @@
                     console.error("Scoreboard error:", err);
                 }
 
-                // Final fallback display
-                // 🔥 UPDATE SHOTS UI (instead of putting it in html string)
-
-
-
-                // 🔥 START HTML
+                
                 let html = `
             <h3 class="game-stats-text">Game Stats</h3>
             <div class="team-shots-text" style="margin-bottom:10px; font-size:18px;">
@@ -478,20 +472,17 @@
 
                         const labels = statGroup.labels;
 
-                        // 🔥 Map label → index
+                       
                         const indexMap = {};
                         labels.forEach((label, i) => {
                             indexMap[label] = i;
                         });
 
-                        // 🔥 Detect stat type
                         let desiredOrder = [];
 
                         if (statGroup.name.toLowerCase().includes("goalie")) {
-                            // 🧤 GOALIE
                             desiredOrder = ["SV", "SA", "GA", "SV%", "TOI"];
                         } else {
-                            // 🏒 SKATERS
                             desiredOrder = ["G", "A", "PTS", "SOG", "+/-", "PIM", "TOI", "HT", "BS"];
                         }
 
@@ -553,16 +544,13 @@
             }
         }
 
-        // 🔥 DROPDOWN CLICK
         document.querySelector('.stats-header').addEventListener('click', () => {
             document.querySelector('.game-stats').classList.toggle('active');
             fetchGameStats(); // load when opened
         });
 
-        // 🔥 STANDINGS
 
 
-        // 🔥 FETCH SCHEDULE
         async function fetchSchedule() {
             try {
                 const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/10/schedule');
@@ -587,13 +575,11 @@
 
                 const now = new Date();
 
-                // ✅ Only future games
                 const upcomingGames = games.filter(game => new Date(game.date) > now);
 
-                // Optional: limit to next 10
                 const nextGames = upcomingGames.slice(0, 10);
 
-                let html = ""; // reset html since we're doing custom cards
+                let html = ""; 
                 nextGames.forEach(game => {
                     const comp = game.competitions[0];
                     const gameNote = comp.notes?.[0]?.headline || "";
@@ -683,7 +669,7 @@
                 );
 
                 if (!habsGame) {
-                    document.getElementById("series-text").textContent = "Tied 1-1"; // default text when no game
+                    document.getElementById("series-text").textContent = "Buf Leads 1-0"; // default text when no game
                     return;
                 }
 
@@ -726,10 +712,8 @@
 
                 const container = document.getElementById('team-stats-container');
 
-                // ✅ NEW: Check game status FIRST
                 const gameState = data?.header?.competitions?.[0]?.status?.type?.state;
 
-                // ❌ If game hasn't started → DON'T show stats
                 if (gameState === "pre") {
                     container.innerHTML = `<p class="no-stat-yet">Stats will appear once the game starts</p>`;
                     return;
@@ -755,18 +739,15 @@
                 const homeStats = {
                     hits: getStat(home, "hits"),
                     pim: getStat(home, "penaltyMinutes"),
-                    // ✅ FIXED typo here
                     pp: getStat(home, "powerPlayGoals") + "/" + getStat(home, "powerPlayOpportunities")
                 };
 
                 const awayStats = {
                     hits: getStat(away, "hits"),
                     pim: getStat(away, "penaltyMinutes"),
-                    // ✅ FIXED typo here
                     pp: getStat(away, "powerPlayGoals") + "/" + getStat(away, "powerPlayOpportunities")
                 };
 
-                // 🔥 GOAL SUMMARY
                 let goalsHtml = "<h4>Goals</h4>";
 
                 if (scoringPlays.length) {
@@ -785,7 +766,6 @@
 
 
 
-                // 🔥 FINAL HTML
                 const html = `
             <h3 class="team-stats-text">Team Stats</h3>
 
@@ -827,7 +807,7 @@
             if (!currentGameId) return;
 
             const container = document.getElementById('penalty-container');
-            if (!container) return; // safety check
+            if (!container) return; 
 
             try {
                 const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/summary?event=${currentGameId}`);
@@ -835,7 +815,6 @@
 
                 const plays = data?.plays || [];
 
-                // 🔥 filter only penalties
                 const penalties = plays.filter(p => p.type?.text === "Penalty");
 
                 let html = "<h4>Penalties</h4>";
@@ -893,7 +872,6 @@
             document.getElementById("guess-input").value = "";
         }
 
-        // 🧠 Handle guess
         function submitGuess() {
             const input = document.getElementById("guess-input").value.toLowerCase();
             const realName = currentPlayer.fullName.toLowerCase();
@@ -906,13 +884,11 @@
                 return;
             }
 
-            // ❌ wrong guess
             document.getElementById("feedback").innerText = "❌ Try again";
 
             giveHint();
         }
 
-        // 💡 Hints system
         function giveHint() {
             let hintText = "";
 
@@ -963,7 +939,6 @@
                 });
             });
 
-            // click outside = close
             document.addEventListener("click", function (e) {
                 document.addEventListener("click", function (e) {
                     if (!input.contains(e.target) && !list.contains(e.target)) {
@@ -987,11 +962,10 @@
                 });
             });
 
-            setupAutocomplete(); // 👈 THIS IS CRITICAL
+            setupAutocomplete(); 
             startGame();
         }
 
-        // 🚀 Start when page loads
         document.addEventListener("DOMContentLoaded", () => {
             loadGamePlayers();
         });
@@ -1001,7 +975,6 @@
 
 
 
-        // 🔥 INIT
         fetchNHLScores();
         updateSeriesBanner();
         fetchSchedule();

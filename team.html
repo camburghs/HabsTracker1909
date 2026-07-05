@@ -291,7 +291,6 @@
             }
 
             playersWithStats.sort((a, b) => {
-                // goalies always last
                 if (a.stats.type === "G") return 1;
                 if (b.stats.type === "G") return -1;
 
@@ -300,7 +299,7 @@
                 } else if (currentSort === "assists") {
                     return b.stats.assists - a.stats.assists;
                 } else {
-                    return b.stats.points - a.stats.points; // default
+                    return b.stats.points - a.stats.points; 
                 }
             });
 
@@ -342,7 +341,6 @@
             document.getElementById('players-container').innerHTML = html;
         }
 
-        // ✅ Filter buttons
         function filterPlayers(position) {
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
