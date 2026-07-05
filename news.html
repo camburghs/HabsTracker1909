@@ -63,11 +63,11 @@
             <div class="news-highlight-meta">
                 <div class="meta-card">
                     <span class="meta-title">Team Focus</span>
-                    <strong>Staying healthy for the playoff push</strong>
+                    <strong>No reported injuries, off season</strong>
                 </div>
                 <div class="meta-card">
                     <span class="meta-title">Last Updated</span>
-                    <strong>May 3, 2026</strong>
+                    <strong>July 6, 2026</strong>
                 </div>
             </div>
         </section>
@@ -98,14 +98,11 @@
 
                     const allArticles = data.articles || [];
 
-                    // 🔥 SMART FILTER (category + text)
                     let habsArticles = allArticles.filter(article =>
-                        // 1. Check categories (BEST method)
                         article.categories?.some(cat =>
                             cat.type === "team" &&
                             cat.description === "Montreal Canadiens"
                         )
-                        // 2. Fallback to text search
                         || (article.headline + " " + (article.description || ""))
                             .toLowerCase()
                             .includes("canadiens")
@@ -114,7 +111,6 @@
                             .includes("montreal")
                     );
 
-                    // 🔥 FALLBACK: if no Habs news, show general NHL news
                     const articlesToDisplay = habsArticles.length ? habsArticles : allArticles;
 
                     const container = document.getElementById("news-container");
@@ -168,11 +164,7 @@
     <script>
         const fallbackInjuries = [
             {
-                player: "Patrik Laine",
-                status: "IR",
-                issue: "Abdomen",
-                detail: "January 10, 2026, Practiced non-contact.",
-                updated: "January 10, 2026"
+                
             }
 
         ];

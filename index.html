@@ -43,14 +43,16 @@
         <a href="history.html">History</a>
     </nav>
 
-    <div class="playoff-banner top">
+
+    <!--removed for offseason / reg season-->
+    <!-- <div class="playoff-banner top">
 
         <img class="cup-icon left" src="Stanley-Cup-Emblem.png" alt="Cup logo">
 
         <span id="series-text" class="series-text"></span>
 
         <img class="cup-icon right" src="Stanley-Cup-Emblem.png" alt="Cup logo">
-
+    -->
     </div>
     <main class="container">
 
@@ -80,7 +82,6 @@
                         <p>Team Stats</p>
                     </div>
                 </div>
-                <!-- 🔥 GAME STATS DROPDOWN -->
                 <div class="game-stats">
                     <button class="stats-header"> Player Stats</button>
 
@@ -682,7 +683,7 @@
                 );
 
                 if (!habsGame) {
-                    document.getElementById("series-text").textContent = "Buf Leads 1-0"; // default text when no game
+                    document.getElementById("series-text").textContent = "Tied 1-1"; // default text when no game
                     return;
                 }
 

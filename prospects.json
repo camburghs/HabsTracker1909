@@ -38,18 +38,7 @@
                 "weight": "205 lbs",
                 "draft": "2023, 4th round (101st overall)"
             },
-            {
-                "id": 4,
-                "name": "Joshua Roy",
-                "position": "LW",
-                "shoots": "Left",
-                "age": 22,
-                "league": "AHL",
-                "team": "Laval Rocket",
-                "height": "6'0\"",
-                "weight": "192 lbs",
-                "draft": "2021, 5th round (150th overall)"
-            },
+            
             {
                 "id": 5,
                 "name": "Filip Mesar",
@@ -157,6 +146,20 @@
                 "height": "5'8\"",
                 "weight": "165 lbs",
                 "draft": "2025, 4th round (113th overall)"
+            },
+            {
+                "id":15,
+                "name": "Gleb Pugachyov",
+                "position": "RW",
+                "shoots": "Left",
+                "age": 18,
+                "league": "KHL",
+                "team": "Torpedo Nizhny Novgorod",
+                "height": "6'3\"",
+                "weight": "225 lbs",
+                "draft": "2026, 1st round (26th overall)"
+
+
             }
 
         ],
@@ -185,18 +188,7 @@
                 "weight": "190 lbs",
                 "draft": "2022, 3rd round (92nd overall)"
             },
-            {
-                "id": 3,
-                "name": "William Trudeau",
-                "position": "D",
-                "shoots": "Left",
-                "age": 23,
-                "league": "AHL",
-                "team": "Laval Rocket",
-                "height": "6'1\"",
-                "weight": "205 lbs",
-                "draft": "2021, 4th round (113th overall)"
-            },
+            
             {
                 "id": 4,
                 "name": "Luke Mittelstadt",
@@ -232,6 +224,31 @@
                 "height": "6'2\"",
                 "weight": "207 lbs",
                 "draft": "2024, 4th round (102nd overall)"
+            },
+            
+            {
+                "id": 7,
+                "name": "Timofei Runtso",
+                "position": "D",
+                "shoots": "Right",
+                "age": 18,
+                "league": "WHL",
+                "team": "Victoria Royals",
+                "height": "6'3\"",
+                "weight": "196 lbs",
+                "draft": "2026, 2nd round (57th overall)"
+            },
+            {
+                "id": 8,
+                "name": "Cooper Cleaves",
+                "position": "D",
+                "shoots": "Right",
+                "age": 20,
+                "league": "NCAA",
+                "team": "Dartmouth College ",
+                "height": "6'3\"",
+                "weight": "205 lbs",
+                "draft": "2026, 3rd round (93rd overall)"
             }
         ],
         "goalies": [
@@ -271,6 +288,8 @@
                 "weight": "205 lbs",
                 "draft": "2025, 5th round (205th overall)"
             }
+
+            
         ]
     }
 }
