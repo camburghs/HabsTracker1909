@@ -399,17 +399,25 @@ footer {
 
 /* EXPANDED */
 .era.active .era-content {
-  max-height: 600px;
+  max-height: 2000px;
   padding: 15px;
 }
 /* LEGENDS GRID */
 .legend-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    max-height: 2000px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
     margin-top: 10px;
 }
 
+
+
+@media (max-width: 768px) {
+    .legend-grid {
+        grid-template-columns: 1fr;
+    }
+}
 
 /* LEGEND CARD */
 .legend-card {
