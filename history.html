@@ -11,6 +11,8 @@
                 document.documentElement.classList.add("dark-mode");
             }
         })();
+
+        
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -142,7 +144,11 @@
 
 <!-- LEGENDS DROPDOWN -->
 <div class="era">
-    <button class="era-header"> Canadiens Legends ⬇</button>
+    <button class="era-header">
+    Canadiens Legends ⬇
+</button>
+
+    
     
 
     <div class="era-content">
@@ -343,21 +349,28 @@
 </main>
 
 <script>
-const headers = document.querySelectorAll('.era-header');
+document.querySelectorAll(".era-header").forEach(button => {
 
-headers.forEach(header => {
-    header.addEventListener('click', () => {
-        const current = header.parentElement;
+    button.addEventListener("click", () => {
 
-        document.querySelectorAll('.era').forEach(era => {
-            if (era !== current) {
-                era.classList.remove('active');
-            }
-        });
+        button.parentElement.classList.toggle("active");
 
-        current.classList.toggle('active');
     });
+
 });
+
+
+function toggleEra(button) {
+    const content = button.nextElementSibling;
+
+    if (content.style.maxHeight) {
+        content.style.maxHeight = null;
+        button.innerHTML = "Canadiens Legends ⬇";
+    } else {
+        content.style.maxHeight = content.scrollHeight + "px";
+        button.innerHTML = "Canadiens Legends ⬆";
+    }
+}
 
 
 </script>

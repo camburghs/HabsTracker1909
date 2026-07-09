@@ -47,9 +47,9 @@
                     "name": "Kirby Dach",
                     "position": "C",
                     "age": 25,
-                    "term": "1 year",
-                    "AAV": "$3.36M",
-                    "expiring": "2026"
+                    "term": "-",
+                    "AAV": "$-",
+                    "expiring": "RFA"
                 },
                 {
                     "name": "Alex Newhook",
@@ -96,9 +96,9 @@
                     "name": "Zack Bolduc",
                     "position": "LW",
                     "age": 23,
-                    "term": "1 year",
-                    "AAV": "$863k",
-                    "expiring": "2026"
+                    "term": "-",
+                    "AAV": "-",
+                    "expiring": "RFA"
                 }
         ],
         "defensemen": [
@@ -146,9 +146,9 @@
                     "name": "Arber Xhekaj",
                     "position": "D",
                     "age": 25,
-                    "term": "1 year",
-                    "AAV": "$1.3M",
-                    "expiring": "2026"
+                    "term": "-",
+                    "AAV": "-",
+                    "expiring": "RFA"
     },
                     {
                         "name": "Lane Hutson",
