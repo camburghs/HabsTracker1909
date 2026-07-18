@@ -47,9 +47,9 @@
                     "name": "Kirby Dach",
                     "position": "C",
                     "age": 25,
-                    "term": "-",
-                    "AAV": "$-",
-                    "expiring": "RFA"
+                    "term": "1 year",
+                    "AAV": "$3.6M",
+                    "expiring": "2027"
                 },
                 {
                     "name": "Alex Newhook",
@@ -99,6 +99,14 @@
                     "term": "-",
                     "AAV": "-",
                     "expiring": "RFA"
+                },
+                {
+                    "name":"Brett Berard",
+                    "position": "LW",
+                    "age": 23,
+                    "term": "1 year",
+                    "AAV": "$850K",
+                    "expiring": "2027"
                 }
         ],
         "defensemen": [
@@ -173,6 +181,22 @@
                         "term": "2 years",
                         "AAV": "$887K",
                         "expiring": "2028"
+                    },
+                    {
+                        "name": "Bogdan Konyushkov",
+                        "position": "D",
+                        "age": 23,
+                        "term": "2 years",
+                        "AAV": "$1.013M",
+                        "expiring": "2028"
+                    },
+                    {
+                        "name": "Reilly Walsh",
+                        "position": "D",
+                        "age": 27,
+                        "term": "1 years",
+                        "AAV": "$850K",
+                        "expiring": "2027"
                     }
         ],
         "goalies": [
