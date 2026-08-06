@@ -207,16 +207,86 @@ h2 {
   transform: scale(1.03); 
 } 
 /* SCORE TEXT */ 
-#canadiens-score { 
-  font-size: 2.5rem; 
-  font-weight: bold; 
+#canadiens-score{
+    font-size:4.8rem;
+    font-weight:900;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:25px;
+
+    color:#000000;
+
+    text-shadow:
+        0 0 5px #ffffff,
+        0 0 10px #dadada,
+        0 0 20px #9e000085,
+        0 0 35px #b90915c2;
 }
 
-.score-logo {
-  width: 40px;
+/*` GOAL ANIMATION use when season starts */
+/*@keyframes goalGlow{
+    0%{
+        transform:scale(1);
+        text-shadow:none;
+    }
+
+    25%{
+        transform:scale(1.2);
+        text-shadow:
+            0 0 10px white,
+            0 0 30px #BD3039,
+            0 0 60px #BD3039,
+            0 0 90px gold;
+    }
+
+    100%{
+        transform:scale(1);
+        text-shadow:none;
+    }
 }
+
+.goal-glow{
+    animation:goalGlow 1s ease;
+}
+
+const score = document.getElementById("canadiens-score");
+
+score.classList.add("goal-glow");
+
+setTimeout(() => {
+    score.classList.remove("goal-glow");
+}, 1000);
+*/
+
 .other-score-header {
     text-align: center;
+}
+.game-status{
+    display:inline-block;
+    background:#18a558;
+    color:white;
+    text-shadow: #000000 1px 1px 2px;
+    padding:6px 18px;
+    border-radius:30px;
+    font-weight:bold;
+ font-size:14px;
+}
+.quick-stats {
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+margin:20px 0;
+}
+.stat-box {
+background:white;
+padding:15px;
+border-radius:12px;
+text-align:center;
+box-shadow:0 5px 10px rgba(0,0,0,.12);
+}
+.dark-mode .stat-box {
+background:#222;
 }
 
 /* TABLE */
@@ -238,9 +308,11 @@ th {
 }
 
 td {
+  
+  font-size: 16px;
   padding: 10px;
   text-align: center;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #bb0a0a;
 }
 
 tr:nth-child(even) {
@@ -419,15 +491,13 @@ footer {
 
 .dark-mode .era-content {
     background: #1e1e1e;
-}S
-/* LEGENDS GRID */
-.legend-grid{
-    .legend-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-    margin-top: 20px;
 }
+/* LEGENDS GRID */
+.legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    gap:25px;
+    margin-top:20px;
 }
 
 
@@ -529,67 +599,124 @@ footer {
 
 
 /*game-stats*/
-.team-stats {
-    margin-top: 15px;
-    
+
+/* ===========================
+   Game Buttons
+=========================== */
+
+.game-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 30px 0;
 }
 
-.team-stats-header {
-    width: 25%;
-    padding: 15px;
-    background: linear-gradient(135deg, #a9a9a9, #a4a4a4);
-    color: rgb(255, 255, 255);
-    text-shadow: #000000 1px 1px 2px;
-    border: none;
-    font-size: 1.2rem;
+/* Puck Buttons */
+.stats-btn {
+    background: #111;
+    color: rgb(180,180,180);
+    border: 3px solid #5e5e5e;
+    border-radius: 50%;
+
+    width: 110px;
+    height: 110px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
     cursor: pointer;
-    border-radius: 10px;
+
+    box-shadow:
+        0 8px 0 #000,
+        0 20px 15px rgba(0,0,0,.4);
+
+    transition: all .25s ease;
 }
-.team-stats-content {
-    
+
+.stats-btn:hover {
+    transform: translateY(-5px);
+
+    background: #727272;
+    border-color: #363636;
+
+    box-shadow:
+        0 12px 0 #333,
+        0 16px 20px rgba(0,0,0,.5);
+}
+
+.stats-btn:active {
+    transform: translateY(4px);
+
+    box-shadow:
+        0 3px 0 #222,
+        0 8px 10px rgba(0,0,0,.4);
+}
+
+
+/* ===========================
+   Expandable Team Stats
+=========================== */
+
+.team-stats-content,
+.game-stats-content {
     max-height: 0;
     overflow: hidden;
-    transition: 0.4s;
+    transition: .4s;
     background: #e4e3e3;
     border-radius: 10px;
     margin-top: 10px;
-    padding: 0 10px;
+    padding: 0 15px;
 }
-.team-stats.active .team-stats-content {
+
+.team-stats.active .team-stats-content,
+.game-stats.active .game-stats-content {
     max-height: 3000px;
     padding: 15px;
+}
+.goal-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px;
+margin-top:10px;
+border-left:5px solid #BD3039;
+background:#f8f8f8;
+border-radius:8px;
+}
+.dark-mode .goal-item{
+background:#222;
 }
 
 /* players game stats */
 /* GAME STATS DROPDOWN */
-.game-stats {
-    margin-top: 7px;
+/* ===========================
+   Game Stats Sections
+=========================== */
+
+.game-stats,
+.team-stats {
+    margin-top: 10px;
 }
 
-.stats-header {
-    width: 25%;
-    padding: 15px;
-    background: linear-gradient(135deg, #a9a9a9, #a4a4a4);
-    color: rgb(255, 255, 255);
-    text-shadow: #000000 1px 1px 2px;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    border-radius: 10px;
-}
-
-.stats-content {
-    
+.stats-content,
+.team-stats-content {
     max-height: 0;
     overflow: hidden;
-    transition: 0.4s;
+    transition: max-height 0.01s ease-out;
     background: #e4e3e3;
     border-radius: 10px;
     margin-top: 10px;
-    padding: 0 10px;
+    padding: 0 15px;
 }
 
-.game-stats.active .stats-content {
+.game-stats.active .stats-content,
+.team-stats.active .team-stats-content {
     max-height: 3000px;
     padding: 15px;
 }
@@ -705,6 +832,7 @@ footer {
 }
 .team-stats-text  {
     color: var(--team-stats-txt);
+
 }
 .game-stats-text  {
     color: var(--team-stats-txt);
@@ -712,6 +840,7 @@ footer {
 
 .team-shots-text {
     color: var(--team-stats-txt);
+
 }
 .player-stats-text {
     color: var(--team-stats-txt);
@@ -722,14 +851,32 @@ footer {
 .no-game-stats {
     color: var(--team-stats-txt);
 }
-.score-logo {
-    width: 35px;
-    height: 35px;
-    object-fit: contain;
-    vertical-align: middle;
-    margin-right: 8px;
-    display: inline-block;
+.score-logo{
+    width:150px;
+    height:150px;
+    object-fit:contain;
 }
+.team-cell{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    
+}
+
+.score-logo2{
+    width:30px;
+    height:30px;
+    object-fit:contain;
+    flex-shrink:0;
+    margin-top:0.1px;
+    
+}
+
+.score-txt{
+    white-space:nowrap;
+}
+
 
 
 

@@ -44,7 +44,8 @@
 
     </Nav>
 
-    <main class="container">
+   <main class="container">
+
         <section class="hero">
 
             <h2>Welcome to HabsTracker1909</h2>
@@ -53,31 +54,86 @@
             </p>
 
             <div id="canadiens-card">
-                <h3>Montreal Canadiens</h3>
+                <h3>MONTREAL CANADIENS</h3>
                 <div id="canadiens-score">Loading...</div>
                 <div id="canadiens-status">
 
                 </div>
                 <div id="penalty-container"></div>
-
                 <div id="shots-container">
                     <span id="away-shots">0</span> Shots - Shots <span id="home-shots">0</span>
                 </div>
-                <div class="team-stats">
-                    <button class="team-stats-header">Team Stats</button>
 
-                    <div id="team-stats-container" class="team-stats-content">
-                        <p>Team Stats</p>
+                <div class="quick-stats">
+
+                    <div class="quick-box">
+                        <span>Shots</span>
+                        <strong id="quick-shots">0</strong>
                     </div>
+
+                    <div class="quick-box">
+                        <span>Hits</span>
+                        <strong id="quick-hits">0</strong>
+                    </div>
+
+                    <div class="quick-box">
+                        <span>Faceoffs</span>
+                        <strong id="quick-faceoffs">0%</strong>
+                    </div>
+
+                </div>
+
+
+
+
+                <div class="game-buttons">
+                    <button class="stats-btn" onclick="toggleTeamStats()">
+                        TEAM<br>STATS
+                    </button>
+
+                    <button class="stats-btn" onclick="togglePlayerStats()">
+                        PLAYER<br>STATS
+                    </button>
                 </div>
                 <div class="game-stats">
-                    <button class="stats-header"> Player Stats</button>
+    <div class="stats-content" id="game-stats-container"></div>
+</div>
 
-                    <div class="stats-content" id="game-stats-container">
-                        <p>Click to load stats</p>
-                    </div>
+<div class="team-stats">
+    <div class="team-stats-content" id="team-stats-container"></div>
+</div>
+
+                <div id="team-stats-container" class="team-stats-content">
                 </div>
+
+                <div id="game-stats-container" class="stats-content">
+                </div>
+
+                <div class="scoring-summary">
+
+                    <h3>Scoring Summary</h3>
+
+                    <div id="goal-container">
+
+                    </div>
+
+                </div>
+
+                <div class="scoring-summary">
+                    N/A
+                    <h3>Scoring Summary</h3>
+
+                    <div id="goal-container">
+                        N/A
+                    </div>
+
+                </div>
+
             </div>
+
+
+
+
 
             <div id="live-scores">
                 <h3 class="other-score-header">Out of Town Scoreboard</h3>
@@ -94,6 +150,17 @@
     </div>
 
     <script>
+
+
+        
+
+        function toggleTeamStats() {
+    document.querySelector(".team-stats").classList.toggle("active");
+}
+
+function togglePlayerStats() {
+    document.querySelector(".game-stats").classList.toggle("active");
+}
 
 
         function formatGameStatus(type, detail) {
@@ -130,6 +197,7 @@
                     const away = event.competitions[0].competitors[1];
                     const home = event.competitions[0].competitors[0];
 
+
                     const awayLogo = away.team.logos?.[0]?.href || away.team.logo || "";
                     const homeLogo = home.team.logos?.[0]?.href || home.team.logo || "";
 
@@ -138,19 +206,22 @@
 
 
                     html += `
-                <tr>
-                    <td>
-                        <img src="${awayLogo}" class="score-logo">
-                        ${away.team.displayName}
-                    </td>
-                    <td>${away.score} - ${home.score}</td>
-                    <td>
-                        <img src="${homeLogo}" class="score-logo">
-                        ${home.team.displayName}
-                    </td>
-                    <td>${formatGameStatus(event.status.type.name, event.status.type.detail)}</td>
-                </tr>
-            `;
+<tr>
+    <td class="team-cell">
+        <img src="${awayLogo}" class="score-logo2">
+        <span class="score-txt">${away.team.displayName}</span>
+    </td>
+
+    <td>${away.score} - ${home.score}</td>
+
+    <td class="team-cell">
+        <img src="${homeLogo}" class="score-logo2">
+        <span class="score-txt">${home.team.displayName}</span>
+    </td>
+
+    <td>${formatGameStatus(event.status.type.name, event.status.type.detail)}</td>
+</tr>
+`;
                 });
 
                 html += `</table>`;
@@ -161,6 +232,7 @@
             }
         }
 
+        // DISPLAY HABS GAME
         function displayCanadiens(events) {
             const game = events.find(e =>
                 e.competitions[0].competitors.some(c =>
@@ -242,20 +314,32 @@
 
 
 
-            statusDiv.textContent = formatGameStatus(
+            const status = formatGameStatus(
                 game.status.type.name,
                 game.status.type.detail
             );
+
+            const live =
+                game.status.type.state === "in"
+                    ? "live"
+                    : "";
+
+            statusDiv.innerHTML = `
+<div class="game-status ${live}">
+    ${status}
+</div>
+`;
 
             updateGameCenterUI(game, {
                 homeShots: 0,
                 awayShots: 0
             });
 
-            fetchGameStats(); 
+            fetchGameStats(); // load shots immediately
         }
 
-        
+        //  GAME STATS FETCH
+
         async function fetchGameStats() {
             if (!currentGameId) {
                 document.getElementById('game-stats-container').innerHTML =
@@ -276,7 +360,7 @@
                     return;
                 }
 
-                
+
                 let homeShots = "0";
                 let awayShots = "0";
                 let homeTeam = "";
@@ -301,6 +385,7 @@
                             return team.statistics.find(s => s.name === statName)?.displayValue || "-";
                         }
 
+
                         homeShots = getStat(home, "shots");
                         awayShots = getStat(away, "shots");
 
@@ -314,7 +399,7 @@
                     console.error("Scoreboard error:", err);
                 }
 
-                
+
                 let html = `
             <h3 class="game-stats-text">Game Stats</h3>
             <div class="team-shots-text" style="margin-bottom:10px; font-size:18px;">
@@ -329,6 +414,7 @@
                     team.statistics.forEach(statGroup => {
 
                         const labels = statGroup.labels;
+
 
                         const indexMap = {};
                         labels.forEach((label, i) => {
@@ -364,34 +450,31 @@
                         html += `</table><br>`;
                     });
                 });
-                if (data.scoringPlays && data.scoringPlays.length > 0) {
+                let goalsHtml = "";
 
-                    html += `<h3>Goal Summary</h3>`
+                if (data.scoringPlays && data.scoringPlays.length > 0) {
 
                     data.scoringPlays.forEach(play => {
 
                         const period = play.period?.displayValue || "";
-                        const time = play.period?.displayValue || "";
-
-                        //scorer
+                        const time = play.clock?.displayValue || "";
                         const scorer = play.scorer?.displayName || "";
-
                         const assists = play.assists?.map(a => a.displayName).join(", ") || "Unassisted";
-
                         const team = play.team?.shortDisplayName || "";
 
-                        html += `
-                    <div class="goal-play">
-                        <strong>${team}</strong>-${scorer}
-                        <br>
-                        <small>${assists} | ${period} ${time}</small>
-                    </div>
-                `;
+                        goalsHtml += `
+            <div class="goal-play">
+                <strong>${team}</strong> - ${scorer}<br>
+                <small>${assists} | ${period} ${time}</small>
+            </div>
+        `;
                     });
+
                 } else {
-                    html += `<p>No goals yet</p>`;
+                    goalsHtml = "<p>No goals yet</p>";
                 }
 
+                document.getElementById("goal-container").innerHTML = goalsHtml;
                 document.getElementById('game-stats-container').innerHTML = html;
 
             } catch (err) {
@@ -401,19 +484,41 @@
             }
         }
 
-        document.querySelector('.stats-header').addEventListener('click', () => {
-            document.querySelector('.game-stats').classList.toggle('active');
-            fetchGameStats(); 
-        });
+        (function attachStatsHandlers() {
+            // Prefer a .stats-header toggle if present, otherwise bind the existing .stats-btn buttons.
+            const statsHeader = document.querySelector('.stats-header');
+            if (statsHeader) {
+                statsHeader.addEventListener('click', () => {
+                    const gameStats = document.querySelector('.game-stats') || document.getElementById('game-stats-container');
+                    if (gameStats) gameStats.classList.toggle('active');
+                    fetchGameStats(); // load when opened
+                });
+                return;
+            }
 
-        
-        
-        
-        //team stats click
-        document.querySelector('.team-stats-header').addEventListener('click', () => {
-            document.querySelector('.team-stats').classList.toggle('active');
-            fetchTeamStats();
-        });
+            const statButtons = document.querySelectorAll('.stats-btn');
+            if (!statButtons || statButtons.length === 0) return;
+
+            statButtons.forEach(btn => {
+                const txt = (btn.textContent || '').toLowerCase();
+                if (txt.includes('player')) {
+                    btn.addEventListener('click', () => fetchGameStats());
+                } else if (txt.includes('team')) {
+                    btn.addEventListener('click', () => fetchTeamStats());
+                }
+            });
+        })();
+
+        // team stats click (safe attach)
+        (function attachTeamStatsHeader() {
+            const header = document.querySelector('.team-stats-header');
+            if (!header) return;
+            header.addEventListener('click', () => {
+                const el = document.querySelector('.team-stats') || document.getElementById('team-stats-container');
+                if (el) el.classList.toggle('active');
+                fetchTeamStats();
+            });
+        })();
 
         //team stats function
         async function fetchTeamStats() {
@@ -465,7 +570,6 @@
                     pp: getStat(away, "powerPlayGoals") + "/" + getStat(away, "powerPlayOpportunities")
                 };
 
-                // 🔥 GOAL SUMMARY
                 let goalsHtml = "<h4>Goals</h4>";
 
                 if (scoringPlays.length) {
@@ -525,7 +629,7 @@
             if (!currentGameId) return;
 
             const container = document.getElementById('penalty-container');
-            if (!container) return; // safety check
+            if (!container) return;
 
             try {
                 const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/summary?event=${currentGameId}`);
