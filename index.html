@@ -41,6 +41,7 @@
         <a href="news.html">News</a>
         <a href="scores.html">Scores</a>
         <a href="standings.html">Standings</a>
+        <a href="schedule.html">Schedule</a>
         <a href="team.html">Team</a>
         <a href="history.html">History</a>
     </nav>
@@ -67,7 +68,7 @@
             </p>
 
             <div id="canadiens-card">
-                <h3>MONTREAL CANADIENS</h3>
+                <h3 class="canadiens-title">MONTREAL CANADIENS</h3>
                 <div id="canadiens-score">Loading...</div>
                 <div id="canadiens-status">
 
@@ -79,10 +80,7 @@
 
                 <div class="quick-stats">
 
-                    <div class="quick-box">
-                        <span>Shots</span>
-                        <strong id="quick-shots">0</strong>
-                    </div>
+                    
 
                     <div class="quick-box">
                         <span>Hits</span>
@@ -170,7 +168,11 @@
 
         <section class="schedule">
             <h2>Upcoming Schedule</h2>
-            <div id="schedule-container">Loading schedule...</div>
+            <p class="schedule-subtitle">Check out the upcoming games for the Montreal Canadiens</p>
+            <div>
+                <button onclick="window.location.href='schedule.html'" class="schedule-btn">View Full
+                    Schedule</button>
+            </div>
         </section>
 
         <section class="team-info">
@@ -473,148 +475,387 @@ function togglePlayerStats() {
         //  GAME STATS FETCH
 
         async function fetchGameStats() {
-            if (!currentGameId) {
-                document.getElementById('game-stats-container').innerHTML =
-                    `<p class="no-game-stats">No live game stats available</p>`;
-                return;
+    if (!currentGameId) {
+        document.getElementById('quick-shots').textContent = "0";
+        document.getElementById('quick-hits').textContent = "0";
+        document.getElementById('quick-faceoffs').textContent = "0%";
+
+        document.getElementById('game-stats-container').innerHTML =
+            `<p class="no-game-stats">No live game stats available</p>`;
+        return;
+    }
+
+    try {
+        const res = await fetch(
+            `https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/summary?event=${currentGameId}`
+        );
+
+        const data = await res.json();
+
+        const players = data?.boxscore?.players || [];
+        const teams = data?.boxscore?.teams || [];
+
+        /* =========================
+           QUICK STATS
+        ========================= */
+
+        const home = teams.find(team => team.homeAway === "home");
+        const away = teams.find(team => team.homeAway === "away");
+
+        function getStat(team, statName) {
+            return team?.statistics?.find(
+                stat => stat.name === statName
+            )?.displayValue || "0";
+        }
+
+        if (home && away) {
+
+            // Shots
+            const homeShots = getStat(home, "shots");
+            const awayShots = getStat(away, "shots");
+
+            // Hits
+            const homeHits = getStat(home, "hits");
+            const awayHits = getStat(away, "hits");
+
+            // Faceoffs
+            const homeFaceoffs =
+                getStat(home, "faceoffPercentage") ||
+                getStat(home, "faceoffPct") ||
+                "0";
+
+            const awayFaceoffs =
+                getStat(away, "faceoffPercentage") ||
+                getStat(away, "faceoffPct") ||
+                "0";
+
+
+            /*
+             * Find Montreal's stats so the quick boxes
+             * always show the Canadiens' numbers.
+             */
+
+            const montreal =
+                home.team.displayName === "Montreal Canadiens"
+                    ? home
+                    : away;
+
+            document.getElementById("quick-shots").textContent =
+                getStat(montreal, "shots");
+
+            document.getElementById("quick-hits").textContent =
+                getStat(montreal, "hits");
+
+            let habsFaceoffs =
+                getStat(montreal, "faceoffPercentage");
+
+            if (habsFaceoffs === "0") {
+                habsFaceoffs =
+                    getStat(montreal, "faceoffPct");
             }
 
-            try {
-                const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/summary?event=${currentGameId}`);
-                const data = await res.json();
+            document.getElementById("quick-faceoffs").textContent =
+                habsFaceoffs + "%";
 
-                const players = data?.boxscore?.players || [];
-                const teams = data?.boxscore?.teams || [];
 
-                if (!players.length) {
-                    document.getElementById('game-stats-container').innerHTML =
-                        `<p class="no-stat-yet">Stats will appear once the game starts</p>`;
-                    return;
+            /*
+             * Also update the old shots display
+             */
+
+            document.getElementById("home-shots").textContent =
+                homeShots;
+
+            document.getElementById("away-shots").textContent =
+                awayShots;
+        }
+
+
+        /* =========================
+           PLAYER STATS
+        ========================= */
+
+        if (!players.length) {
+            document.getElementById('game-stats-container').innerHTML =
+                `<p class="no-stat-yet">
+                    Stats will appear once the game starts
+                </p>`;
+
+            return;
+        }
+
+
+        /* =========================
+           GET TEAM NAMES / SHOTS
+        ========================= */
+
+        let homeShots = "0";
+        let awayShots = "0";
+        let homeTeam = "";
+        let awayTeam = "";
+
+        try {
+
+            const scoreRes = await fetch(
+                "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard"
+            );
+
+            const scoreData = await scoreRes.json();
+
+            const game = scoreData.events.find(
+                e => e.id === currentGameId
+            );
+
+            if (game) {
+
+                const competition = game.competitions[0];
+
+                const home = competition.competitors.find(
+                    t => t.homeAway === "home"
+                );
+
+                const away = competition.competitors.find(
+                    t => t.homeAway === "away"
+                );
+
+                homeTeam = home.team.shortDisplayName;
+                awayTeam = away.team.shortDisplayName;
+
+                function getScoreStat(team, statName) {
+                    return team.statistics.find(
+                        s => s.name === statName
+                    )?.displayValue || "-";
                 }
 
+                homeShots = getScoreStat(home, "shots");
+                awayShots = getScoreStat(away, "shots");
 
-                let homeShots = "0";
-                let awayShots = "0";
-                let homeTeam = "";
-                let awayTeam = "";
+                if (homeShots === "-" || awayShots === "-") {
 
-                try {
-                    const scoreRes = await fetch("https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard");
-                    const scoreData = await scoreRes.json();
+                    homeShots =
+                        parseFloat(getScoreStat(away, "saves")) +
+                        parseFloat(getScoreStat(home, "goals")) || "-";
 
-                    const game = scoreData.events.find(e => e.id === currentGameId);
-
-                    if (game) {
-                        const competition = game.competitions[0];
-
-                        const home = competition.competitors.find(t => t.homeAway === "home");
-                        const away = competition.competitors.find(t => t.homeAway === "away");
-
-                        homeTeam = home.team.shortDisplayName;
-                        awayTeam = away.team.shortDisplayName;
-
-                        function getStat(team, statName) {
-                            return team.statistics.find(s => s.name === statName)?.displayValue || "-";
-                        }
-
-
-                        homeShots = getStat(home, "shots");
-                        awayShots = getStat(away, "shots");
-
-                        if (homeShots === "-" || awayShots === "-") {
-                            homeShots = parseFloat(getStat(away, "saves")) + parseFloat(getStat(home, "goals")) || "-";
-                            awayShots = parseFloat(getStat(home, "saves")) + parseFloat(getStat(away, "goals")) || "-";
-                        }
-                    }
-
-                } catch (err) {
-                    console.error("Scoreboard error:", err);
+                    awayShots =
+                        parseFloat(getScoreStat(home, "saves")) +
+                        parseFloat(getScoreStat(away, "goals")) || "-";
                 }
+            }
+
+        } catch (err) {
+            console.error("Scoreboard error:", err);
+        }
 
 
-                let html = `
+        /* =========================
+           PLAYER STATS HTML
+        ========================= */
+
+        let html = `
             <h3 class="game-stats-text">Game Stats</h3>
-            <div class="team-shots-text" style="margin-bottom:10px; font-size:18px;">
-                ${awayTeam} ${awayShots} - ${homeShots} ${homeTeam} (Shots)
+
+            <div class="team-shots-text"
+                 style="margin-bottom:10px; font-size:18px;">
+
+                ${awayTeam} ${awayShots} -
+                ${homeShots} ${homeTeam}
+                (Shots)
+
             </div>
-            <h3 class="player-stats-text">Player Stats</h3>
+
+            <h3 class="player-stats-text">
+                Player Stats
+            </h3>
         `;
 
-                players.forEach(team => {
-                    html += `<h4 class="team-stats-name-txt">${team.team.displayName}</h4>`;
 
-                    team.statistics.forEach(statGroup => {
+        players.forEach(team => {
 
-                        const labels = statGroup.labels;
+            html += `
+                <h4 class="team-stats-name-txt">
+                    ${team.team.displayName}
+                </h4>
+            `;
 
+            team.statistics.forEach(statGroup => {
 
-                        const indexMap = {};
-                        labels.forEach((label, i) => {
-                            indexMap[label] = i;
-                        });
+                const labels = statGroup.labels;
 
-                        let desiredOrder = [];
+                const indexMap = {};
 
-                        if (statGroup.name.toLowerCase().includes("goalie")) {
-                            desiredOrder = ["SV", "SA", "GA", "SV%", "TOI"];
-                        } else {
-                            desiredOrder = ["G", "A", "PTS", "SOG", "+/-", "PIM", "TOI", "HT", "BS"];
-                        }
-
-                        const orderedStats = desiredOrder.filter(stat => stat in indexMap);
-
-                        html += `<table>
-                    <tr>
-                        <th>Player</th>
-                        ${orderedStats.map(stat => `<th>${stat}</th>`).join('')}
-                    </tr>`;
-
-                        statGroup.athletes.forEach(player => {
-                            html += `<tr>
-                        <td>${player.athlete.displayName}</td>
-                        ${orderedStats.map(stat => {
-                                const index = indexMap[stat];
-                                return `<td>${player.stats[index] ?? "-"}</td>`;
-                            }).join('')}
-                    </tr>`;
-                        });
-
-                        html += `</table><br>`;
-                    });
+                labels.forEach((label, i) => {
+                    indexMap[label] = i;
                 });
-                let goalsHtml = "";
 
-                if (data.scoringPlays && data.scoringPlays.length > 0) {
+                let desiredOrder = [];
 
-                    data.scoringPlays.forEach(play => {
+                if (
+                    statGroup.name
+                        .toLowerCase()
+                        .includes("goalie")
+                ) {
 
-                        const period = play.period?.displayValue || "";
-                        const time = play.clock?.displayValue || "";
-                        const scorer = play.scorer?.displayName || "";
-                        const assists = play.assists?.map(a => a.displayName).join(", ") || "Unassisted";
-                        const team = play.team?.shortDisplayName || "";
-
-                        goalsHtml += `
-            <div class="goal-play">
-                <strong>${team}</strong> - ${scorer}<br>
-                <small>${assists} | ${period} ${time}</small>
-            </div>
-        `;
-                    });
+                    desiredOrder = [
+                        "SV",
+                        "SA",
+                        "GA",
+                        "SV%",
+                        "TOI"
+                    ];
 
                 } else {
-                    goalsHtml = "<p>No goals yet</p>";
+
+                    desiredOrder = [
+                        "G",
+                        "A",
+                        "PTS",
+                        "SOG",
+                        "+/-",
+                        "PIM",
+                        "TOI",
+                        "HT",
+                        "BS"
+                    ];
                 }
 
-                document.getElementById("goal-container").innerHTML = goalsHtml;
-                document.getElementById('game-stats-container').innerHTML = html;
+                const orderedStats =
+                    desiredOrder.filter(
+                        stat => stat in indexMap
+                    );
 
-            } catch (err) {
-                console.error(err);
-                document.getElementById('game-stats-container').innerHTML =
-                    "<p>Error loading stats</p>";
-            }
+
+                html += `
+                    <table>
+                        <tr>
+                            <th>Player</th>
+
+                            ${orderedStats
+                                .map(stat =>
+                                    `<th>${stat}</th>`
+                                )
+                                .join('')}
+
+                        </tr>
+                `;
+
+
+                statGroup.athletes.forEach(player => {
+
+                    html += `
+                        <tr>
+
+                            <td>
+                                ${player.athlete.displayName}
+                            </td>
+
+                            ${orderedStats
+                                .map(stat => {
+
+                                    const index =
+                                        indexMap[stat];
+
+                                    return `
+                                        <td>
+                                            ${player.stats[index] ?? "-"}
+                                        </td>
+                                    `;
+                                })
+                                .join('')}
+
+                        </tr>
+                    `;
+                });
+
+
+                html += `
+                    </table>
+                    <br>
+                `;
+            });
+        });
+
+
+        /* =========================
+           SCORING SUMMARY
+        ========================= */
+
+        let goalsHtml = "";
+
+        if (
+            data.scoringPlays &&
+            data.scoringPlays.length > 0
+        ) {
+
+            data.scoringPlays.forEach(play => {
+
+                const period =
+                    play.period?.displayValue || "";
+
+                const time =
+                    play.clock?.displayValue || "";
+
+                const scorer =
+                    play.scorer?.displayName || "";
+
+                const assists =
+                    play.assists
+                        ?.map(a => a.displayName)
+                        .join(", ") ||
+                    "Unassisted";
+
+                const team =
+                    play.team?.shortDisplayName || "";
+
+
+                goalsHtml += `
+                    <div class="goal-play">
+
+                        <strong>
+                            ${team}
+                        </strong>
+                        -
+                        ${scorer}
+
+                        <br>
+
+                        <small>
+                            ${assists} |
+                            ${period}
+                            ${time}
+                        </small>
+
+                    </div>
+                `;
+            });
+
+        } else {
+
+            goalsHtml =
+                "<p>No goals yet</p>";
         }
+
+
+        /* =========================
+           PUT CONTENT ON PAGE
+        ========================= */
+
+        document.getElementById("goal-container").innerHTML =
+            goalsHtml;
+
+        document.getElementById(
+            'game-stats-container'
+        ).innerHTML = html;
+
+
+    } catch (err) {
+
+        console.error("Game stats error:", err);
+
+        document.getElementById(
+            'game-stats-container'
+        ).innerHTML =
+            "<p>Error loading stats</p>";
+    }
+}
 
         (function attachStatsHandlers() {
             // Prefer a .stats-header toggle if present, otherwise bind the existing .stats-btn buttons.
@@ -641,110 +882,7 @@ function togglePlayerStats() {
             });
         })();
 
-        async function fetchSchedule() {
-            try {
-                const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/10/schedule');
-                const data = await res.json();
-
-                const games = data?.events || [];
-                const container = document.getElementById('schedule-container');
-
-                if (!games.length) {
-                    container.innerHTML = "<p>No upcoming games</p>";
-                    return;
-                }
-
-
-                //  let html = `<table>
-                //<tr>
-                //  <th>Date</th>
-                //  <th>Opponent</th>
-                // <th>Time</th>
-                // </tr>
-                // `; 
-
-                const now = new Date();
-
-                const upcomingGames = games.filter(game => new Date(game.date) > now);
-
-                const nextGames = upcomingGames.slice(0, 10);
-
-                let html = "";
-                nextGames.forEach(game => {
-                    const comp = game.competitions[0];
-                    const gameNote = comp.notes?.[0]?.headline || "";
-                    let displayGameNote = gameNote;
-                    const home = comp.competitors[0];
-                    const away = comp.competitors[1];
-
-                    const homeLogo = home.team.logo || home.team.logos?.[0]?.href;
-                    const awayLogo = away.team.logo || away.team.logos?.[0]?.href;
-
-                    const isHabsHome = home.team.displayName === "Montreal Canadiens";
-                    const opponent = isHabsHome ? away : home;
-
-                    const date = new Date(game.date);
-
-                    const match = gameNote.match(/Game (\d+)/);
-
-                    if (match) {
-                        const gameNumber = parseInt(match[1]);
-
-                        if (gameNumber >= 6) {
-                            displayGameNote = `Game ${gameNumber} (If Necessary)`;
-                        }
-                    }
-
-                    let displayTime;
-                    const rawTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-                    if (rawTime === "12:00 AM") {
-                        displayTime = "TBD";
-                    } else {
-                        displayTime = rawTime;
-                    }
-
-                    html += `
-        <div class="schedule-card">
-
-            <div class="schedule-badge">
-                ${isHabsHome ? "HOME" : "AWAY"}
-            </div>
-
-            <div class="schedule-teams">
-                <img src="${awayLogo}" class="schedule-logo">
-                <span class="schedule-vs">VS</span>
-                <img src="${homeLogo}" class="schedule-logo">
-            </div>
-
-            ${gameNote ? `<div class="game-label">${displayGameNote}</div>` : ""}
-
-            <div class="schedule-date">
-                ${date.toLocaleDateString()}
-            </div>
-
-            <div class="schedule-time">
-                ${displayTime}
-            </div>
-
-            <div style="margin-top:10px;">
-                ${isHabsHome ? "vs" : "@"} ${opponent.team.displayName}
-            </div>
-
-        </div>
-    `;
-                });
-                container.innerHTML = html;
-
-                html += `</table>`;
-
-
-            } catch (err) {
-                console.error(err);
-                document.getElementById('schedule-container').innerHTML =
-                    "<p>Error loading schedule</p>";
-            }
-        }
+        
         async function updateSeriesBanner() {
             try {
                 const res = await fetch("https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard");
@@ -1079,10 +1217,8 @@ function togglePlayerStats() {
 
         fetchNHLScores();
         updateSeriesBanner();
-        fetchSchedule();
 
         setInterval(fetchNHLScores, 3000);
-        setInterval(fetchSchedule, 3600000);
 
         function triggerGoalAnimation() {
             const overlay = document.getElementById('goal-overlay');

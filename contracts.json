@@ -107,6 +107,14 @@
                     "term": "1 year",
                     "AAV": "$850K",
                     "expiring": "2027"
+                },
+                {
+                    "name": "Sasha Pastujov",
+                    "position": "RW",
+                    "age": 23,
+                    "term": "-",
+                    "AAV": "-",
+                    "expiring": "RFA"
                 }
         ],
         "defensemen": [
@@ -195,6 +203,15 @@
                         "position": "D",
                         "age": 27,
                         "term": "1 years",
+                        "AAV": "$850K",
+                        "expiring": "2027"
+                    },
+                    
+                    {
+                        "name": "Maksymilian Szuber",
+                        "position": "D",
+                        "age": 23,
+                        "term": "1 year",
                         "AAV": "$850K",
                         "expiring": "2027"
                     }

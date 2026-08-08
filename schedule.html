@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="theme.js"></script>
+
+<head>
+    <script>
+        (function () {
+            const theme = sessionStorage.getItem("theme");
+
+            if (theme === "dark") {
+                document.documentElement.classList.add("dark-mode");
+            }
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HabsTracker1909</title>
+    <link rel="stylesheet" href="style.css">
+
+
+</head>
+
+
+<body>
+
+<header
+    style="background-image: url('HabsTracker1909Logo.png');
+           background-size: cover;
+           background-position: center;">
+    <div class="header-overlay">
+        <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
+        <h1 class="title">Game Calendar</h1>
+        <p class="tagline">Check out the 2026-27 schedule</p>
+
+        
+    </div>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="news.html">News</a>
+    <a href="scores.html">Scores</a>
+    <a href="standings.html">Standings</a>
+    <a href="schedule.html" class="active">Schedule</a>
+    <a href="team.html">Team</a>
+    <a href="history.html">History</a>
+</nav>
+
+
+<main class="schedule-page">
+
+    <h2>Montreal Canadiens Schedule</h2>
+
+    <div class="calendar-controls">
+
+        <button onclick="previousMonth()">‹</button>
+
+        <h3 id="calendar-month">Loading...</h3>
+
+        <button onclick="nextMonth()">›</button>
+
+    </div>
+
+    <button class="today-btn" onclick="goToToday()">
+        Today
+    </button>
+
+    <div class="calendar">
+
+        <div class="calendar-header">Sun</div>
+        <div class="calendar-header">Mon</div>
+        <div class="calendar-header">Tue</div>
+        <div class="calendar-header">Wed</div>
+        <div class="calendar-header">Thu</div>
+        <div class="calendar-header">Fri</div>
+        <div class="calendar-header">Sat</div>
+
+        <div id="calendar-days"></div>
+
+    </div>
+
+</main>
+
+
+<footer>
+        <p>&copy; 2026 HabsTracker1909. All rights reserved.</p>
+        <p>Follow us on : <a href="https://www.instagram.com/camerone_7/" target="_blank">Instagram</a></p>
+    </footer>
+
+
+<script>
+
+let allGames = [];
+
+let calendarDate = new Date();
+
+
+// ===============================
+// LOAD SCHEDULE
+// ===============================
+
+async function fetchSchedule() {
+
+    try {
+
+        const res = await fetch(
+            'https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/10/schedule'
+        );
+
+        const data = await res.json();
+
+        allGames = data?.events || [];
+
+        renderCalendar();
+
+    } catch (err) {
+
+        console.error("Schedule error:", err);
+
+        document.getElementById("calendar-days").innerHTML =
+            `<p class="schedule-error">
+                Error loading schedule
+            </p>`;
+    }
+}
+
+
+// ===============================
+// RENDER CALENDAR
+// ===============================
+
+function renderCalendar() {
+
+    const calendarDays =
+        document.getElementById("calendar-days");
+
+    calendarDays.innerHTML = "";
+
+
+    const year = calendarDate.getFullYear();
+
+    const month = calendarDate.getMonth();
+
+
+    document.getElementById("calendar-month").textContent =
+        calendarDate.toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric"
+        });
+
+
+    const firstDay =
+        new Date(year, month, 1).getDay();
+
+    const daysInMonth =
+        new Date(year, month + 1, 0).getDate();
+
+
+    // Empty spaces before first day
+
+    for (let i = 0; i < firstDay; i++) {
+
+        const emptyDay =
+            document.createElement("div");
+
+        emptyDay.className =
+            "calendar-day empty";
+
+        calendarDays.appendChild(emptyDay);
+    }
+
+
+    // Create days
+
+    for (let day = 1; day <= daysInMonth; day++) {
+
+        const dayElement =
+            document.createElement("div");
+
+        dayElement.className =
+            "calendar-day";
+
+
+        // Today's date
+
+        const today = new Date();
+
+        if (
+            day === today.getDate() &&
+            month === today.getMonth() &&
+            year === today.getFullYear()
+        ) {
+
+            dayElement.classList.add("today");
+        }
+
+
+        const dateNumber =
+            document.createElement("div");
+
+        dateNumber.className =
+            "calendar-date";
+
+        dateNumber.textContent = day;
+
+        dayElement.appendChild(dateNumber);
+
+
+        // Find games on this day
+
+        const gamesForDay = allGames.filter(game => {
+
+            const gameDate =
+                new Date(game.date);
+
+            return (
+                gameDate.getFullYear() === year &&
+                gameDate.getMonth() === month &&
+                gameDate.getDate() === day
+            );
+
+        });
+
+
+        // Add games
+
+        gamesForDay.forEach(game => {
+
+            const competition =
+                game.competitions[0];
+
+            const home =
+                competition.competitors.find(
+                    team => team.homeAway === "home"
+                );
+
+            const away =
+                competition.competitors.find(
+                    team => team.homeAway === "away"
+                );
+
+
+            const isHabsHome =
+                home.team.displayName ===
+                "Montreal Canadiens";
+
+
+            const opponent =
+                isHabsHome ? away : home;
+
+
+            const opponentLogo =
+                opponent.team.logo ||
+                opponent.team.logos?.[0]?.href ||
+                "";
+
+
+            const gameTime =
+                new Date(game.date).toLocaleTimeString(
+                    [],
+                    {
+                        hour: "numeric",
+                        minute: "2-digit"
+                    }
+                );
+
+
+            const gameElement =
+                document.createElement("div");
+
+            gameElement.className =
+                "calendar-game";
+
+
+            gameElement.innerHTML = `
+
+                <div class="game-location">
+                    ${isHabsHome ? "HOME" : "AWAY"}
+                </div>
+
+                <img
+                    src="${opponentLogo}"
+                    class="calendar-opponent-logo"
+                    alt="${opponent.team.displayName}"
+                >
+
+                <div class="calendar-opponent">
+                    ${opponent.team.shortDisplayName}
+                </div>
+
+                <div class="calendar-time">
+                    ${gameTime}
+                </div>
+
+            `;
+
+
+            // Click game
+
+            gameElement.onclick = () => {
+
+                alert(
+                    `${isHabsHome ? "Montreal Canadiens vs" : "Montreal Canadiens @"}
+                    ${opponent.team.displayName}
+
+                    \n${gameTime}`
+                );
+
+            };
+
+
+            dayElement.appendChild(gameElement);
+
+        });
+
+
+        calendarDays.appendChild(dayElement);
+
+    }
+
+}
+
+
+// ===============================
+// MONTH CONTROLS
+// ===============================
+
+function previousMonth() {
+
+    calendarDate.setMonth(
+        calendarDate.getMonth() - 1
+    );
+
+    renderCalendar();
+
+}
+
+
+function nextMonth() {
+
+    calendarDate.setMonth(
+        calendarDate.getMonth() + 1
+    );
+
+    renderCalendar();
+
+}
+
+
+function goToToday() {
+
+    calendarDate = new Date();
+
+    renderCalendar();
+
+}
+
+
+// LOAD
+
+fetchSchedule();
+
+</script>
+
+</body>
+
+
+    
