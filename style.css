@@ -2162,3 +2162,12 @@ button {
 .dark-mode .autocomplete-item:hover {
     background: #333;
 }
+
+.team-section-description {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.history-description {
+    text-align: center;
+    margin-bottom: 20px;
+}
