@@ -95,12 +95,12 @@
                 <div class="roster-cap-card">
                     <h3>Roster Costs, Cap Space</h3>
                     <ul>
-                        <li><strong>Active Rosster:</strong> 21/23</li>
-                        <li><strong>Contracts</strong> 41/50</li>
-                        <li><strong>2026:</strong> $94.216M</li>
+                        <li><strong>Active Rosster:</strong> 22/23</li>
+                        <li><strong>Contracts</strong> 45/50</li>
+                        <li><strong>2026:</strong> $101.216M</li>
                         <li><strong>Cap Limit NHL:</strong> $104M</li>
-                        <li><strong>Projected Cap Space:</strong> $9.783M</li>
-                        <li><strong>Cap Hit:</strong> $94.216M</li>
+                        <li><strong>Projected Cap Space:</strong> $2.783M</li>
+                        <li><strong>Cap Hit:</strong> $101.216M</li>
                         <li>**Cap Hit includes bonuses**</li>
                     </ul>
                 </div>
@@ -147,7 +147,7 @@
         async function getPlayerStats(playerId) {
             try {
                 const playerRes = await fetch(
-                    `https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2026/athletes/${playerId}`
+                    `https://sports.core.api.espn.com/v2/sports/hockey/leagues/nhl/seasons/2027/athletes/${playerId}`
                 );
 
                 const playerData = await playerRes.json();

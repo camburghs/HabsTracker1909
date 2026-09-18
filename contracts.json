@@ -55,9 +55,9 @@
                     "name": "Alex Newhook",
                     "position": "LW",
                     "age": 25,
-                    "term": "1 years",
-                    "AAV": "$2.9M",
-                    "expiring": "2027"
+                    "term": "1 years - ex. 4 yrs",
+                    "AAV": "$2.9M - ex. $5.5M",
+                    "expiring": "2027 - ex. 2030"
                 },
                 {
                     "name": "Jake Evans",
@@ -96,9 +96,9 @@
                     "name": "Zack Bolduc",
                     "position": "LW",
                     "age": 23,
-                    "term": "-",
-                    "AAV": "-",
-                    "expiring": "RFA"
+                    "term": "4 years",
+                    "AAV": "$4.2M",
+                    "expiring": "2030"
                 },
                 {
                     "name":"Brett Berard",
@@ -112,9 +112,17 @@
                     "name": "Sasha Pastujov",
                     "position": "RW",
                     "age": 23,
-                    "term": "-",
-                    "AAV": "-",
-                    "expiring": "RFA"
+                    "term": "1 year",
+                    "AAV": "$850K",
+                    "expiring": "2027"
+                },
+                {
+                    "name": "Chris Kreider, holy shit, Chris Kreider is on the Canadiens now?",
+                    "position": "LW",
+                    "age": 35,
+                    "term": "1 year",
+                    "AAV": "$2.15M",
+                    "expiring": "2027"
                 }
         ],
         "defensemen": [
@@ -162,9 +170,9 @@
                     "name": "Arber Xhekaj",
                     "position": "D",
                     "age": 25,
-                    "term": "-",
-                    "AAV": "-",
-                    "expiring": "RFA"
+                    "term": "1 year",
+                    "AAV": "$1.5M",
+                    "expiring": "2027"
     },
                     {
                         "name": "Lane Hutson",
