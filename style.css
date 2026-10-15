@@ -219,7 +219,7 @@ h2 {
 } 
 /* SCORE TEXT */ 
 #canadiens-score{
-    font-size:4.8rem;
+    font-size:6rem;
     font-weight:900;
     display:flex;
     justify-content:center;
@@ -281,7 +281,7 @@ setTimeout(() => {
     padding:6px 18px;
     border-radius:30px;
     font-weight:bold;
- font-size:14px;
+ font-size:25px;
 }
 .quick-stats {
 display:grid;
@@ -1476,7 +1476,7 @@ background:#222;
 .injury-updated {
     margin-top: 16px;
     font-size: 0.85rem;
-    color: #555;
+    color: #3db62d;
 }
 
 .impact-card {
@@ -2170,4 +2170,19 @@ button {
 .history-description {
     text-align: center;
     margin-bottom: 20px;
+}
+
+/* Final game results */
+.calendar-result {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.calendar-result.win {
+    color: #218838;
+}
+
+.calendar-result.loss {
+    color: #BD3039;
 }

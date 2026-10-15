@@ -73,25 +73,22 @@
 
                 </div>
                 <div id="penalty-container"></div>
-                <div id="shots-container">
-                    <span id="away-shots">0</span> Shots - Shots <span id="home-shots">0</span>
-                </div>
+                <h3 class="game-stats-text">Game Stats</h3>
+
 
                 <div class="quick-stats">
 
-                    
-
-
+                    <div class="quick-box">
+                        <span>Shots</span>
+                        <strong id="quick-shots">0</strong>
+                    </div>
 
                     <div class="quick-box">
                         <span>Hits</span>
                         <strong id="quick-hits">0</strong>
                     </div>
 
-                    <div class="quick-box">
-                        <span>Faceoffs</span>
-                        <strong id="quick-faceoffs">0%</strong>
-                    </div>
+
 
                 </div>
 
@@ -99,47 +96,35 @@
 
 
                 <div class="game-buttons">
-                    <button class="stats-btn" onclick="toggleTeamStats()">
-                        TEAM<br>STATS
-                    </button>
+    <button class="stats-btn" onclick="toggleTeamStats()">
+        TEAM<br>STATS
+    </button>
 
-                    <button class="stats-btn" onclick="togglePlayerStats()">
-                        PLAYER<br>STATS
-                    </button>
-                </div>
-                <div class="game-stats">
-                    <div class="stats-content" id="game-stats-container"></div>
-                </div>
+    <button class="stats-btn" onclick="togglePlayerStats()">
+        PLAYER<br>STATS
+    </button>
+</div>
 
-                <div class="team-stats">
-                    <div class="team-stats-content" id="team-stats-container"></div>
-                </div>
+<div class="scoring-summary">
+    <h3>Scoring Summary</h3>
+    <div id="goal-container">No goals yet</div>
+</div>
 
-                <div id="team-stats-container" class="team-stats-content">
-                </div>
+<!-- Player Stats -->
+<div class="game-stats">
+    <div class="stats-content" id="game-stats-container"></div>
+</div>
 
-                <div id="game-stats-container" class="stats-content">
-                </div>
+<!-- Team Stats -->
+<div class="team-stats">
+    <div class="team-stats-content" id="team-stats-container"></div>
+</div>
 
-                <div class="scoring-summary">
+                
 
-                    <h3>Scoring Summary</h3>
 
-                    <div id="goal-container">
 
-                    </div>
-
-                </div>
-
-                <div class="scoring-summary">
-                    N/A
-                    <h3>Scoring Summary</h3>
-
-                    <div id="goal-container">
-                        N/A
-                    </div>
-
-                </div>
+            </div>
 
             </div>
 
@@ -234,7 +219,7 @@
                         <li class="founded"><strong>Founded:</strong> December 4, 1909</li>
                         <li class="old-name"><strong>Original Name:</strong> Les Canadiens</li>
                         <li class="current-name"><strong>Offical Name:</strong> Le Club de Hockey Canadien</li>
-                        <li class="record"><strong>Record (W-L-T-OTL):</strong> 3716-2564-838-229</li>
+                        <li class="record"><strong>Record (W-L-T-OTL):</strong> 3719-2567-838-230</li>
                     </ul>
 
                 </div>
@@ -279,7 +264,7 @@
 
     <footer>
         <p>&copy; 2026 HabsTracker1909. All rights reserved.</p>
-        <p>Follow us on : <a href="https://www.instagram.com/camerone_7/" target="_blank">Instagram</a></p>
+        <p>Follow us on : <a href="https://www.instagram.com/habstracker1909/" target="_blank">Instagram</a></p>
     </footer>
 
 
@@ -290,12 +275,12 @@
     <script>
 
         function toggleTeamStats() {
-            document.querySelector(".team-stats").classList.toggle("active");
-        }
+    document.querySelector(".team-stats").classList.toggle("active");
+}
 
-        function togglePlayerStats() {
-            document.querySelector(".game-stats").classList.toggle("active");
-        }
+function togglePlayerStats() {
+    document.querySelector(".game-stats").classList.toggle("active");
+}
 
 
         function formatGameStatus(type, detail) {
@@ -414,8 +399,16 @@
                 let homeShots = stats?.homeShots ?? 0;
                 let awayShots = stats?.awayShots ?? 0;
 
-                document.getElementById("home-shots").textContent = homeShots;
-                document.getElementById("away-shots").textContent = awayShots;
+                const homeShotsElement = document.getElementById("home-shots");
+                const awayShotsElement = document.getElementById("away-shots");
+
+                if (homeShotsElement) {
+                    homeShotsElement.textContent = homeShots;
+                }
+
+                if (awayShotsElement) {
+                    awayShotsElement.textContent = awayShots;
+                }
 
 
                 if (!pp || !pp.situationText.includes("Power Play")) {
@@ -509,10 +502,21 @@
                     )?.displayValue || "0";
                 }
 
+                function getTeamStat(team, statNames) {
+                    const stats = team?.statistics || [];
+
+                    const stat = stats.find(s =>
+                        statNames.includes(s.name?.toLowerCase()) ||
+                        statNames.includes(s.abbreviation?.toLowerCase())
+                    );
+
+                    return stat?.displayValue ?? stat?.value ?? null;
+                }
+
                 if (home && away) {
 
-                    
-                    
+
+
 
                     // Hits
                     const homeHits = getStat(home, "hits");
@@ -540,28 +544,35 @@
                             ? home
                             : away;
 
-                    
+
 
                     document.getElementById("quick-hits").textContent =
                         getStat(montreal, "hits");
 
-                    let habsFaceoffs =
-                        getStat(montreal, "faceoffPercentage");
+                    let habsFaceoffs = getStat(montreal, "faceoffPercentage");
 
                     if (habsFaceoffs === "0") {
-                        habsFaceoffs =
-                            getStat(montreal, "faceoffPct");
+                        habsFaceoffs = getStat(montreal, "faceoffPct");
                     }
 
-                    document.getElementById("quick-faceoffs").textContent =
-                        habsFaceoffs + "%";
+                    const teams = data?.boxscore?.teams || [];
+
+                    const habsTeam = teams.find(t =>
+                        t.team?.displayName === "Montreal Canadiens" ||
+                        t.team?.abbreviation === "MTL"
+                    );
+
+                    const shots = habsTeam
+                        ? getTeamStat(habsTeam, ["shots", "s"])
+                        : null;
+
+                    const shotsElement = document.getElementById("quick-shots");
+
+                    if (shotsElement) {
+                        shotsElement.textContent = shots ?? "—";
+                    }
 
 
-                    /*
-                     * Also update the old shots display
-                     */
-
-                    
                 }
 
 

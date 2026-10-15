@@ -31,6 +31,9 @@
         <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
         <h1 class="title">Game Calendar</h1>
         <p class="tagline">Check out the 2026-27 schedule</p>
+        <button class="theme-btn" type="button" onclick="toggleDarkMode()">
+                Toggle Dark Mode
+            </button>
 
         
     </div>
@@ -84,7 +87,7 @@
 
 <footer>
         <p>&copy; 2026 HabsTracker1909. All rights reserved.</p>
-        <p>Follow us on : <a href="https://www.instagram.com/camerone_7/" target="_blank">Instagram</a></p>
+        <p>Follow us on : <a href="https://www.instagram.com/habstracker1909/" target="_blank">Instagram</a></p>
     </footer>
 
 
@@ -122,6 +125,80 @@ async function fetchSchedule() {
                 Error loading schedule
             </p>`;
     }
+}
+
+function getGameResult(game, isHabsHome, home, away) {
+    const competition = game.competitions?.[0];
+
+    const status =
+        competition?.status?.type?.name ||
+        game.status?.type?.name ||
+        "";
+
+    const isFinal =
+        status === "STATUS_FINAL" ||
+        status === "STATUS_FULL_TIME";
+
+    if (!isFinal) {
+        return null;
+    }
+
+    const habs = isHabsHome ? home : away;
+    const opponent = isHabsHome ? away : home;
+
+    const getScore = team => {
+    const score = team.score;
+
+    if (score && typeof score === "object") {
+        return Number(score.value ?? score.displayValue);
+    }
+
+    return Number(score);
+};
+
+const habsScore = getScore(habs);
+const opponentScore = getScore(opponent);
+
+if (
+    !Number.isFinite(habsScore) ||
+    !Number.isFinite(opponentScore)
+) {
+    return null;
+}
+
+const scoreText = `${habsScore} - ${opponentScore}`;
+
+    // Determine whether the game went to overtime or a shootout
+    const statusDetail =
+        competition?.status?.type?.detail ||
+        competition?.status?.type?.shortDetail ||
+        "";
+
+    const notes = competition?.notes || [];
+
+    const description = [
+        statusDetail,
+        ...notes.map(note => note.headline || "")
+    ].join(" ").toLowerCase();
+
+    const wasShootout = description.includes("shootout");
+    const wasOvertime =
+        wasShootout || description.includes("overtime");
+
+    // Determine the Canadiens' result
+    if (habsScore > opponentScore) {
+    if (wasShootout) return `${scoreText} SOW`;
+    if (wasOvertime) return `${scoreText} OTW`;
+    return `${scoreText} W`;
+}
+
+if (habsScore < opponentScore) {
+    if (wasShootout) return `${scoreText} SOL`;
+    if (wasOvertime) return `${scoreText} OTL`;
+    return `${scoreText} L`;
+}
+
+return `${scoreText} FINAL`;
 }
 
 
@@ -265,51 +342,54 @@ function renderCalendar() {
                 );
 
 
-            const gameElement =
-                document.createElement("div");
+            const gameElement = document.createElement("div");
+gameElement.className = "calendar-game";
 
-            gameElement.className =
-                "calendar-game";
+const result = getGameResult(
+    game,
+    isHabsHome,
+    home,
+    away
+);
 
+gameElement.innerHTML = `
+    <div class="game-location">
+        ${isHabsHome ? "HOME" : "AWAY"}
+    </div>
 
-            gameElement.innerHTML = `
+    <img
+        src="${opponentLogo}"
+        class="calendar-opponent-logo"
+        alt="${opponent.team.displayName}"
+    >
 
-                <div class="game-location">
-                    ${isHabsHome ? "HOME" : "AWAY"}
-                </div>
+    <div class="calendar-opponent">
+        ${opponent.team.shortDisplayName}
+    </div>
 
-                <img
-                    src="${opponentLogo}"
-                    class="calendar-opponent-logo"
-                    alt="${opponent.team.displayName}"
-                >
+    <div class="${
+    result
+        ? "calendar-result " +
+          (result.includes("W") ? "win" :
+           result.includes("L") ? "loss" : "")
+        : "calendar-time"
+}">
+    ${result || gameTime}
+</div>
+`;
 
-                <div class="calendar-opponent">
-                    ${opponent.team.shortDisplayName}
-                </div>
+gameElement.onclick = () => {
+    alert(
+        `${isHabsHome
+            ? "Montreal Canadiens vs"
+            : "Montreal Canadiens @"}
+        ${opponent.team.displayName}
 
-                <div class="calendar-time">
-                    ${gameTime}
-                </div>
+        ${result || gameTime}`
+    );
+};
 
-            `;
-
-
-            // Click game
-
-            gameElement.onclick = () => {
-
-                alert(
-                    `${isHabsHome ? "Montreal Canadiens vs" : "Montreal Canadiens @"}
-                    ${opponent.team.displayName}
-
-                    \n${gameTime}`
-                );
-
-            };
-
-
-            dayElement.appendChild(gameElement);
+dayElement.appendChild(gameElement);
 
         });
 
