@@ -32,6 +32,8 @@ Saves - Save % - GAA - Wins
 
 **Team Facts** - History and Facts
 
+**Post Game Stats** - Goal Scores from past Games
+
 ------------------------------------------------------------------------
 
 **Tech Stack**
@@ -51,7 +53,7 @@ Saves - Save % - GAA - Wins
 
 **Project Structure**
 
-HabsTracker1909/ │── index.html │── news.html │── scores.html │──
+HabsTracker1909/ │── index.html │── news.html │── team-stats.html │──
 standings.html │── team.html │── history.html │── style.css │── theme.js |── Contracts.json |── draftPicks.json |── Prospects.json |── assets/
 
 ------------------------------------------------------------------------

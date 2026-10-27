@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Stats | HabsTracker1909</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="theme.js" defer></script>
+
+</head>
+
+<body>
+    <header style="background-image: url('HabsTracker1909Logo.png');
+           background-size: cover;
+           background-position: center;">
+        <div class="header-overlay">
+            <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
+            <h1 class="title">Player Stats</h1>
+            <p class="tagline">Check out the players stats</p>
+            <button class="theme-btn" type="button" onclick="toggleDarkMode()">
+                Toggle Dark Mode
+            </button>
+
+
+        </div>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="news.html">News</a>
+        <a href="player-stats.html" class="active">Player Stats</a>
+        <a href="standings.html">Standings</a>
+        <a href="schedule.html" >Schedule</a>
+        <a href="team.html">Team</a>
+        <a href="history.html">History</a>
+    </nav>
+
+    <main class="player-stats-page">
+        <section class="leaderboard-intro">
+            <h2>Player Stats Leaderboard</h2>
+            <p>See how Montreal Canadiens players rank this season.</p>
+        </section>
+
+
+        <section class="top-scorers">
+            <h2>🏆 Top 3 Scoring Leaders</h2>
+
+            <div id="top-scorers-container" class="top-scorers-grid">
+                <p>Loading scoring leaders...</p>
+            </div>
+        </section>
+
+        <section class="leaderboard-controls">
+            <label for="stat-category">Sort by:</label>
+            <select id="stat-category">
+                <option value="points">Points</option>
+                <option value="goals">Goals</option>
+                <option value="assists">Assists</option>
+            </select>
+
+            <input type="search" id="player-search" placeholder="Search for a player..."
+                aria-label="Search for a player">
+
+            <button id="refresh-stats" type="button">
+                Refresh Stats
+            </button>
+        </section>
+
+        
+
+        <p id="stats-status" role="status">Loading player stats...</p>
+
+        <div class="leaderboard-table-wrap">
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Player</th>
+                        <th>Position</th>
+                        <th>GP</th>
+                        <th>G</th>
+                        <th>A</th>
+                        <th>PTS</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <tr>
+                        <td colspan="7">Loading players...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <section class="goalie-leaderboard">
+            <h2>🥅 Canadiens Goalie Leaderboard</h2>
+            <p class="goalie-description">
+                Compare the Canadiens goalies throughout the season.
+            </p>
+
+            <p id="goalie-status" role="status">
+                Loading goalie stats...
+            </p>
+
+            <div class="leaderboard-table-wrap">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Goalie</th>
+                            <th>GP</th>
+                            <th>W</th>
+                            <th>SV%</th>
+                            <th>GAA</th>
+                            <th>SO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="goalie-leaderboard-body">
+                        <tr>
+                            <td colspan="7">Loading goalies...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="leaderboard-note">
+                GP = Games Played · W = Wins · SV% = Save Percentage ·
+                GAA = Goals-Against Average · SO = Shutouts
+            </p>
+        </section>
+
+
+
+        <p class="leaderboard-note">
+            GP = Games Played · G = Goals · A = Assists · PTS = Points
+        </p>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 HabsTracker1909. All rights reserved.</p>
+        <p>Follow us on : <a href="https://www.instagram.com/habstracker1909/" target="_blank">Instagram</a></p>
+    </footer>
+
+    <script>
+        const API_URL =
+            "https://proxy.cors.dev/https://api-web.nhle.com/v1/club-stats/MTL/now";
+
+        const leaderboardBody = document.getElementById("leaderboard-body");
+        const statusMessage = document.getElementById("stats-status");
+        const categorySelect = document.getElementById("stat-category");
+        const searchInput = document.getElementById("player-search");
+        const refreshButton = document.getElementById("refresh-stats");
+
+        let playerStats = [];
+
+        async function loadPlayerStats() {
+            statusMessage.textContent = "Loading Canadiens player stats...";
+            refreshButton.disabled = true;
+
+            try {
+                const response = await fetch(API_URL);
+
+                if (!response.ok) {
+                    throw new Error(`NHL API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                console.log("NHL player stats response:", data);
+
+                if (!Array.isArray(data.skaters)) {
+                    throw new Error("The response did not contain a skaters list.");
+                }
+
+                playerStats = data.skaters.map(player => {
+                    const firstName =
+                        player.firstName?.default ??
+                        player.firstName ??
+                        "";
+
+                    const lastName =
+                        player.lastName?.default ??
+                        player.lastName ??
+                        "";
+
+                    return {
+                        name: `${firstName} ${lastName}`.trim() ||
+                            player.name?.default ||
+                            player.name ||
+                            `Player ${player.playerId}`,
+                        position: player.positionCode || "—",
+                        games: Number(player.gamesPlayed ?? 0),
+                        goals: Number(player.goals ?? 0),
+                        assists: Number(player.assists ?? 0),
+                        points: Number(
+                            player.points ??
+                            ((player.goals ?? 0) + (player.assists ?? 0))
+                        )
+                    };
+                });
+
+                statusMessage.textContent =
+                    `Loaded stats for ${playerStats.length} Canadiens skaters.`;
+
+
+                function renderTopScorers() {
+                    const container = document.getElementById("top-scorers-container");
+
+                    if (!container) return;
+
+                    const topThree = [...playerStats]
+                        .sort((a, b) => b.points - a.points)
+                        .slice(0, 3);
+
+                    container.replaceChildren();
+
+                    if (topThree.length === 0) {
+                        container.textContent = "No scoring data available.";
+                        return;
+                    }
+
+                    const medals = ["1", "2", "3"];
+
+                    topThree.forEach((player, index) => {
+                        const card = document.createElement("div");
+                        card.className = "scorer-card";
+
+                        const rank = document.createElement("div");
+                        rank.className = "scorer-rank";
+                        rank.textContent = medals[index];
+
+                        const name = document.createElement("div");
+                        name.className = "scorer-name";
+                        name.textContent = player.name;
+
+                        const points = document.createElement("div");
+                        points.className = "scorer-points";
+                        points.textContent = player.points;
+
+                        const label = document.createElement("div");
+                        label.className = "scorer-label";
+                        label.textContent = "POINTS";
+
+                        const details = document.createElement("div");
+                        details.className = "scorer-details";
+                        details.textContent =
+                            `${player.goals} G · ${player.assists} A`;
+
+                        card.append(rank, name, points, label, details);
+                        container.appendChild(card);
+                    });
+                }
+
+
+                renderTopScorers();
+                renderLeaderboard();
+
+            } catch (error) {
+                console.error("Player stats error:", error);
+
+                statusMessage.textContent =
+                    "Unable to load player stats. Check the Console (F12).";
+
+                leaderboardBody.innerHTML =
+                    '<tr><td colspan="7">Could not load player stats.</td></tr>';
+
+            } finally {
+                refreshButton.disabled = false;
+            }
+        }
+
+        function renderLeaderboard() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            const category = categorySelect.value;
+
+            const sortProperty = {
+                points: "points",
+                goals: "goals",
+                assists: "assists"
+            }[category] || "points";
+
+            const filteredPlayers = playerStats
+                .filter(player =>
+                    player.name.toLowerCase().includes(searchTerm)
+                )
+                .sort((a, b) => b[sortProperty] - a[sortProperty]);
+
+            leaderboardBody.replaceChildren();
+
+            if (filteredPlayers.length === 0) {
+                leaderboardBody.innerHTML =
+                    '<tr><td colspan="7">No matching players found.</td></tr>';
+                return;
+            }
+
+            filteredPlayers.forEach((player, index) => {
+                const row = document.createElement("tr");
+
+                [
+                    index + 1,
+                    player.name,
+                    player.position,
+                    player.games,
+                    player.goals,
+                    player.assists,
+                    player.points
+                ].forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+
+                leaderboardBody.appendChild(row);
+            });
+        }
+
+        const GOALIE_API_URL =
+            "https://proxy.cors.dev/https://api.nhle.com/stats/rest/en/goalie/summary?cayenneExp=seasonId%3D20262027%20and%20teamAbbrevs%3D%27MTL%27&sort=wins&limit=50";
+
+        const goalieBody =
+            document.getElementById("goalie-leaderboard-body");
+
+        const goalieStatus =
+            document.getElementById("goalie-status");
+
+        async function loadGoalieStats() {
+            goalieStatus.textContent = "Loading goalie stats...";
+
+            try {
+                const response = await fetch(GOALIE_API_URL);
+
+                if (!response.ok) {
+                    throw new Error(`Goalie API error: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                console.log("NHL goalie stats response:", result);
+
+                if (!Array.isArray(result.data)) {
+                    throw new Error("The response did not contain goalie data.");
+                }
+
+                const goalies = result.data
+                    .filter(goalie =>
+                        goalie.teamAbbrevs === "MTL" ||
+                        (Array.isArray(goalie.teamAbbrevs) &&
+                            goalie.teamAbbrevs.includes("MTL"))
+                    )
+                    .sort((a, b) => (b.wins ?? 0) - (a.wins ?? 0));
+
+                goalieBody.replaceChildren();
+
+                if (goalies.length === 0) {
+                    goalieStatus.textContent =
+                        "No Canadiens goalie stats were found for this season.";
+
+                    goalieBody.innerHTML =
+                        '<tr><td colspan="7">No goalie stats available.</td></tr>';
+                    return;
+                }
+
+                goalies.forEach((goalie, index) => {
+                    const row = document.createElement("tr");
+
+                    const savePercentage = Number(goalie.savePct);
+                    const savePercentageText = Number.isFinite(savePercentage)
+                        ? savePercentage.toFixed(3).replace(/^0/, "")
+                        : "—";
+
+                    const gaa = Number(goalie.goalsAgainstAverage);
+                    const gaaText = Number.isFinite(gaa) ? gaa.toFixed(2) : "—";
+
+                    const values = [
+                        index + 1,
+                        goalie.goalieFullName || "Unknown",
+                        goalie.gamesPlayed ?? "—",
+                        goalie.wins ?? "—",
+                        savePercentageText,
+                        gaaText,
+                        goalie.shutouts ?? "—"
+                    ];
+
+                    values.forEach(value => {
+                        const cell = document.createElement("td");
+                        cell.textContent = value;
+                        row.appendChild(cell);
+                    });
+
+                    goalieBody.appendChild(row);
+                });
+
+                goalieStatus.textContent =
+                    `Loaded stats for ${goalies.length} Canadiens goalies.`;
+
+            } catch (error) {
+                console.error("Goalie stats error:", error);
+
+                goalieStatus.textContent =
+                    "Unable to load goalie stats. Check the Console (F12).";
+
+                goalieBody.innerHTML =
+                    '<tr><td colspan="7">Could not load goalie stats.</td></tr>';
+            }
+        }
+
+
+
+        categorySelect.addEventListener("change", renderLeaderboard);
+        searchInput.addEventListener("input", renderLeaderboard);
+        refreshButton.addEventListener("click", () => {
+            loadPlayerStats();
+            loadGoalieStats();
+        });
+
+        loadPlayerStats();
+        loadGoalieStats();
+    </script>
+</body>
+
+</html>
+
+
+</body>
+
+</html>

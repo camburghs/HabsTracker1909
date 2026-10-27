@@ -23,336 +23,643 @@
 
 <body>
 
-<header
-    style="background-image: url('HabsTracker1909Logo.png');
+    <header style="background-image: url('HabsTracker1909Logo.png');
            background-size: cover;
            background-position: center;">
-    <div class="header-overlay">
-        <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
-        <h1 class="title">Game Calendar</h1>
-        <p class="tagline">Check out the 2026-27 schedule</p>
-        <button class="theme-btn" type="button" onclick="toggleDarkMode()">
+        <div class="header-overlay">
+            <img src="HabsTracker1909Logo.png" alt="Logo" class="top-logo">
+            <h1 class="title">Game Calendar</h1>
+            <p class="tagline">Check out the 2026-27 schedule</p>
+            <button class="theme-btn" type="button" onclick="toggleDarkMode()">
                 Toggle Dark Mode
             </button>
 
-        
-    </div>
-</header>
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="news.html">News</a>
-    <a href="scores.html">Scores</a>
-    <a href="standings.html">Standings</a>
-    <a href="schedule.html" class="active">Schedule</a>
-    <a href="team.html">Team</a>
-    <a href="history.html">History</a>
-</nav>
+        </div>
+    </header>
 
-
-<main class="schedule-page">
-
-    <h2>Montreal Canadiens Schedule</h2>
-
-    <div class="calendar-controls">
-
-        <button onclick="previousMonth()">‹</button>
-
-        <h3 id="calendar-month">Loading...</h3>
-
-        <button onclick="nextMonth()">›</button>
-
-    </div>
-
-    <button class="today-btn" onclick="goToToday()">
-        Today
-    </button>
-
-    <div class="calendar">
-
-        <div class="calendar-header">Sun</div>
-        <div class="calendar-header">Mon</div>
-        <div class="calendar-header">Tue</div>
-        <div class="calendar-header">Wed</div>
-        <div class="calendar-header">Thu</div>
-        <div class="calendar-header">Fri</div>
-        <div class="calendar-header">Sat</div>
-
-        <div id="calendar-days"></div>
-
-    </div>
-
-</main>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="news.html">News</a>
+        <a href="player-stats.html">Player Stats</a>
+        <a href="standings.html">Standings</a>
+        <a href="schedule.html" class="active">Schedule</a>
+        <a href="team.html">Team</a>
+        <a href="history.html">History</a>
+    </nav>
 
 
-<footer>
+    <main class="schedule-page">
+
+        <h2>Montreal Canadiens Schedule</h2>
+
+        <div class="calendar-controls">
+
+            <button onclick="previousMonth()">‹</button>
+
+            <h3 id="calendar-month">Loading...</h3>
+
+            <button onclick="nextMonth()">›</button>
+
+        </div>
+
+        <button class="today-btn" onclick="goToToday()">
+            Today
+        </button>
+
+        <div class="calendar">
+
+            <div class="calendar-header">Sun</div>
+            <div class="calendar-header">Mon</div>
+            <div class="calendar-header">Tue</div>
+            <div class="calendar-header">Wed</div>
+            <div class="calendar-header">Thu</div>
+            <div class="calendar-header">Fri</div>
+            <div class="calendar-header">Sat</div>
+
+            <div id="calendar-days"></div>
+
+        </div>
+
+        <section id="game-details" class="game-details" hidden>
+            <button type="button" id="close-game-details" class="close-game-details">
+                ✕ Close
+            </button>
+
+            <div id="game-details-content">
+                Select a game to see details
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
         <p>&copy; 2026 HabsTracker1909. All rights reserved.</p>
         <p>Follow us on : <a href="https://www.instagram.com/habstracker1909/" target="_blank">Instagram</a></p>
     </footer>
 
 
-<script>
+    <script>
 
-let allGames = [];
+        let allGames = [];
 
-let calendarDate = new Date();
+        let calendarDate = new Date();
 
 
-// ===============================
-// LOAD SCHEDULE
-// ===============================
+        // ===============================
+        // LOAD SCHEDULE
+        // ===============================
 
-async function fetchSchedule() {
+        async function fetchSchedule() {
 
-    try {
+            try {
 
-        const res = await fetch(
-            'https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/10/schedule'
-        );
+                const res = await fetch(
+                    'https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/10/schedule'
+                );
 
-        const data = await res.json();
+                const data = await res.json();
 
-        allGames = data?.events || [];
+                allGames = data?.events || [];
 
-        renderCalendar();
+                renderCalendar();
 
-    } catch (err) {
+            } catch (err) {
 
-        console.error("Schedule error:", err);
+                console.error("Schedule error:", err);
 
-        document.getElementById("calendar-days").innerHTML =
-            `<p class="schedule-error">
+                document.getElementById("calendar-days").innerHTML =
+                    `<p class="schedule-error">
                 Error loading schedule
             </p>`;
-    }
-}
-
-function getGameResult(game, isHabsHome, home, away) {
-    const competition = game.competitions?.[0];
-
-    const status =
-        competition?.status?.type?.name ||
-        game.status?.type?.name ||
-        "";
-
-    const isFinal =
-        status === "STATUS_FINAL" ||
-        status === "STATUS_FULL_TIME";
-
-    if (!isFinal) {
-        return null;
-    }
-
-    const habs = isHabsHome ? home : away;
-    const opponent = isHabsHome ? away : home;
-
-    const getScore = team => {
-    const score = team.score;
-
-    if (score && typeof score === "object") {
-        return Number(score.value ?? score.displayValue);
-    }
-
-    return Number(score);
-};
-
-const habsScore = getScore(habs);
-const opponentScore = getScore(opponent);
-
-if (
-    !Number.isFinite(habsScore) ||
-    !Number.isFinite(opponentScore)
-) {
-    return null;
-}
-
-const scoreText = `${habsScore} - ${opponentScore}`;
-
-    // Determine whether the game went to overtime or a shootout
-    const statusDetail =
-        competition?.status?.type?.detail ||
-        competition?.status?.type?.shortDetail ||
-        "";
-
-    const notes = competition?.notes || [];
-
-    const description = [
-        statusDetail,
-        ...notes.map(note => note.headline || "")
-    ].join(" ").toLowerCase();
-
-    const wasShootout = description.includes("shootout");
-    const wasOvertime =
-        wasShootout || description.includes("overtime");
-
-    // Determine the Canadiens' result
-    if (habsScore > opponentScore) {
-    if (wasShootout) return `${scoreText} SOW`;
-    if (wasOvertime) return `${scoreText} OTW`;
-    return `${scoreText} W`;
-}
-
-if (habsScore < opponentScore) {
-    if (wasShootout) return `${scoreText} SOL`;
-    if (wasOvertime) return `${scoreText} OTL`;
-    return `${scoreText} L`;
-}
-
-return `${scoreText} FINAL`;
-}
-
-
-// ===============================
-// RENDER CALENDAR
-// ===============================
-
-function renderCalendar() {
-
-    const calendarDays =
-        document.getElementById("calendar-days");
-
-    calendarDays.innerHTML = "";
-
-
-    const year = calendarDate.getFullYear();
-
-    const month = calendarDate.getMonth();
-
-
-    document.getElementById("calendar-month").textContent =
-        calendarDate.toLocaleDateString("en-US", {
-            month: "long",
-            year: "numeric"
-        });
-
-
-    const firstDay =
-        new Date(year, month, 1).getDay();
-
-    const daysInMonth =
-        new Date(year, month + 1, 0).getDate();
-
-
-    // Empty spaces before first day
-
-    for (let i = 0; i < firstDay; i++) {
-
-        const emptyDay =
-            document.createElement("div");
-
-        emptyDay.className =
-            "calendar-day empty";
-
-        calendarDays.appendChild(emptyDay);
-    }
-
-
-    // Create days
-
-    for (let day = 1; day <= daysInMonth; day++) {
-
-        const dayElement =
-            document.createElement("div");
-
-        dayElement.className =
-            "calendar-day";
-
-
-        // Today's date
-
-        const today = new Date();
-
-        if (
-            day === today.getDate() &&
-            month === today.getMonth() &&
-            year === today.getFullYear()
-        ) {
-
-            dayElement.classList.add("today");
+            }
         }
 
+        function getGameResult(game, isHabsHome, home, away) {
+            const competition = game.competitions?.[0];
 
-        const dateNumber =
-            document.createElement("div");
+            const status =
+                competition?.status?.type?.name ||
+                game.status?.type?.name ||
+                "";
 
-        dateNumber.className =
-            "calendar-date";
+            const isFinal =
+                status === "STATUS_FINAL" ||
+                status === "STATUS_FULL_TIME";
 
-        dateNumber.textContent = day;
+            if (!isFinal) {
+                return null;
+            }
 
-        dayElement.appendChild(dateNumber);
+            const habs = isHabsHome ? home : away;
+            const opponent = isHabsHome ? away : home;
 
+            const getScore = team => {
+                const score = team.score;
 
-        // Find games on this day
+                if (score && typeof score === "object") {
+                    return Number(score.value ?? score.displayValue);
+                }
 
-        const gamesForDay = allGames.filter(game => {
+                return Number(score);
+            };
 
-            const gameDate =
-                new Date(game.date);
+            const habsScore = getScore(habs);
+            const opponentScore = getScore(opponent);
 
-            return (
-                gameDate.getFullYear() === year &&
-                gameDate.getMonth() === month &&
-                gameDate.getDate() === day
-            );
+            if (
+                !Number.isFinite(habsScore) ||
+                !Number.isFinite(opponentScore)
+            ) {
+                return null;
+            }
 
-        });
+            const scoreText = `${habsScore} - ${opponentScore}`;
 
+            // Determine whether the game went to overtime or a shootout
+            const statusDetail =
+                competition?.status?.type?.detail ||
+                competition?.status?.type?.shortDetail ||
+                "";
 
-        // Add games
+            const notes = competition?.notes || [];
 
-        gamesForDay.forEach(game => {
+            const description = [
+                statusDetail,
+                ...notes.map(note => note.headline || "")
+            ].join(" ").toLowerCase();
 
-            const competition =
-                game.competitions[0];
+            const wasShootout = description.includes("shootout");
+            const wasOvertime =
+                wasShootout || description.includes("overtime");
 
-            const home =
-                competition.competitors.find(
+            // Determine the Canadiens' result
+            if (habsScore > opponentScore) {
+                if (wasShootout) return `${scoreText} SOW`;
+                if (wasOvertime) return `${scoreText} OTW`;
+                return `${scoreText} W`;
+            }
+
+            if (habsScore < opponentScore) {
+                if (wasShootout) return `${scoreText} SOL`;
+                if (wasOvertime) return `${scoreText} OTL`;
+                return `${scoreText} L`;
+            }
+
+            return `${scoreText} FINAL`;
+        }
+
+        function readScore(team) {
+            const score = team?.score;
+
+            const value = score && typeof score == "object"
+                ? score.value ?? score.displayValue
+                : score;
+
+            if (value === undefined || value === null || value === "") {
+                return null;
+            }
+
+            const number = Number(value);
+            return Number.isFinite(number) ? number : null;
+        }
+
+        async function fetchGameDetails(
+            game,
+            isHabsHome,
+            home,
+            away,
+            opponent,
+            ganeTime,
+            result
+        ) {
+            const panel = document.getElementById("game-details");
+            const content = document.getElementById("game-details-content");
+
+            panel.hidden = false;
+            panel.scrollIntoView({ behavior: "smooth", block: "start" });
+
+            content.innerHTML = "<p>Loading game stats...</p>";
+
+            try {
+                const response = await fetch(
+                    `https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/summary?event=${encodeURIComponent(game.id)}`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Could not load game stats.");
+                }
+                const data = await response.json();
+
+                // Prefer the detailed summary data, with schedule data as fallback.
+                const summaryCompetition =
+                    data.header?.competitions?.[0] ||
+                    data.competitions?.[0];
+
+                const summaryTeams = summaryCompetition?.competitors || [];
+
+                const summaryHabs = summaryTeams.find(team =>
+                    team.team?.abbreviation === "MTL" ||
+                    team.team?.displayName === "Montreal Canadiens"
+                );
+
+                const summaryOpponent = summaryTeams.find(team =>
+                    team !== summaryHabs
+                );
+
+                const habs = summaryHabs || (isHabsHome ? home : away);
+                const otherTeam = summaryOpponent || opponent;
+
+                const habsScore = readScore(habs);
+                const opponentScore = readScore(otherTeam);
+
+                const scoreAvailable =
+                    habsScore !== null && opponentScore !== null;
+
+                const isFinal = result !== null;
+
+                const habsLogo =
+                    habs.team?.logo ||
+                    habs.team?.logos?.[0]?.href ||
+                    "";
+
+                const opponentLogo =
+                    otherTeam.team?.logo ||
+                    otherTeam.team?.logos?.[0]?.href ||
+                    opponent.team.logo ||
+                    "";
+
+                // Period-by-period scores, when ESPN supplies them.
+                const summaryHome = summaryTeams.find(
                     team => team.homeAway === "home"
                 );
 
-            const away =
-                competition.competitors.find(
+                const summaryAway = summaryTeams.find(
                     team => team.homeAway === "away"
                 );
 
+                const periodHome = summaryHome || home;
+                const periodAway = summaryAway || away;
 
-            const isHabsHome =
-                home.team.displayName ===
-                "Montreal Canadiens";
+                const homePeriods = periodHome.linescores || [];
+                const awayPeriods = periodAway.linescores || [];
 
-
-            const opponent =
-                isHabsHome ? away : home;
-
-
-            const opponentLogo =
-                opponent.team.logo ||
-                opponent.team.logos?.[0]?.href ||
-                "";
-
-
-            const gameTime =
-                new Date(game.date).toLocaleTimeString(
-                    [],
-                    {
-                        hour: "numeric",
-                        minute: "2-digit"
-                    }
+                const periodCount = Math.max(
+                    homePeriods.length,
+                    awayPeriods.length
                 );
 
+                let periodHTML = "";
 
-            const gameElement = document.createElement("div");
-gameElement.className = "calendar-game";
+                for (let i = 0; i < periodCount; i++) {
+                    const homePeriod = homePeriods[i];
+                    const awayPeriod = awayPeriods[i];
 
-const result = getGameResult(
-    game,
-    isHabsHome,
-    home,
-    away
-);
+                    const homeValue =
+                        homePeriod?.displayValue ??
+                        homePeriod?.value ??
+                        "-";
 
-gameElement.innerHTML = `
+                    const awayValue =
+                        awayPeriod?.displayValue ??
+                        awayPeriod?.value ??
+                        "-";
+
+                    periodHTML += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${awayValue}</td>
+                    <td>${homeValue}</td>
+                </tr>
+            `;
+                }
+
+                // Scoring plays may not be available for every game.
+                const allPlays =
+                    Array.isArray(data.scoringPlays) && data.scoringPlays.length > 0
+                        ? data.scoringPlays
+                        : Array.isArray(data.plays)
+                            ? data.plays
+                            : [];
+
+                const scoringPlays = allPlays.filter(play => {
+                    const type = play.type?.text || play.type?.name || "";
+                    const description = play.text || "";
+
+                    return (
+                        play.scoringPlay === true ||
+                        /goal/i.test(type) ||
+                        /scores!/i.test(description)
+                    );
+                });
+
+                let scoringHTML = "";
+
+                if (scoringPlays.length > 0) {
+                    scoringHTML = scoringPlays.map(play => {
+                        const scorer =
+                            play.scorer?.displayName ||
+                            play.participants?.find(person =>
+                                person.type?.type === "Scorer" ||
+                                person.type?.name === "Scorer"
+                            )?.athlete?.displayName ||
+                            "";
+
+                        const assists = (play.assists || [])
+                            .map(person => person.displayName)
+                            .filter(Boolean)
+                            .join(", ");
+
+                        const teamName =
+                            play.team?.shortDisplayName ||
+                            play.team?.displayName ||
+                            "";
+
+                        const period =
+                            play.period?.displayValue ||
+                            play.period?.number ||
+                            "";
+
+                        const time = play.clock?.displayValue || "";
+
+                        const description =
+                            play.text ||
+                            play.shortDescription ||
+                            "";
+
+                        return `
+                    <div class="details-goal">
+                        <div class="details-goal-time">
+                            ${period ? `Period ${period}` : ""}
+                            ${time ? ` · ${time}` : ""}
+                        </div>
+
+                        <strong>${teamName}</strong>
+
+                        <div>
+                            ${scorer || description || "Scoring play"}
+                        </div>
+
+                        ${assists
+                                ? `<small>Assists: ${assists}</small>`
+                                : ""
+                            }
+                    </div>
+                `;
+                    }).join("");
+                } else {
+                    scoringHTML = `
+                <p>
+                    No detailed scoring summary is available
+                    from ESPN for this game.
+                </p>
+            `;
+                }
+
+                const dateText = new Date(game.date).toLocaleString([], {
+                    dateStyle: "long",
+                    timeStyle: "short"
+                });
+
+                const statusText = isFinal
+                    ? "Final"
+                    : game.competitions?.[0]?.status?.type?.detail ||
+                    game.status?.type?.detail ||
+                    gameTime;
+
+                content.innerHTML = `
+            <h2>
+                Montreal Canadiens vs ${opponent.team.displayName}
+            </h2>
+
+            <p class="details-date">${dateText}</p>
+            <p class="details-status">${statusText}</p>
+
+            <div class="details-scoreboard">
+                <div>
+                    <img src="${habsLogo}" alt="Canadiens logo">
+                    <h3>Montreal Canadiens</h3>
+                    <div class="details-score">
+                        ${habsScore ?? "-"}
+                    </div>
+                </div>
+
+                <div class="details-versus">VS</div>
+
+                <div>
+                    <img src="${opponentLogo}" alt="Opponent logo">
+                    <h3>${opponent.team.displayName}</h3>
+                    <div class="details-score">
+                        ${opponentScore ?? "-"}
+                    </div>
+                </div>
+            </div>
+
+            ${isFinal && result
+                        ? `<p class="details-result">${result}</p>`
+                        : ""
+                    }
+
+            <section class="details-section">
+                <h3>Score by Period</h3>
+
+                ${periodHTML
+                        ? `
+                            <div class="details-table-wrap">
+                                <table class="details-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Period</th>
+                                            <th>${periodAway.team?.abbreviation || "Away"}</th>
+                                            <th>${periodHome.team?.abbreviation || "Home"}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>${periodHTML}</tbody>
+                                </table>
+                            </div>
+                        `
+                        : "<p>Period scores are not available.</p>"
+                    }
+            </section>
+
+            <section class="details-section">
+                <h3>Scoring Summary</h3>
+                <div class="details-scoring">${scoringHTML}</div>
+            </section>
+        `;
+
+            } catch (error) {
+                console.error("Game details error:", error);
+
+                content.innerHTML = `
+            <h2>Game Details</h2>
+            <p>We couldn't load the detailed stats for this game.</p>
+            <p>The game may still have its score available in the calendar.</p>
+        `;
+            }
+        }
+
+        document.getElementById("close-game-details").addEventListener("click", () => {
+            document.getElementById("game-details").hidden = true;
+        });
+
+
+
+
+
+        // ===============================
+        // RENDER CALENDAR
+        // ===============================
+
+        function renderCalendar() {
+
+            const calendarDays =
+                document.getElementById("calendar-days");
+
+            calendarDays.innerHTML = "";
+
+
+            const year = calendarDate.getFullYear();
+
+            const month = calendarDate.getMonth();
+
+
+            document.getElementById("calendar-month").textContent =
+                calendarDate.toLocaleDateString("en-US", {
+                    month: "long",
+                    year: "numeric"
+                });
+
+
+            const firstDay =
+                new Date(year, month, 1).getDay();
+
+            const daysInMonth =
+                new Date(year, month + 1, 0).getDate();
+
+
+            // Empty spaces before first day
+
+            for (let i = 0; i < firstDay; i++) {
+
+                const emptyDay =
+                    document.createElement("div");
+
+                emptyDay.className =
+                    "calendar-day empty";
+
+                calendarDays.appendChild(emptyDay);
+            }
+
+
+            // Create days
+
+            for (let day = 1; day <= daysInMonth; day++) {
+
+                const dayElement =
+                    document.createElement("div");
+
+                dayElement.className =
+                    "calendar-day";
+
+
+                // Today's date
+
+                const today = new Date();
+
+                if (
+                    day === today.getDate() &&
+                    month === today.getMonth() &&
+                    year === today.getFullYear()
+                ) {
+
+                    dayElement.classList.add("today");
+                }
+
+
+                const dateNumber =
+                    document.createElement("div");
+
+                dateNumber.className =
+                    "calendar-date";
+
+                dateNumber.textContent = day;
+
+                dayElement.appendChild(dateNumber);
+
+
+                // Find games on this day
+
+                const gamesForDay = allGames.filter(game => {
+
+                    const gameDate =
+                        new Date(game.date);
+
+                    return (
+                        gameDate.getFullYear() === year &&
+                        gameDate.getMonth() === month &&
+                        gameDate.getDate() === day
+                    );
+
+                });
+
+
+                // Add games
+
+                gamesForDay.forEach(game => {
+
+                    const competition =
+                        game.competitions[0];
+
+                    const home =
+                        competition.competitors.find(
+                            team => team.homeAway === "home"
+                        );
+
+                    const away =
+                        competition.competitors.find(
+                            team => team.homeAway === "away"
+                        );
+
+
+                    const isHabsHome =
+                        home.team.displayName ===
+                        "Montreal Canadiens";
+
+
+                    const opponent =
+                        isHabsHome ? away : home;
+
+
+                    const opponentLogo =
+                        opponent.team.logo ||
+                        opponent.team.logos?.[0]?.href ||
+                        "";
+
+
+                    const gameTime =
+                        new Date(game.date).toLocaleTimeString(
+                            [],
+                            {
+                                hour: "numeric",
+                                minute: "2-digit"
+                            }
+                        );
+
+
+                    const gameElement = document.createElement("div");
+                    gameElement.className = "calendar-game";
+
+                    const result = getGameResult(
+                        game,
+                        isHabsHome,
+                        home,
+                        away
+                    );
+
+                    gameElement.innerHTML = `
     <div class="game-location">
         ${isHabsHome ? "HOME" : "AWAY"}
     </div>
@@ -367,82 +674,79 @@ gameElement.innerHTML = `
         ${opponent.team.shortDisplayName}
     </div>
 
-    <div class="${
-    result
-        ? "calendar-result " +
-          (result.includes("W") ? "win" :
-           result.includes("L") ? "loss" : "")
-        : "calendar-time"
-}">
+    <div class="${result
+                            ? "calendar-result " +
+                            (result.includes("W") ? "win" :
+                                result.includes("L") ? "loss" : "")
+                            : "calendar-time"
+                        }">
     ${result || gameTime}
 </div>
 `;
 
-gameElement.onclick = () => {
-    alert(
-        `${isHabsHome
-            ? "Montreal Canadiens vs"
-            : "Montreal Canadiens @"}
-        ${opponent.team.displayName}
+                    gameElement.onclick = () => {
+                        fetchGameDetails(
+                            game,
+                            isHabsHome,
+                            home,
+                            away,
+                            opponent,
+                            gameTime,
+                            result
+                        );
+                    };
 
-        ${result || gameTime}`
-    );
-};
+                    dayElement.appendChild(gameElement);
 
-dayElement.appendChild(gameElement);
-
-        });
-
-
-        calendarDays.appendChild(dayElement);
-
-    }
-
-}
+                });
 
 
-// ===============================
-// MONTH CONTROLS
-// ===============================
+                calendarDays.appendChild(dayElement);
 
-function previousMonth() {
+            }
 
-    calendarDate.setMonth(
-        calendarDate.getMonth() - 1
-    );
-
-    renderCalendar();
-
-}
+        }
 
 
-function nextMonth() {
+        // ===============================
+        // MONTH CONTROLS
+        // ===============================
 
-    calendarDate.setMonth(
-        calendarDate.getMonth() + 1
-    );
+        function previousMonth() {
 
-    renderCalendar();
+            calendarDate.setMonth(
+                calendarDate.getMonth() - 1
+            );
 
-}
+            renderCalendar();
 
-
-function goToToday() {
-
-    calendarDate = new Date();
-
-    renderCalendar();
-
-}
+        }
 
 
-// LOAD
+        function nextMonth() {
 
-fetchSchedule();
+            calendarDate.setMonth(
+                calendarDate.getMonth() + 1
+            );
 
-</script>
+            renderCalendar();
+
+        }
+
+
+        function goToToday() {
+
+            calendarDate = new Date();
+
+            renderCalendar();
+
+        }
+
+
+        // LOAD
+
+        fetchSchedule();
+
+    </script>
 
 </body>
-
-
-    
